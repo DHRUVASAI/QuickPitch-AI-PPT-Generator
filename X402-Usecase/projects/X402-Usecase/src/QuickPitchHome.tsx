@@ -476,20 +476,99 @@ const QuickPitchHome: React.FC = () => {
         </div>
 
         {/* Status & Alerts */}
-        {status && (
-          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl flex items-center justify-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-            {status}
-          </div>
-        )}
         {error && (
           <div className="text-sm font-bold text-white bg-neutral-950 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
             ⚠️ {error}
           </div>
         )}
         {done && (
-          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-700 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
-            🎉 Presentation downloaded! Open in PowerPoint / Google Slides.
+          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-700 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl flex items-center justify-center gap-3">
+            <span className="text-xl">🎉</span>
+            <span>Presentation downloaded! Open in PowerPoint / Google Slides.</span>
+          </div>
+        )}
+
+        {/* 🌟 THEME-MATCHING HIGH-ENGAGEMENT AI GENERATION LOADING MODAL */}
+        {loading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-2xl animate-fade-in">
+            <div className="relative w-full max-w-md bg-neutral-950 border border-neutral-800 rounded-3xl p-8 text-center shadow-2xl space-y-6 overflow-hidden">
+              
+              {/* Top Theme Accent Ambient Glow */}
+              <div 
+                className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none transition-all duration-700"
+                style={{ backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent || '#FFFFFF' }}
+              />
+
+              {/* Theme Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-800 bg-black text-[11px] font-mono text-neutral-300">
+                <span 
+                  className="w-2 h-2 rounded-full shadow-sm animate-pulse" 
+                  style={{ backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent || '#FFFFFF' }}
+                />
+                AI Engine · {THEME_OPTIONS.find(t => t.id === selectedTheme)?.name || 'Theme'} Mode
+              </div>
+
+              {/* Spinning Dual Concentric Orbital Rings with Glowing Theme Core */}
+              <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+                {/* Outer Ring */}
+                <div 
+                  className="absolute inset-0 rounded-full border-2 border-t-transparent border-b-transparent animate-spin"
+                  style={{ borderColor: `${THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent}88` }}
+                />
+                {/* Inner Reverse Ring */}
+                <div 
+                  className="absolute inset-2 rounded-full border-2 border-r-transparent border-l-transparent animate-[spin_2.5s_linear_infinite_reverse]"
+                  style={{ borderColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent }}
+                />
+                {/* Glowing Core Orb */}
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform animate-pulse"
+                  style={{ 
+                    backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent,
+                    boxShadow: `0 0 35px ${THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent}`
+                  }}
+                >
+                  <span className="text-black font-black text-xs">AI</span>
+                </div>
+              </div>
+
+              {/* Active Step Status Message */}
+              <div>
+                <h3 className="text-base font-extrabold text-white tracking-tight mb-1">
+                  Crafting Your Presentation...
+                </h3>
+                <p className="text-xs text-neutral-400 font-mono">
+                  {status || 'Synthesizing domain analysis & PowerPoint layout...'}
+                </p>
+              </div>
+
+              {/* Animated Progress Bar */}
+              <div className="space-y-1.5">
+                <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden p-0.5 border border-neutral-800">
+                  <div 
+                    className="h-full rounded-full transition-all duration-500 ease-out animate-pulse"
+                    style={{ 
+                      width: '85%',
+                      backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent 
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] font-mono text-neutral-500">
+                  <span>STEP 2 / 3: DECK SYNTHESIS</span>
+                  <span>~4s REMAINING</span>
+                </div>
+              </div>
+
+              {/* Dynamic Tip / Insight Pill */}
+              <div className="p-3.5 rounded-2xl bg-neutral-900/80 border border-neutral-800 text-left flex items-start gap-3">
+                <span className="text-sm">💡</span>
+                <p className="text-[11px] text-neutral-400 leading-relaxed">
+                  <span className="text-white font-bold block mb-0.5">Zero-Shot Layout Reasoning</span>
+                  Building native PowerPoint flowcharts, comparison tables, and iconic hero quote cards matched to your theme!
+                </p>
+              </div>
+
+            </div>
           </div>
         )}
 

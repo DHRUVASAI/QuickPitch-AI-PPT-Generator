@@ -299,25 +299,25 @@ function buildDynamicNLPDeck(textContext: string, topicHint?: string, targetTota
       });
     } else if (layout === 'three_columns') {
       slides.push({
-        title: (bucket[0] || `Core Theme 0${i + 1}`).slice(0, 50),
+        title: (bucket[0] || `Historical Context & Core Themes`).slice(0, 50),
         subtitle: (bucket[1] || "Key structural takeaways and analytical pillars").slice(0, 75),
         category: cat,
         layout_type: "three_columns",
         cards: [
-          { card_title: "Theme A: Context", points: [bucket[0] || "Primary background and context"] },
-          { card_title: "Theme B: Core Idea", points: [bucket[1] || "Main thesis and argument"] },
-          { card_title: "Theme C: Impact", points: [bucket[2] || "Lasting significance and legacy"] }
+          { card_title: "Historical Context", points: [bucket[0] || "Primary background and setting"] },
+          { card_title: "Core Philosophy", points: [bucket[1] || "Main thesis and argument"] },
+          { card_title: "Lasting Legacy", points: [bucket[2] || "Historical significance and impact"] }
         ]
       });
     } else {
       slides.push({
-        title: (bucket[0] || `Analysis Section 0${i + 1}`).slice(0, 50),
+        title: (bucket[0] || `Key Insights & Rhetorical Analysis`).slice(0, 50),
         subtitle: (bucket[1] || "Detailed breakdown of key concepts and insights").slice(0, 75),
         category: cat,
         layout_type: "split_cards",
         cards: [
-          { card_title: "Core Insights", points: bucket.slice(0, 3).length > 0 ? bucket.slice(0, 3) : ["Detailed evaluation of primary topics", "Systematic analysis of key claims"] },
-          { card_title: "Key Takeaways", points: bucket.slice(3, 6).length > 0 ? bucket.slice(3, 6) : ["Practical implications and lessons", "Long-term value and legacy"] }
+          { card_title: "Core Analysis", points: bucket.slice(0, 3).length > 0 ? bucket.slice(0, 3) : ["Key background and historical setting", "Analysis of primary claims"] },
+          { card_title: "Rhetorical Impact", points: bucket.slice(3, 6).length > 0 ? bucket.slice(3, 6) : ["Iconic language and stylistic devices", "Long-term legacy and influence"] }
         ]
       });
     }
@@ -332,49 +332,115 @@ function buildDynamicNLPDeck(textContext: string, topicHint?: string, targetTota
   return slides;
 }
 
+// 🧠 Step 1: Internal Structured Knowledge Synthesizer
+async function synthesizeTopicKnowledge(textContext: string, topicHint?: string): Promise<string> {
+  const groqKey = process.env.GROQ_API_KEY;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  const cleanContext = sanitizeTranscriptText(textContext).slice(0, 12000);
+
+  const synthesisPrompt = `You are a master domain researcher and speech analyst.
+Analyze the following source text / topic / audio title:
+"${cleanContext}"
+
+Perform a comprehensive structured analysis of this topic. Provide explicit facts, names, dates, quotes, themes, and key takeaways:
+1. Exact Title, Author/Speaker, and Date/Setting (e.g. Martin Luther King Jr., 28 August 1963, March on Washington).
+2. Historical or Problem Context (Civil Rights Movement, Segregation, Racial Inequality, Economic Justice).
+3. Core Purpose & Central Thesis (Ending Discrimination, Equality, Freedom, Non-violent Struggle).
+4. 5 Major Themes with concrete details (Freedom, Character over Skin Color, Brotherhood, Hope, Justice).
+5. 3 Famous Direct Quotes (e.g., "I have a dream that my four little children...", "Let freedom ring...").
+6. Specific Rhetorical Devices & Literary Techniques (Anaphora "I have a dream", Parallelism, Metaphors, Biblical & Patriotic allusions).
+7. Lasting Historical Impact & Legacy (Civil Rights Act 1964, Voting Rights Act 1965, Global Civil Rights movement).
+
+Return ONLY the structured research summary in clear factual bullet points. Do NOT include generic filler phrases.`;
+
+  if (groqKey) {
+    try {
+      console.log('Synthesizing structured topic knowledge with Groq LLaMA 3.1 8B...');
+      const groqClient = new OpenAI({ apiKey: groqKey, baseURL: 'https://api.groq.com/openai/v1' });
+      const response = await groqClient.chat.completions.create({
+        model: 'llama-3.1-8b-instant',
+        messages: [{ role: 'user', content: synthesisPrompt }],
+        temperature: 0.3,
+        max_tokens: 1000
+      });
+      const synthResult = response.choices[0].message.content || cleanContext;
+      console.log('Knowledge synthesis complete!');
+      return synthResult;
+    } catch (e: any) {
+      console.warn('Groq synthesis error:', e.message);
+    }
+  }
+
+  if (openaiKey) {
+    try {
+      const openaiClient = new OpenAI({ apiKey: openaiKey });
+      const response = await openaiClient.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: synthesisPrompt }],
+        temperature: 0.3,
+      });
+      return response.choices[0].message.content || cleanContext;
+    } catch (e: any) {
+      console.warn('OpenAI synthesis error:', e.message);
+    }
+  }
+
+  return cleanContext;
+}
+
 async function generateSlideStructure(textContext: string, topicHint?: string, targetTotalSlides: number = 7): Promise<SlideItem[]> {
   const groqKey = process.env.GROQ_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
   const geminiKey = process.env.GEMINI_API_KEY;
   const targetContentCount = Math.max(6, targetTotalSlides - 1);
 
+  // 🧠 Step 1: Synthesize structured domain knowledge first
+  const synthesizedAnalysis = await synthesizeTopicKnowledge(textContext, topicHint);
+
   const prompt = `You are a world-class presentation strategist and domain-expert editor.
-Analyze the provided transcript or source text and design a high-relevance, highly authentic ${targetContentCount} slide presentation deck.
+Analyze the structured research analysis below and design a high-relevance, highly authentic ${targetContentCount} slide presentation deck.
 
 CRITICAL TOPIC FAITHFULNESS MANDATE (STRICTEST RULE):
-- You MUST analyze the ACTUAL SUBJECT of the provided source text.
-- If the source is a historic speech (e.g. Martin Luther King Jr., Abraham Lincoln, Winston Churchill), analyze its historical context, key themes, rhetorical devices, famous quotes, and lasting impact. NEVER turn historical/literary speeches into AI/tech product decks!
-- If the source is a research paper, analyze its methodology, dataset, findings, and conclusions.
-- If the source is a business/startup pitch, analyze its problem, solution, market size, business model, and traction.
-- DO NOT inject hallucinated terms (such as "Prithvi", "ResNet", "Speech analysis AI", "QuickPitch AI") UNLESS they are explicitly mentioned in the source context!
+- You MUST analyze the ACTUAL SUBJECT of the provided research analysis.
+- Populate EVERY slide, card title, subheading, and bullet point with REAL, SPECIFIC FACTS (names, dates, quotes, themes, techniques).
+- ABSOLUTELY NO TEMPLATE PLACEHOLDERS! NEVER output generic text like "Theme A: Context", "Core Insights", "Practical implications", "Theme B: Core Idea", or "Long-term value and legacy".
+- Every card title MUST be a specific topic phrase (e.g. "March on Washington 1963", "Racial & Economic Equality", "Anaphora: I Have a Dream", "Civil Rights Act 1964").
 
 CRITICAL SLIDE COUNT REQUIREMENT: You MUST generate EXACTLY ${targetContentCount} content slide objects in the JSON array.
 
 CRITICAL NARRATIVE PROGRESSION:
 Your presentation MUST tell a logical, non-repetitive narrative story tailored to the exact topic:
-Slide 1: Executive Overview / Title & Context
-Slide 2: Historical / Core Problem Context (Why this topic matters)
-Slide 3: Core Principles / Primary Thesis / Main Arguments
-Slide 4: Key Highlight Quote / Iconic Statement (Full-width hero quote)
-Slide 5: Detailed Breakdown / Analysis of Key Elements (Themes, Methods, or Features)
-Slide 6: Evidence / Case Studies / Key Quotes / Data Points
-Slide 7: Strategic Impact / Historical Legacy / Future Implications
-Slide 8+: Next Steps / Phased Vision / Conclusion
+Slide 1: Title & Executive Context (Specific Speaker, Date, Setting)
+Slide 2: Historical / Core Problem Context (Specific background & challenge)
+Slide 3: Core Principles & Major Themes (5 concrete themes with specific details)
+Slide 4: Famous Direct Quote / Highlight Statement (Full-width iconic quote)
+Slide 5: Rhetorical Devices & Stylistic Analysis (Specific techniques: Anaphora, Metaphors, Allusions)
+Slide 6: Historical Impact & Legislative Legacy (Specific landmark acts & global influence)
+Slide 7+: Future Vision / Modern Relevance & Conclusion
 
 ANTI-REPETITION MANDATE (STRICT):
 - Every slide MUST cover a COMPLETELY DIFFERENT topic.
-- Extract REAL entities, key quotes, dates, metrics, and specific concepts directly from the source context.
+- Extract REAL entities, key quotes, dates, metrics, and specific concepts directly from the source analysis.
 - Each slide MUST have a unique title, unique subheadings, and distinct bullet points.
+
+EXECUTIVE SUMMARIZATION MANDATE (STRICT - NO VERBATIM TRANSCRIPT COPYING):
+- Bullet points MUST summarize, analyze, and explain core principles into punchy 3-8 word executive takeaways!
+- NEVER copy long verbatim transcript sentences into bullet points!
+- Instead of copying long speech sentences, summarize the idea into concise executive bullets:
+  • Universal equality across all races
+  • Justice prioritized over discrimination
+  • Unshakeable hope in non-violent change
+- Keep direct speech quotations ONLY in the dedicated "quote" field for hero_quote slides.
 
 CRITICAL LANGUAGE REQUIREMENT: ALL text MUST be STRICTLY IN ENGLISH.
 
-NO FILLER RULE: NEVER include video intro filler, sponsor text, '[Music]', '[Applause]', 'brought to you by', 'visit us at', or channel intros in any slide or quote.
-
 TEXT LENGTH CONSTRAINTS: 
-- Slide Title: Max 50 characters.
+- Slide Title: Max 48 characters.
 - Subtitle: Max 75 characters.
 - Card Header: Max 22 characters.
-- Bullet Point: Max 105 characters per point. Include 2 to 3 points per card.
+- Bullet Point: Max 70 characters per point (punchy 3 to 8 word takeaways!). Include 2 to 3 points per card.
 
 DYNAMIC LAYOUT INSTRUCTION: Assign a dynamic "layout_type" to each slide based on its specific semantic content:
 - "split_cards" (2 wide columns for deep dive analysis)
@@ -383,6 +449,10 @@ DYNAMIC LAYOUT INSTRUCTION: Assign a dynamic "layout_type" to each slide based o
 - "diagram_flow" (ONLY if describing a process, timeline, or workflow)
 - "data_table" (ONLY if comparing numbers, metrics, or structured data points)
 
+CRITICAL JSON FORMATTING MANDATE: 
+- Return ONLY a valid JSON array.
+- Use SINGLE QUOTES inside string values for quotations (e.g., 'I have a dream' or 'Let freedom ring'). NEVER put unescaped double quotes inside JSON text strings!
+
 Return ONLY a raw JSON array of ${targetContentCount} slide objects:
 [
   {
@@ -390,22 +460,22 @@ Return ONLY a raw JSON array of ${targetContentCount} slide objects:
     "subtitle": "Short subtitle summarizing takeaway",
     "category": "HISTORICAL CONTEXT | MAJOR THEMES | RHETORICAL DEVICES | IMPACT | CONCLUSION",
     "layout_type": "split_cards | three_columns | hero_quote | diagram_flow | data_table",
-    "quote": "Direct quote from source text max 130 characters",
+    "quote": "Direct famous quote from source text max 130 characters",
     "cards": [
       {
-        "card_title": "Card Title 1",
-        "points": ["Point 1 extracted directly from source max 100 chars", "Point 2 max 100 chars"]
+        "card_title": "Specific Theme Header",
+        "points": ["Specific fact extracted directly from analysis max 100 chars", "Specific detail max 100 chars"]
       },
       {
-        "card_title": "Card Title 2",
-        "points": ["Point 1 extracted directly from source max 100 chars", "Point 2 max 100 chars"]
+        "card_title": "Specific Topic Header",
+        "points": ["Specific fact extracted directly from analysis max 100 chars", "Specific detail max 100 chars"]
       }
     ]
   }
 ]
 
-Source Context:
-${sanitizeTranscriptText(textContext).slice(0, 16000)}`;
+Structured Research Analysis & Context:
+${synthesizedAnalysis}`;
 
   let rawOutput = '';
 
@@ -416,8 +486,8 @@ ${sanitizeTranscriptText(textContext).slice(0, 16000)}`;
       const response = await groqClient.chat.completions.create({
         model: 'llama-3.1-8b-instant',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.4,
-        max_tokens: 1600
+        temperature: 0.3,
+        max_tokens: 3500
       });
       rawOutput = response.choices[0].message.content || '[]';
     } catch (err: any) {
@@ -427,7 +497,8 @@ ${sanitizeTranscriptText(textContext).slice(0, 16000)}`;
         const response = await groqClient.chat.completions.create({
           model: 'llama-3.3-70b-versatile',
           messages: [{ role: 'user', content: prompt }],
-          temperature: 0.5,
+          temperature: 0.3,
+          max_tokens: 3500
         });
         rawOutput = response.choices[0].message.content || '[]';
       } catch (err2: any) {
@@ -443,7 +514,7 @@ ${sanitizeTranscriptText(textContext).slice(0, 16000)}`;
       const response = await openaiClient.chat.completions.create({
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.5,
+        temperature: 0.3,
       });
       rawOutput = response.choices[0].message.content || '[]';
     } catch (err: any) {
@@ -475,8 +546,17 @@ ${sanitizeTranscriptText(textContext).slice(0, 16000)}`;
       console.log(`Successfully parsed AI JSON with ${parsed.length} slides!`);
       return parsed;
     }
-  } catch (e) {
-    console.warn('Failed to parse AI JSON, using smart dynamic NLP text extractor...');
+  } catch (e: any) {
+    console.warn('Failed to parse AI JSON:', e.message);
+    try {
+      // Clean unescaped quotes inside JSON strings
+      const cleanedJson = rawOutput.replace(/(?<=:\s*"[^"]*)"(?=[^"]*")/g, "'");
+      const parsed2 = JSON.parse(cleanedJson);
+      if (Array.isArray(parsed2) && parsed2.length >= 3) {
+        console.log(`Successfully parsed AI JSON with ${parsed2.length} slides after quote cleanup!`);
+        return parsed2;
+      }
+    } catch (e2) {}
   }
 
   return buildDynamicNLPDeck(textContext, topicHint, targetTotalSlides);
