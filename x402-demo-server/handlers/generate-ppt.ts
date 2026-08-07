@@ -177,16 +177,33 @@ async function fetchYouTubeMetadata(url: string): Promise<{ title: string; descr
   }
 }
 
-function sanitizeTranscriptText(textContext: string): string {
-  return textContext
+function cleanTextForPptx(text: string, maxLen: number = 200): string {
+  if (!text) return '';
+  return String(text)
     .replace(/<[^>]*>?/gm, ' ') // Strip HTML tags
-    .replace(/\[Music\]|\[Applause\]|\[Laughter\]|\[Audio\]|\[Video\]/gi, '')
-    .replace(/this program is brought to you by.*?(?:stanford|university|sponsor|channel|\.)/gi, '')
-    .replace(/subscribe to (?:my|our) channel|like and subscribe|welcome back to/gi, '')
-    .replace(/please visit us at.*?(?:edu|com|org|\s)/gi, '')
-    .replace(/Source Video Title:|Video Description & Context:|Presentation request for/gi, '')
+    .replace(/https?:\/\/[^\s]+/gi, '') // Strip raw http:// and https:// URLs to prevent broken OpenXML auto-hyperlinks
+    .replace(/www\.[^\s]+/gi, '') // Strip raw www. URLs
+    .replace(/org\/licenses\/[^\s]+/gi, '') // Strip license URL fragments
+    .replace(/verify at http[^\s]*/gi, '') // Strip verification URLs
+    .replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // Strip non-printable ASCII control chars
+    .replace(/&/g, 'and') // Replace raw ampersands to prevent XML entity parsing errors
+    .replace(/</g, '')
+    .replace(/>/g, '')
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim()
+    .slice(0, maxLen);
+}
+
+function sanitizeTranscriptText(textContext: string): string {
+  return cleanTextForPptx(
+    textContext
+      .replace(/\[Music\]|\[Applause\]|\[Laughter\]|\[Audio\]|\[Video\]/gi, '')
+      .replace(/this program is brought to you by.*?(?:stanford|university|sponsor|channel|\.)/gi, '')
+      .replace(/subscribe to (?:my|our) channel|like and subscribe|welcome back to/gi, '')
+      .replace(/please visit us at.*?(?:edu|com|org|\s)/gi, '')
+      .replace(/Source Video Title:|Video Description & Context:|Presentation request for/gi, ''),
+    20000
+  );
 }
 
 function calculateSlideCount(textContext: string, detailLevel: string = 'balanced'): number {
@@ -549,13 +566,13 @@ export async function handleGeneratePpt(c: Context) {
       fontSize: 9, bold: true, color: COLOR_ACCENT, align: 'center', fontFace: FONT_TITLE
     });
 
-    const rawCoverTitle = (slidesData[0]?.title && slidesData[0].title !== "Executive Presentation" ? slidesData[0].title : topicHint).slice(0, 55);
+    const rawCoverTitle = cleanTextForPptx(slidesData[0]?.title && slidesData[0].title !== "Executive Presentation" ? slidesData[0].title : topicHint, 55);
     cover.addText(rawCoverTitle, {
       x: 0.6, y: 1.4, w: 8.8, h: 1.5,
       fontSize: 32, bold: true, color: COLOR_TEXT_PRIMARY, fontFace: FONT_TITLE
     });
 
-    const subTitle = (slidesData[0]?.subtitle || 'Key Takeaways & Strategic Summary').slice(0, 85);
+    const subTitle = cleanTextForPptx(slidesData[0]?.subtitle || 'Key Takeaways & Strategic Summary', 85);
     cover.addText(subTitle, {
       x: 0.6, y: 3.1, w: 8.8, h: 0.8,
       fontSize: 16, color: COLOR_TEXT_MUTED, fontFace: FONT_BODY
@@ -578,20 +595,20 @@ export async function handleGeneratePpt(c: Context) {
       const slide = pptx.addSlide();
       slide.background = { color: COLOR_BG };
 
-      const categoryTag = (slideItem.category || `SECTION 0${index + 1}`).toUpperCase().slice(0, 30);
+      const categoryTag = cleanTextForPptx((slideItem.category || `SECTION 0${index + 1}`).toUpperCase(), 30);
       slide.addText(categoryTag, {
         x: 0.5, y: 0.3, w: 9.0, h: 0.25,
         fontSize: 10, bold: true, color: COLOR_ACCENT, fontFace: FONT_TITLE
       });
 
-      const slideTitleText = (slideItem.title || `Key Insight 0${index + 1}`).slice(0, 55);
+      const slideTitleText = cleanTextForPptx(slideItem.title || `Key Insight 0${index + 1}`, 55);
       slide.addText(slideTitleText, {
         x: 0.5, y: 0.55, w: 9.0, h: 0.5,
         fontSize: 22, bold: true, color: COLOR_TEXT_PRIMARY, fontFace: FONT_TITLE
       });
 
       if (slideItem.subtitle) {
-        const slideSubText = slideItem.subtitle.slice(0, 85);
+        const slideSubText = cleanTextForPptx(slideItem.subtitle, 85);
         slide.addText(slideSubText, {
           x: 0.5, y: 1.05, w: 9.0, h: 0.35,
           fontSize: 12, color: COLOR_TEXT_MUTED, fontFace: FONT_BODY
