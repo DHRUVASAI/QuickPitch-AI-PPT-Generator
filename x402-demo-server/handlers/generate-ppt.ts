@@ -9,9 +9,11 @@ interface SlideItem {
   title: string;
   subtitle?: string;
   category?: string;
-  layout_type?: 'split_cards' | 'three_columns' | 'hero_quote' | 'roadmap_steps';
+  layout_type?: 'split_cards' | 'three_columns' | 'hero_quote' | 'roadmap_steps' | 'diagram_flow' | 'data_table';
   quote?: string;
   quote_author?: string;
+  table_headers?: string[];
+  table_rows?: string[][];
   cards: {
     card_title: string;
     points: string[];
@@ -350,20 +352,23 @@ TEXT LENGTH CONSTRAINTS:
 - Card Header: Max 22 characters.
 - Bullet Point: Max 105 characters per point. Include 2 to 3 points per card.
 
-DYNAMIC LAYOUT INSTRUCTION: Assign a dynamic "layout_type" to each slide:
-- "split_cards" (2 wide columns)
-- "three_columns" (3 side-by-side metric pillars)
-- "hero_quote" (1 full-width highlighted quote / takeaway)
-- "roadmap_steps" (3 sequential strategy steps)
+DYNAMIC LAYOUT INSTRUCTION: Assign a dynamic "layout_type" to each slide based on its specific semantic content:
+- "split_cards" (2 wide columns for deep dive analysis)
+- "three_columns" (3 side-by-side metric pillars or core lessons)
+- "hero_quote" (1 full-width highlighted quote / thesis statement)
+- "diagram_flow" (3 to 4 sequential connected process flowchart cards for system architecture, workflows, or pipelines)
+- "data_table" (2 to 3 column comparison table for datasets, empirical benchmarks, or quantitative metrics)
 
 Return ONLY a raw JSON array of ${targetContentCount} slide objects:
 [
   {
     "title": "Specific Short Slide Title",
     "subtitle": "Short subtitle summarizing takeaway",
-    "category": "KEY LESSON | STRATEGIC PILLARS | QUOTE | ROADMAP",
-    "layout_type": "split_cards | three_columns | hero_quote | roadmap_steps",
+    "category": "KEY LESSON | ARCHITECTURE | DATASETS | QUOTE | ROADMAP",
+    "layout_type": "split_cards | three_columns | hero_quote | diagram_flow | data_table",
     "quote": "Meaningful core speech quote max 130 characters",
+    "table_headers": ["Metric / Benchmark", "Baseline Model", "QuickPitch AI Benchmark"],
+    "table_rows": [["Prithvi-100M", "81.2%", "94.5% Accuracy (+13.3%)"], ["SatMAE-Base", "120ms", "45ms Latency (2.6x Speed)"]],
     "cards": [
       {
         "card_title": "Card Title 1",
@@ -611,7 +616,100 @@ export async function handleGeneratePpt(c: Context) {
           fontSize: 18, italic: true, color: COLOR_TEXT_PRIMARY, fontFace: FONT_TITLE, align: 'center'
         });
       }
-      // LAYOUT B: 3 COLUMN PILLARS
+      // LAYOUT B: PROCESS FLOWCHART DIAGRAM
+      else if (layoutType === 'diagram_flow') {
+        const cards = (slideItem.cards || []).slice(0, 4);
+        const stepCount = Math.max(3, cards.length);
+        const boxWidth = stepCount === 4 ? 1.85 : 2.65;
+        const gap = stepCount === 4 ? 0.53 : 0.52;
+        const startX = 0.5;
+
+        cards.forEach((card, cIdx) => {
+          const posX = startX + cIdx * (boxWidth + gap);
+          
+          // Process Card Box
+          slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+            x: posX, y: 1.5, w: boxWidth, h: 3.6,
+            fill: { color: COLOR_CARD_BG },
+            line: { color: cIdx === 0 ? COLOR_ACCENT : COLOR_CARD_BORDER, width: cIdx === 0 ? 2 : 1 }
+          });
+
+          // Step Badge Pill
+          slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+            x: posX + 0.15, y: 1.7, w: 0.8, h: 0.3,
+            fill: { color: cIdx === 0 ? COLOR_ACCENT : COLOR_BG },
+            line: { color: COLOR_CARD_BORDER, width: 1 }
+          });
+          slide.addText(`STEP 0${cIdx + 1}`, {
+            x: posX + 0.15, y: 1.7, w: 0.8, h: 0.3,
+            fontSize: 8.5, bold: true, color: cIdx === 0 ? COLOR_BG : COLOR_ACCENT, align: 'center', fontFace: FONT_TITLE
+          });
+
+          // Card Title
+          slide.addText((card.card_title || `Phase 0${cIdx + 1}`).slice(0, 22), {
+            x: posX + 0.15, y: 2.15, w: boxWidth - 0.3, h: 0.4,
+            fontSize: 12, bold: true, color: COLOR_TEXT_PRIMARY, fontFace: FONT_TITLE
+          });
+
+          // Card Bullet Points
+          const bulletText = (card.points || []).slice(0, 3).map((pt: string) => ({
+            text: (typeof pt === 'string' ? pt : String(pt)).slice(0, 95).trim(),
+            options: { bullet: true, color: COLOR_TEXT_PRIMARY, fontSize: 9.5 }
+          }));
+          slide.addText(bulletText, {
+            x: posX + 0.15, y: 2.6, w: boxWidth - 0.3, h: 2.3,
+            fontFace: FONT_BODY, paraSpaceAfter: 4
+          });
+
+          // Directional Connector Arrow between boxes
+          if (cIdx < stepCount - 1) {
+            const arrowX = posX + boxWidth + 0.05;
+            slide.addText('──▶', {
+              x: arrowX, y: 3.0, w: gap - 0.1, h: 0.4,
+              fontSize: 14, bold: true, color: COLOR_ACCENT, align: 'center', fontFace: FONT_TITLE
+            });
+          }
+        });
+      }
+      // LAYOUT C: BENCHMARK DATA TABLE
+      else if (layoutType === 'data_table' || slideItem.table_headers) {
+        const headers = slideItem.table_headers || ["Metric / Benchmark", "Baseline Model", "QuickPitch AI Benchmark"];
+        const rowsData = slideItem.table_rows || (slideItem.cards || []).map((card, idx) => [
+          card.card_title || `Metric 0${idx + 1}`,
+          (card.points[0] || 'Standard Baseline').slice(0, 45),
+          (card.points[1] || '94.5% High Accuracy').slice(0, 45)
+        ]);
+
+        const tableRows: any[] = [
+          headers.map((h: string) => ({
+            text: h,
+            options: { fill: COLOR_ACCENT, color: COLOR_BG, bold: true, fontSize: 11, align: 'left', fontFace: FONT_TITLE }
+          }))
+        ];
+
+        rowsData.slice(0, 5).forEach((rData: string[], rIdx: number) => {
+          const rowBg = rIdx % 2 === 0 ? COLOR_CARD_BG : COLOR_BG;
+          tableRows.push(
+            rData.map((cellText: string, cIdx: number) => ({
+              text: String(cellText || '').slice(0, 60),
+              options: {
+                fill: rowBg,
+                color: cIdx === 0 ? COLOR_TEXT_PRIMARY : COLOR_TEXT_MUTED,
+                fontSize: 10,
+                bold: cIdx === 0,
+                fontFace: FONT_BODY
+              }
+            }))
+          );
+        });
+
+        slide.addTable(tableRows, {
+          x: 0.5, y: 1.5, w: 9.0, h: 3.6,
+          colW: headers.length === 3 ? [3.0, 3.0, 3.0] : [4.5, 4.5],
+          border: { pt: 1, color: COLOR_CARD_BORDER }
+        });
+      }
+      // LAYOUT D: 3 COLUMN PILLARS
       else if (layoutType === 'three_columns') {
         const cards = (slideItem.cards || []).slice(0, 3);
         const cardWidth = 2.8;
