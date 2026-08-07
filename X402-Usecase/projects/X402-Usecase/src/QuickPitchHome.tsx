@@ -514,72 +514,46 @@ const QuickPitchHome: React.FC = () => {
               ⚡ Instant Demo Mode (No Wallet / Payment Required)
             </button>
           </div>
-        </div>
 
-        {/* Status & Alerts */}
-        {status && (
-          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl flex items-center justify-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-            {status}
-          </div>
-        )}
-        {error && (
-          <div className="text-sm font-bold text-white bg-neutral-950 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
-            ⚠️ {error}
-          </div>
-        )}
-        {done && (
-          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-700 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
-            🎉 Presentation downloaded! Open in PowerPoint / Google Slides.
-          </div>
-        )}
+          {/* On-Screen Inline Loading Animation Card */}
+          {loading && (
+            <div className="mt-5 pt-4 border-t border-neutral-900 bg-black/60 border border-neutral-800 rounded-2xl p-5 text-center shadow-xl space-y-4 relative overflow-hidden transition-all">
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-white animate-pulse" />
 
-        {/* Dynamic Sleek Loading Modal Overlay */}
-        {loading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-2xl transition-all">
-            <div className="bg-neutral-950 border border-neutral-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6 relative overflow-hidden">
-              
-              {/* Top Accent Bar Glow */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-white animate-pulse" />
+              <div className="flex items-center gap-4 text-left">
+                <div className="relative w-11 h-11 flex-shrink-0 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full border-2 border-neutral-800" />
+                  <div className="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin" style={{ animationDuration: '0.85s' }} />
+                  <span className="text-white font-black text-xs">Q</span>
+                </div>
 
-              {/* Orbit Ring Spinner */}
-              <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-neutral-800" />
-                <div className="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin" style={{ animationDuration: '0.85s' }} />
-                <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-lg">
-                  <span className="text-black font-black text-xs">Q</span>
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-xs font-extrabold text-white tracking-tight uppercase">Building Executive Presentation</h4>
+                  <p className="text-[11px] text-neutral-300 font-mono truncate mt-0.5 transition-all">
+                    {loadingStep}
+                  </p>
                 </div>
               </div>
 
-              {/* Step Title & Dynamic Progress Message */}
-              <div className="space-y-2">
-                <h3 className="text-lg font-black text-white tracking-tight">Generating Executive Presentation</h3>
-                <p className="text-xs text-neutral-300 font-mono min-h-[32px] flex items-center justify-center transition-all duration-300">
-                  {loadingStep}
-                </p>
+              {/* Step Dots & Real-time Timer Bar */}
+              <div className="flex items-center justify-between pt-3 border-t border-neutral-900 text-[11px] font-mono">
+                <div className="flex items-center gap-1.5">
+                  {[0, 1, 2, 3, 4].map((stepIdx) => (
+                    <div
+                      key={stepIdx}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${
+                        currentStepIndex >= stepIdx ? 'w-5 bg-white' : 'w-1.5 bg-neutral-800'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="text-neutral-400">
+                  Elapsed: <span className="text-white font-bold">{elapsedSeconds}s</span> (Est. ~6s)
+                </div>
               </div>
-
-              {/* Step Dots Indicator */}
-              <div className="flex items-center justify-center gap-2 pt-1">
-                {[0, 1, 2, 3, 4].map((stepIdx) => (
-                  <div
-                    key={stepIdx}
-                    className={`h-1.5 rounded-full transition-all duration-500 ${
-                      currentStepIndex >= stepIdx ? 'w-6 bg-white' : 'w-2 bg-neutral-800'
-                    }`}
-                  />
-                ))}
-              </div>
-
-              {/* Real-Time Timer Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 border border-neutral-800 text-[11px] font-mono text-neutral-400 shadow-inner">
-                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                Elapsed: <span className="text-white font-bold">{elapsedSeconds}s</span> (Est. ~6-8s)
-              </div>
-
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Smooth Scroll Down Indicator */}
         <a href="#how-it-works" className="inline-flex items-center gap-2 mt-8 text-xs text-neutral-500 hover:text-white transition-colors animate-bounce">
