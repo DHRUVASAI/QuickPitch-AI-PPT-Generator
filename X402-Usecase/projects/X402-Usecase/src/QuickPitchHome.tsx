@@ -65,16 +65,23 @@ const QuickPitchHome: React.FC = () => {
     if (file) {
       setAudioFileName(file.name)
       setError('')
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const content = event.target?.result as string
-        if (content) {
-          setRawText(content.slice(0, 50000))
-        } else {
-          setRawText(`Audio recording uploaded: ${file.name} (${Math.round(file.size / 1024)} KB)`)
+
+      const isTextFile = file.name.endsWith('.txt') || file.name.endsWith('.vtt') || file.name.endsWith('.srt') || file.name.endsWith('.md') || file.type.includes('text')
+
+      if (isTextFile) {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          const content = event.target?.result as string
+          if (content) {
+            setRawText(content.slice(0, 50000))
+          }
         }
+        reader.readAsText(file)
+      } else {
+        // Audio binary file (.mp3, .wav, .m4a): Set clean audio topic context instead of corrupt binary bytes
+        const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ')
+        setRawText(`Executive Speech & Audio Analysis: "${cleanName}". Detailed breakdown of key pitch themes, problem statements, strategic pillars, execution roadmap, and takeaways from the uploaded audio file (${Math.round(file.size / 1024)} KB).`)
       }
-      reader.readAsText(file)
     }
   }
 
@@ -296,22 +303,38 @@ const QuickPitchHome: React.FC = () => {
           )}
 
           {mode === 'audio' && (
-            <div className="space-y-3">
-              <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">
-                Upload Speech Audio (.mp3, .wav, .m4a, .txt)
-              </label>
-              <input
-                type="file"
-                accept="audio/*,text/plain"
-                onChange={handleFileUpload}
-                disabled={loading}
-                className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-3.5 text-xs text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-neutral-200 cursor-pointer shadow-inner"
-              />
-              {audioFileName && (
-                <div className="text-xs font-bold text-white bg-neutral-900 p-3 rounded-xl border border-neutral-800">
-                  📁 Selected File: {audioFileName}
-                </div>
-              )}
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
+                  Upload Speech Audio (.mp3, .wav, .m4a, .txt)
+                </label>
+                <input
+                  type="file"
+                  accept="audio/*,text/plain"
+                  onChange={handleFileUpload}
+                  disabled={loading}
+                  className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-3.5 text-xs text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-neutral-200 cursor-pointer shadow-inner"
+                />
+                {audioFileName && (
+                  <div className="text-xs font-bold text-white bg-neutral-900 p-3 rounded-xl border border-neutral-800 mt-2">
+                    📁 Audio File Selected: {audioFileName}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
+                  Speech Notes & Transcript Context (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Paste speech transcript, speaker notes, or audio summary here..."
+                  value={rawText}
+                  onChange={e => { setRawText(e.target.value); setError('') }}
+                  disabled={loading}
+                  className="w-full bg-black border border-neutral-800 rounded-2xl p-4 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
+                />
+              </div>
             </div>
           )}
 
