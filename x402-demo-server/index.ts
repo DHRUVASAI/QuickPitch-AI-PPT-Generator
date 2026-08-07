@@ -23,19 +23,7 @@ import { ALGORAND_TESTNET_CAIP2 } from '@x402/avm';
 import { bazaarResourceServerExtension } from '@x402-avm/extensions';
 
 // Import handler functions
-import { handleWeatherRequest } from './handlers/weather';
-import { handleAnalyticsRequest, handleAnalyticsReportRequest } from './handlers/analytics';
-import {
-  handleAIAnalysisRequest,
-  handleAIAnalysisBatchRequest,
-} from './handlers/ai-analysis';
-import {
-  handleCreatorContentRequest,
-  handleCreatorContentListRequest,
-  handleCreatorPublishRequest,
-  handleCreatorEarningsRequest,
-} from './handlers/creator-content';
-import { handleMemeGenerateRequest, handleMemeStylesRequest } from './handlers/meme-generator';
+import { handleGeneratePpt } from './handlers/generate-ppt';
 
 // Import endpoint configuration
 import createPaymentConfig, { EndpointConfig } from './endpoints.config';
@@ -95,6 +83,7 @@ app.use('*', async (c, next) => {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE, HEAD',
     'Access-Control-Allow-Headers': '*', // Critical for x402
     'Access-Control-Expose-Headers': '*', // Critical for x402
+    'Access-Control-Allow-Private-Network': 'true',
     'Access-Control-Max-Age': '86400',
   };
 
@@ -154,26 +143,11 @@ app.use(paymentMiddleware(paymentConfig as any, x402Server));
  * by the x402 middleware
  */
 
-// Example 1: Weather Data - Pay $0.005
-app.get('/weather', handleWeatherRequest);
+// QuickPitch MVP - Pay $0.001 USDC (Payment Protected)
+app.post('/generate-ppt', handleGeneratePpt);
 
-// Meme Generator - Pay $0.1 USDC (Payment Protected)
-app.post('/meme-generate', handleMemeGenerateRequest);
-
-
-// Example 2: Analytics - Uncomment to enable
-// app.get('/analytics', handleAnalyticsRequest);
-// app.post('/analytics/report', handleAnalyticsReportRequest);
-
-// Example 3: AI Analysis - Uncomment to enable
-// app.post('/ai-analysis', handleAIAnalysisRequest);
-// app.post('/ai-analysis/batch', handleAIAnalysisBatchRequest);
-
-// Example 4: Creator Content - Uncomment to enable
-// app.get('/exclusive-content/:id', handleCreatorContentRequest);
-// app.get('/creators/:wallet/content', handleCreatorContentListRequest);
-// app.post('/creators/publish', handleCreatorPublishRequest);
-// app.get('/creators/:wallet/earnings', handleCreatorEarningsRequest);
+// QuickPitch DEMO MODE - No payment required (for testing)
+app.post('/generate-ppt-demo', handleGeneratePpt);
 
 // ════════════════════════════════════════════════════════════════════
 // PUBLIC ENDPOINTS - No payment required
@@ -206,11 +180,7 @@ app.get('/info', (c) => {
   });
 });
 
-/**
- * Meme Styles endpoint - Shows available styles and themes
- * Public endpoint - no payment required
- */
-app.get('/meme-styles', handleMemeStylesRequest);
+
 
 // ════════════════════════════════════════════════════════════════════
 // ERROR HANDLING
@@ -236,7 +206,7 @@ app.notFound((c) => {
 // SERVER STARTUP
 // ════════════════════════════════════════════════════════════════════
 
-serve({ fetch: app.fetch, port }, () => {
+serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
   console.log('\n✅ x402 Resource Server is running!\n');
   console.log('═'.repeat(60));
   console.log('Endpoints:');
