@@ -271,9 +271,9 @@ function buildDynamicNLPDeck(textContext: string, topicHint?: string, targetTota
   const bestQuote = (quoteCandidates[Math.floor(quoteCandidates.length / 2)] || quoteCandidates[0] || sentences[1] || "Innovation distinguishes between a leader and a follower.").slice(0, 130);
 
   const categories = [
-    "PROBLEM STATEMENT", "TECHNICAL ARCHITECTURE", "DATASETS & METRICS",
-    "HERO STATEMENT", "SYSTEM PIPELINE", "CASE STUDIES & IMPACT",
-    "EXECUTION ROADMAP", "GOVERNANCE & RISKS", "FUTURE OUTLOOK", "CONCLUSION"
+    "HISTORICAL CONTEXT", "CORE PRINCIPLES", "SPEAKER THESIS",
+    "HERO STATEMENT", "KEY THEMES", "ANALYSIS & EVIDENCE",
+    "RHETORICAL IMPACT", "STRATEGIC IMPLICATIONS", "FUTURE OUTLOOK", "CONCLUSION"
   ];
 
   const layouts: ("split_cards" | "three_columns" | "hero_quote")[] = [
@@ -290,8 +290,8 @@ function buildDynamicNLPDeck(textContext: string, topicHint?: string, targetTota
     
     if (layout === 'hero_quote') {
       slides.push({
-        title: (bucket[0] || `Core Thesis & Strategic Principle`).slice(0, 50),
-        subtitle: (bucket[1] || "Central philosophy statement from the source analysis").slice(0, 75),
+        title: (bucket[0] || `Core Thesis & Highlight Quote`).slice(0, 50),
+        subtitle: (bucket[1] || "Central philosophy statement from the source material").slice(0, 75),
         category: cat,
         layout_type: "hero_quote",
         quote: (bucket[0] || bestQuote).slice(0, 130),
@@ -299,25 +299,25 @@ function buildDynamicNLPDeck(textContext: string, topicHint?: string, targetTota
       });
     } else if (layout === 'three_columns') {
       slides.push({
-        title: (bucket[0] || `Strategic Pillar 0${i + 1}`).slice(0, 50),
+        title: (bucket[0] || `Core Theme 0${i + 1}`).slice(0, 50),
         subtitle: (bucket[1] || "Key structural takeaways and analytical pillars").slice(0, 75),
         category: cat,
         layout_type: "three_columns",
         cards: [
-          { card_title: "Pillar A: Scope", points: [bucket[0] || "Primary technical scope and objective"] },
-          { card_title: "Pillar B: Execution", points: [bucket[1] || "Core methodology and implementation"] },
-          { card_title: "Pillar C: Metrics", points: [bucket[2] || "Measurable benchmark and evaluation"] }
+          { card_title: "Theme A: Context", points: [bucket[0] || "Primary background and context"] },
+          { card_title: "Theme B: Core Idea", points: [bucket[1] || "Main thesis and argument"] },
+          { card_title: "Theme C: Impact", points: [bucket[2] || "Lasting significance and legacy"] }
         ]
       });
     } else {
       slides.push({
         title: (bucket[0] || `Analysis Section 0${i + 1}`).slice(0, 50),
-        subtitle: (bucket[1] || "Detailed breakdown of technical concepts and insights").slice(0, 75),
+        subtitle: (bucket[1] || "Detailed breakdown of key concepts and insights").slice(0, 75),
         category: cat,
         layout_type: "split_cards",
         cards: [
-          { card_title: "Core Analysis", points: bucket.slice(0, 3).length > 0 ? bucket.slice(0, 3) : ["Detailed evaluation of primary topics", "Systematic analysis of key claims"] },
-          { card_title: "Strategic Impact", points: bucket.slice(3, 6).length > 0 ? bucket.slice(3, 6) : ["Practical implications for stakeholders", "Long-term value creation and benchmarks"] }
+          { card_title: "Core Insights", points: bucket.slice(0, 3).length > 0 ? bucket.slice(0, 3) : ["Detailed evaluation of primary topics", "Systematic analysis of key claims"] },
+          { card_title: "Key Takeaways", points: bucket.slice(3, 6).length > 0 ? bucket.slice(3, 6) : ["Practical implications and lessons", "Long-term value and legacy"] }
         ]
       });
     }
@@ -338,26 +338,32 @@ async function generateSlideStructure(textContext: string, topicHint?: string, t
   const geminiKey = process.env.GEMINI_API_KEY;
   const targetContentCount = Math.max(6, targetTotalSlides - 1);
 
-  const prompt = `You are a world-class executive presentation designer at Gamma App / Claude Artifacts.
-Analyze the provided transcript or topic and design a comprehensive ${targetContentCount} slide executive presentation deck.
+  const prompt = `You are a world-class presentation strategist and domain-expert editor.
+Analyze the provided transcript or source text and design a high-relevance, highly authentic ${targetContentCount} slide presentation deck.
+
+CRITICAL TOPIC FAITHFULNESS MANDATE (STRICTEST RULE):
+- You MUST analyze the ACTUAL SUBJECT of the provided source text.
+- If the source is a historic speech (e.g. Martin Luther King Jr., Abraham Lincoln, Winston Churchill), analyze its historical context, key themes, rhetorical devices, famous quotes, and lasting impact. NEVER turn historical/literary speeches into AI/tech product decks!
+- If the source is a research paper, analyze its methodology, dataset, findings, and conclusions.
+- If the source is a business/startup pitch, analyze its problem, solution, market size, business model, and traction.
+- DO NOT inject hallucinated terms (such as "Prithvi", "ResNet", "Speech analysis AI", "QuickPitch AI") UNLESS they are explicitly mentioned in the source context!
 
 CRITICAL SLIDE COUNT REQUIREMENT: You MUST generate EXACTLY ${targetContentCount} content slide objects in the JSON array.
 
-CRITICAL NARRATIVE PROGRESSION (STRICT 8-STEP STORY ARC):
-Your presentation MUST tell a logical, non-repetitive narrative story across slides:
-1. Executive Overview & Problem Context (Why traditional approaches fail or key challenge)
-2. Core Technical Innovation & Model Architecture (Specific model names, algorithms, mechanisms)
-3. Dataset & Empirical Benchmarks (Specific datasets, metrics, percentage accuracy, throughput)
-4. Key Thesis Statement & Hero Takeaway (Full-width quotation or central thesis)
-5. Practical System Architecture & Integration (APIs, workflows, pipeline components)
-6. Real-World Case Studies & Applications (Concrete deployment scenarios, domain applications)
-7. Phased Implementation Roadmap (Phase 1 Initiate, Phase 2 Execute, Phase 3 Optimize)
-8. Future Vision & Conclusion (Next milestones, scaling, impact)
+CRITICAL NARRATIVE PROGRESSION:
+Your presentation MUST tell a logical, non-repetitive narrative story tailored to the exact topic:
+Slide 1: Executive Overview / Title & Context
+Slide 2: Historical / Core Problem Context (Why this topic matters)
+Slide 3: Core Principles / Primary Thesis / Main Arguments
+Slide 4: Key Highlight Quote / Iconic Statement (Full-width hero quote)
+Slide 5: Detailed Breakdown / Analysis of Key Elements (Themes, Methods, or Features)
+Slide 6: Evidence / Case Studies / Key Quotes / Data Points
+Slide 7: Strategic Impact / Historical Legacy / Future Implications
+Slide 8+: Next Steps / Phased Vision / Conclusion
 
 ANTI-REPETITION MANDATE (STRICT):
 - Every slide MUST cover a COMPLETELY DIFFERENT topic.
-- NEVER repeat general statements like "Foundation models are powerful" across multiple slides.
-- Extract SPECIFIC model names (e.g. Prithvi, SatMAE, Clay, DOFA, LLaMA-3, ResNet, PyTorch, Hono, Algorand x402), dataset names (e.g. Sentinel-2, Landsat, SAR, ImageNet), and exact metrics (% accuracy, speedup, latency).
+- Extract REAL entities, key quotes, dates, metrics, and specific concepts directly from the source context.
 - Each slide MUST have a unique title, unique subheadings, and distinct bullet points.
 
 CRITICAL LANGUAGE REQUIREMENT: ALL text MUST be STRICTLY IN ENGLISH.
@@ -374,27 +380,25 @@ DYNAMIC LAYOUT INSTRUCTION: Assign a dynamic "layout_type" to each slide based o
 - "split_cards" (2 wide columns for deep dive analysis)
 - "three_columns" (3 side-by-side metric pillars or core lessons)
 - "hero_quote" (1 full-width highlighted quote / thesis statement)
-- "diagram_flow" (3 to 4 sequential connected process flowchart cards for system architecture, workflows, or pipelines)
-- "data_table" (2 to 3 column comparison table for datasets, empirical benchmarks, or quantitative metrics)
+- "diagram_flow" (ONLY if describing a process, timeline, or workflow)
+- "data_table" (ONLY if comparing numbers, metrics, or structured data points)
 
 Return ONLY a raw JSON array of ${targetContentCount} slide objects:
 [
   {
     "title": "Specific Short Slide Title",
     "subtitle": "Short subtitle summarizing takeaway",
-    "category": "KEY LESSON | ARCHITECTURE | DATASETS | QUOTE | ROADMAP",
+    "category": "HISTORICAL CONTEXT | MAJOR THEMES | RHETORICAL DEVICES | IMPACT | CONCLUSION",
     "layout_type": "split_cards | three_columns | hero_quote | diagram_flow | data_table",
-    "quote": "Meaningful core speech quote max 130 characters",
-    "table_headers": ["Metric / Benchmark", "Baseline Model", "QuickPitch AI Benchmark"],
-    "table_rows": [["Prithvi-100M", "81.2%", "94.5% Accuracy (+13.3%)"], ["SatMAE-Base", "120ms", "45ms Latency (2.6x Speed)"]],
+    "quote": "Direct quote from source text max 130 characters",
     "cards": [
       {
         "card_title": "Card Title 1",
-        "points": ["Short point 1 max 100 chars", "Short point 2 max 100 chars"]
+        "points": ["Point 1 extracted directly from source max 100 chars", "Point 2 max 100 chars"]
       },
       {
         "card_title": "Card Title 2",
-        "points": ["Short point 1 max 100 chars", "Short point 2 max 100 chars"]
+        "points": ["Point 1 extracted directly from source max 100 chars", "Point 2 max 100 chars"]
       }
     ]
   }
