@@ -179,6 +179,7 @@ async function fetchYouTubeMetadata(url: string): Promise<{ title: string; descr
 
 function sanitizeTranscriptText(textContext: string): string {
   return textContext
+    .replace(/<[^>]*>?/gm, ' ') // Strip HTML tags
     .replace(/\[Music\]|\[Applause\]|\[Laughter\]|\[Audio\]|\[Video\]/gi, '')
     .replace(/this program is brought to you by.*?(?:stanford|university|sponsor|channel|\.)/gi, '')
     .replace(/subscribe to (?:my|our) channel|like and subscribe|welcome back to/gi, '')
@@ -673,7 +674,11 @@ export async function handleGeneratePpt(c: Context) {
       }
       // LAYOUT C: BENCHMARK DATA TABLE
       else if (layoutType === 'data_table' || slideItem.table_headers) {
-        const headers = slideItem.table_headers || ["Metric / Benchmark", "Baseline Model", "QuickPitch AI Benchmark"];
+        const rawHeaders = slideItem.table_headers || ["Metric / Benchmark", "Baseline Model", "QuickPitch AI Benchmark"];
+        const numCols = Math.max(2, Math.min(3, rawHeaders.length));
+        const headers = rawHeaders.slice(0, numCols);
+        const colWidths = numCols === 3 ? [3.0, 3.0, 3.0] : [4.5, 4.5];
+
         const rowsData = slideItem.table_rows || (slideItem.cards || []).map((card, idx) => [
           card.card_title || `Metric 0${idx + 1}`,
           (card.points[0] || 'Standard Baseline').slice(0, 45),
@@ -682,18 +687,23 @@ export async function handleGeneratePpt(c: Context) {
 
         const tableRows: any[] = [
           headers.map((h: string) => ({
-            text: h,
-            options: { fill: COLOR_ACCENT, color: COLOR_BG, bold: true, fontSize: 11, align: 'left', fontFace: FONT_TITLE }
+            text: String(h || '').slice(0, 40),
+            options: { fill: { color: COLOR_ACCENT }, color: COLOR_BG, bold: true, fontSize: 11, align: 'left', fontFace: FONT_TITLE }
           }))
         ];
 
         rowsData.slice(0, 5).forEach((rData: string[], rIdx: number) => {
           const rowBg = rIdx % 2 === 0 ? COLOR_CARD_BG : COLOR_BG;
+          const paddedRow = rData.slice(0, numCols);
+          while (paddedRow.length < numCols) {
+            paddedRow.push('—');
+          }
+
           tableRows.push(
-            rData.map((cellText: string, cIdx: number) => ({
-              text: String(cellText || '').slice(0, 60),
+            paddedRow.map((cellText: string, cIdx: number) => ({
+              text: String(cellText || '').replace(/[^\x20-\x7E]/g, '').slice(0, 60).trim(),
               options: {
-                fill: rowBg,
+                fill: { color: rowBg },
                 color: cIdx === 0 ? COLOR_TEXT_PRIMARY : COLOR_TEXT_MUTED,
                 fontSize: 10,
                 bold: cIdx === 0,
@@ -705,8 +715,8 @@ export async function handleGeneratePpt(c: Context) {
 
         slide.addTable(tableRows, {
           x: 0.5, y: 1.5, w: 9.0, h: 3.6,
-          colW: headers.length === 3 ? [3.0, 3.0, 3.0] : [4.5, 4.5],
-          border: { pt: 1, color: COLOR_CARD_BORDER }
+          colW: colWidths,
+          border: { type: 'solid', pt: 1, color: COLOR_CARD_BORDER }
         });
       }
       // LAYOUT D: 3 COLUMN PILLARS
