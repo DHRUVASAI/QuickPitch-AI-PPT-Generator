@@ -895,8 +895,7 @@ export async function handleGeneratePpt(c: Context) {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        'Content-Disposition': `attachment; filename="QuickPitch_${activeTheme.name.replace(/\s+/g, '_')}.pptx"`,
-        'X-Deck-Data': encodeURIComponent(JSON.stringify(slidesData))
+        'Content-Disposition': `attachment; filename="QuickPitch_${activeTheme.name.replace(/\s+/g, '_')}.pptx"`
       }
     });
 

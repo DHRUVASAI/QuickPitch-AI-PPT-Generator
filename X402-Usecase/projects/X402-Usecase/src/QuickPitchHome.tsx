@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useWallet } from '@txnlab/use-wallet-react'
 import { createX402Fetch } from './utils/memeApi'
 import ConnectWallet from './components/ConnectWallet'
@@ -22,9 +22,47 @@ const QuickPitchHome: React.FC = () => {
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
-  const [generatedDeck, setGeneratedDeck] = useState<any[]>([])
-  const [currentSlideIdx, setCurrentSlideIdx] = useState(0)
-  const [downloadUrl, setDownloadUrl] = useState('')
+
+  // Loading animation states
+  const [loadingStep, setLoadingStep] = useState('🔍 Extracting transcript & topic context...')
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+
+  useEffect(() => {
+    if (!loading) {
+      setElapsedSeconds(0)
+      setCurrentStepIndex(0)
+      return
+    }
+
+    const steps = [
+      '🔍 Extracting video transcript & audio context...',
+      '🧠 Performing AI structured topic synthesis...',
+      '📐 Designing multi-layout slide structures...',
+      '🎨 Applying selected color theme & typography...',
+      '📦 Compiling PowerPoint (.pptx) file stream...'
+    ]
+
+    setLoadingStep(steps[0])
+    setCurrentStepIndex(0)
+
+    const timer = setInterval(() => {
+      setElapsedSeconds(prev => prev + 1)
+    }, 1000)
+
+    const stepTimer = setInterval(() => {
+      setCurrentStepIndex(prev => {
+        const next = (prev + 1) % steps.length
+        setLoadingStep(steps[next])
+        return next
+      })
+    }, 1600)
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(stepTimer)
+    }
+  }, [loading])
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4021'
 
@@ -111,21 +149,16 @@ const QuickPitchHome: React.FC = () => {
           console.warn('x402 Payment 402 response, switching to direct generation mode...')
           return handleDemoGenerate()
         }
-      setStatus('Payment verified! Generating presentation deck...')
-      const deckHeader = response.headers.get('X-Deck-Data')
-      if (deckHeader) {
-        try {
-          const slides = JSON.parse(decodeURIComponent(deckHeader))
-          if (Array.isArray(slides)) {
-            setGeneratedDeck(slides)
-            setCurrentSlideIdx(0)
-          }
-        } catch (e) {}
+        throw new Error(`Server processing error (${response.status}).`)
       }
 
+      setStatus('Payment verified! Generating presentation deck...')
       const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      setDownloadUrl(url)
+      const a = document.createElement('a')
+      a.href = window.URL.createObjectURL(blob)
+      a.download = `QuickPitch_${selectedTheme}_${Date.now()}.pptx`
+      document.body.appendChild(a); a.click(); a.remove()
+
       setDone(true)
       setStatus('')
     } catch (err: any) {
@@ -139,7 +172,7 @@ const QuickPitchHome: React.FC = () => {
 
   const handleDemoGenerate = async () => {
     if (!validateInput()) return
-    setLoading(true); setError(''); setDone(false); setGeneratedDeck([])
+    setLoading(true); setError(''); setDone(false)
     setStatus(`Building 8-10 Slide Presentation Deck with AI (~8 seconds)...`)
     
     const endpoints = [
@@ -159,23 +192,13 @@ const QuickPitchHome: React.FC = () => {
             body: JSON.stringify(getPayload()),
           });
           if (!response.ok) throw new Error(`Server error (${response.status}). Could not process input.`);
-          
-          const deckHeader = response.headers.get('X-Deck-Data')
-          if (deckHeader) {
-            try {
-              const slides = JSON.parse(decodeURIComponent(deckHeader))
-              if (Array.isArray(slides)) {
-                setGeneratedDeck(slides)
-                setCurrentSlideIdx(0)
-              }
-            } catch (e) {}
-          }
-
+          setStatus(`Success! Downloaded presentation deck!`);
           const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob)
-          setDownloadUrl(url)
+          const a = document.createElement('a');
+          a.href = window.URL.createObjectURL(blob);
+          a.download = `QuickPitch_${selectedTheme}_${Date.now()}.pptx`;
+          document.body.appendChild(a); a.click(); a.remove();
           setDone(true); setStatus('');
-          return;
           return;
         } catch (err: any) {
           lastError = err;
@@ -300,399 +323,262 @@ const QuickPitchHome: React.FC = () => {
           </button>
         </div>
 
-        {/* 🌟 PRESENTATION DASHBOARD VIEW vs GENERATOR FORM */}
-        {generatedDeck.length > 0 ? (
-          <div className="w-full max-w-4xl bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6 mb-8 text-left animate-fade-in">
-            {/* Header Action Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-900 pb-5">
+        {/* Generator Form Container */}
+        <div className="w-full max-w-xl bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8 text-left shadow-2xl backdrop-blur-xl mb-6">
+          
+          {mode === 'youtube' && (
+            <div className="space-y-3">
+              <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">
+                YouTube Video URL
+              </label>
+              <input
+                type="text"
+                placeholder="https://www.youtube.com/watch?v=UF8uR6Z6KLc"
+                value={youtubeUrl}
+                onChange={e => { setYoutubeUrl(e.target.value); setError('') }}
+                disabled={loading}
+                className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono shadow-inner"
+              />
+              <p className="text-xs text-neutral-400 font-medium">✓ Works with standard TED talks, tech keynotes, tutorials, and uncaptioned videos.</p>
+            </div>
+          )}
+
+          {mode === 'audio' && (
+            <div className="space-y-4">
               <div>
-                <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest block mb-1">LIVE PRESENTATION DECK</span>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Interactive Slide Deck Viewer ({generatedDeck.length} Slides)</h2>
-              </div>
-              <div className="flex items-center gap-3">
-                {downloadUrl && (
-                  <a
-                    href={downloadUrl}
-                    download={`QuickPitch_${selectedTheme}_${Date.now()}.pptx`}
-                    className="px-5 py-3 rounded-2xl bg-white text-black font-extrabold text-xs hover:bg-neutral-200 transition-all flex items-center gap-2 shadow-xl scale-[1.02]"
-                  >
-                    <span>📥</span> Download PowerPoint (.pptx)
-                  </a>
-                )}
-                <button
-                  onClick={() => { setGeneratedDeck([]); setDone(false); }}
-                  className="px-4 py-3 rounded-2xl bg-black border border-neutral-800 text-neutral-300 font-bold text-xs hover:bg-neutral-900 transition-all"
-                >
-                  🔄 Create New Deck
-                </button>
-              </div>
-            </div>
-
-            {/* 16:9 Presentation Canvas matching selectedTheme */}
-            <div 
-              className="w-full aspect-video rounded-2xl p-6 sm:p-10 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-all duration-500 border border-neutral-800"
-              style={{
-                backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.bg || '#000000',
-                color: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent || '#FFFFFF'
-              }}
-            >
-              {/* Top Bar */}
-              <div className="flex items-center justify-between z-10">
-                <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-black/40 border border-neutral-800 shadow-sm">
-                  {generatedDeck[currentSlideIdx]?.category || 'EXECUTIVE SUMMARY'}
-                </span>
-                <span className="text-xs font-mono font-extrabold">
-                  SLIDE 0{currentSlideIdx + 1} / 0{generatedDeck.length}
-                </span>
-              </div>
-
-              {/* Title & Subtitle */}
-              <div className="space-y-2 z-10 my-auto">
-                <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight" style={{ color: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent }}>
-                  {generatedDeck[currentSlideIdx]?.title}
-                </h3>
-                <p className="text-xs sm:text-base font-medium opacity-80 max-w-2xl leading-relaxed">
-                  {generatedDeck[currentSlideIdx]?.subtitle}
-                </p>
-
-                {/* Hero Quote Layout */}
-                {generatedDeck[currentSlideIdx]?.layout_type === 'hero_quote' && (
-                  <div className="my-6 p-6 rounded-2xl bg-black/40 border border-neutral-800/60 text-center shadow-inner">
-                    <span className="text-4xl font-serif opacity-40 block mb-2">“</span>
-                    <p className="text-lg sm:text-xl font-serif italic tracking-wide">
-                      {generatedDeck[currentSlideIdx]?.quote || generatedDeck[currentSlideIdx]?.title}
-                    </p>
-                  </div>
-                )}
-
-                {/* Cards Layout */}
-                {generatedDeck[currentSlideIdx]?.cards && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                    {generatedDeck[currentSlideIdx]?.cards.map((card: any, cIdx: number) => (
-                      <div 
-                        key={cIdx} 
-                        className="p-4 rounded-2xl border text-left shadow-lg"
-                        style={{ 
-                          backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.card || '#121212',
-                          borderColor: 'rgba(255,255,255,0.1)' 
-                        }}
-                      >
-                        <div className="w-6 h-1 rounded-full mb-3" style={{ backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent }} />
-                        <h4 className="text-xs font-extrabold mb-2 uppercase tracking-wide">
-                          {card.card_title}
-                        </h4>
-                        <ul className="space-y-1.5 text-[11px] opacity-90 leading-relaxed font-normal">
-                          {(card.points || []).map((pt: string, pIdx: number) => (
-                            <li key={pIdx} className="flex items-start gap-1.5">
-                              <span style={{ color: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent }}>•</span>
-                              <span>{pt}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
+                  Upload Speech Audio (.mp3, .wav, .m4a, .txt)
+                </label>
+                <input
+                  type="file"
+                  accept="audio/*,text/plain"
+                  onChange={handleFileUpload}
+                  disabled={loading}
+                  className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-3.5 text-xs text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-neutral-200 cursor-pointer shadow-inner"
+                />
+                {audioFileName && (
+                  <div className="text-xs font-bold text-white bg-neutral-900 p-3 rounded-xl border border-neutral-800 mt-2">
+                    📁 Audio File Selected: {audioFileName}
                   </div>
                 )}
               </div>
 
-              {/* Bottom Footer */}
-              <div className="flex items-center justify-between text-[10px] font-mono opacity-50 pt-4 border-t border-neutral-800/40 z-10">
-                <span>QUICKPITCH AI DECK · {selectedTheme.toUpperCase()}</span>
-                <span>PRESS ARROW KEYS OR BUTTONS BELOW TO FLIP SLIDES</span>
+              <div>
+                <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
+                  Speech Notes & Transcript Context (Optional)
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Paste speech transcript, speaker notes, or audio summary here..."
+                  value={rawText}
+                  onChange={e => { setRawText(e.target.value); setError('') }}
+                  disabled={loading}
+                  className="w-full bg-black border border-neutral-800 rounded-2xl p-4 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
+                />
               </div>
             </div>
+          )}
 
-            {/* Slide Navigation Controls */}
-            <div className="flex items-center justify-between gap-4 bg-neutral-900/60 p-4 rounded-2xl border border-neutral-800">
+          {mode === 'text' && (
+            <div className="space-y-3">
+              <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">
+                Paste Speech Transcript or Notes
+              </label>
+              <textarea
+                rows={5}
+                placeholder="Paste speaker notes, lecture transcripts, or draft outline here..."
+                value={rawText}
+                onChange={e => { setRawText(e.target.value); setError('') }}
+                disabled={loading}
+                className="w-full bg-black border border-neutral-800 rounded-2xl p-5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
+              />
+            </div>
+          )}
+
+          {/* Presentation Depth / Detail Level Option */}
+          <div className="mt-6 pt-5 border-t border-neutral-900 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white uppercase tracking-wider block">
+                Presentation Depth & Detail Level
+              </label>
+              <span className="text-[11px] font-mono text-neutral-400">
+                {selectedDetailLevel === 'concise' && '⚡ Concise (7 Slides)'}
+                {selectedDetailLevel === 'balanced' && '📊 Balanced (9-10 Slides)'}
+                {selectedDetailLevel === 'detailed' && '🔬 Detailed Report (12-15 Slides)'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
               <button
-                disabled={currentSlideIdx === 0}
-                onClick={() => setCurrentSlideIdx(prev => Math.max(0, prev - 1))}
-                className="px-5 py-2.5 rounded-xl bg-black text-white font-bold text-xs disabled:opacity-30 border border-neutral-800 hover:bg-neutral-800 transition-all flex items-center gap-1.5"
+                type="button"
+                onClick={() => setSelectedDetailLevel('concise')}
+                disabled={loading}
+                className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                  selectedDetailLevel === 'concise'
+                    ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
+                    : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
+                }`}
               >
-                <span>◀</span> Previous
+                <span className="text-xs sm:text-sm font-extrabold">⚡ Concise</span>
+                <span className={`text-[10px] ${selectedDetailLevel === 'concise' ? 'text-neutral-700' : 'text-neutral-500'}`}>7 Slides · Quick</span>
               </button>
-
-              {/* Slide Number Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto max-w-md py-1 px-2">
-                {generatedDeck.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentSlideIdx(idx)}
-                    className={`w-8 h-8 rounded-xl text-xs font-mono font-bold transition-all ${
-                      currentSlideIdx === idx
-                        ? 'bg-white text-black scale-110 shadow-lg ring-1 ring-white'
-                        : 'bg-black text-neutral-500 hover:text-white border border-neutral-800'
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
-              </div>
-
               <button
-                disabled={currentSlideIdx === generatedDeck.length - 1}
-                onClick={() => setCurrentSlideIdx(prev => Math.min(generatedDeck.length - 1, prev + 1))}
-                className="px-5 py-2.5 rounded-xl bg-black text-white font-bold text-xs disabled:opacity-30 border border-neutral-800 hover:bg-neutral-800 transition-all flex items-center gap-1.5"
+                type="button"
+                onClick={() => setSelectedDetailLevel('balanced')}
+                disabled={loading}
+                className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                  selectedDetailLevel === 'balanced'
+                    ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
+                    : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
+                }`}
               >
-                Next <span>▶</span>
+                <span className="text-xs sm:text-sm font-extrabold">📊 Balanced</span>
+                <span className={`text-[10px] ${selectedDetailLevel === 'balanced' ? 'text-neutral-700' : 'text-neutral-500'}`}>9-10 Slides · Standard</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedDetailLevel('detailed')}
+                disabled={loading}
+                className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                  selectedDetailLevel === 'detailed'
+                    ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
+                    : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
+                }`}
+              >
+                <span className="text-xs sm:text-sm font-extrabold">🔬 Detailed</span>
+                <span className={`text-[10px] ${selectedDetailLevel === 'detailed' ? 'text-neutral-700' : 'text-neutral-500'}`}>12-15 Slides · Executive</span>
               </button>
             </div>
           </div>
-        ) : (
-          /* Generator Form Container */
-          <div className="w-full max-w-xl bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8 text-left shadow-2xl backdrop-blur-xl mb-6 relative overflow-hidden">
-            
-            {/* IN-DASHBOARD HIGH-ENGAGEMENT AI GENERATION PROGRESS CANVAS */}
-            {loading ? (
-              <div className="py-8 space-y-6 text-center">
-                {/* Theme Ambient Glow */}
-                <div 
-                  className="w-48 h-48 mx-auto rounded-full opacity-20 blur-3xl pointer-events-none transition-all duration-700 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                  style={{ backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent || '#FFFFFF' }}
-                />
 
-                {/* Spinning Dual Concentric Orbital Rings */}
-                <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
-                  <div 
-                    className="absolute inset-0 rounded-full border-2 border-t-transparent border-b-transparent animate-spin"
-                    style={{ borderColor: `${THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent}88` }}
-                  />
-                  <div 
-                    className="absolute inset-2 rounded-full border-2 border-r-transparent border-l-transparent animate-[spin_2.5s_linear_infinite_reverse]"
-                    style={{ borderColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent }}
-                  />
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center shadow-lg animate-pulse"
-                    style={{ 
-                      backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent,
-                      boxShadow: `0 0 35px ${THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent}`
-                    }}
-                  >
-                    <span className="text-black font-black text-xs">AI</span>
+          {/* Visual Theme Selector - 8 Rich Color Themes with Swatches */}
+          <div className="mt-6 pt-5 border-t border-neutral-900 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white uppercase tracking-wider block">
+                Presentation Visual Theme (8 Palettes)
+              </label>
+              <span className="text-[11px] font-mono text-neutral-400">
+                {THEME_OPTIONS.find(t => t.id === selectedTheme)?.name || 'Selected'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {THEME_OPTIONS.map((th) => (
+                <button
+                  key={th.id}
+                  type="button"
+                  onClick={() => setSelectedTheme(th.id)}
+                  disabled={loading}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between h-16 ${
+                    selectedTheme === th.id
+                      ? 'bg-neutral-900 border-white shadow-lg ring-1 ring-white scale-[1.02]'
+                      : 'bg-black border-neutral-800 hover:border-neutral-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="w-3 h-3 rounded-full border border-neutral-700 shadow-sm" style={{ backgroundColor: th.bg }} />
+                    <div className="w-3 h-3 rounded-full border border-neutral-700 shadow-sm" style={{ backgroundColor: th.card }} />
+                    <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: th.accent }} />
                   </div>
-                </div>
+                  <span className={`text-[11px] font-bold truncate ${selectedTheme === th.id ? 'text-white' : 'text-neutral-400'}`}>
+                    {th.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-                <div>
-                  <h3 className="text-lg font-extrabold text-white tracking-tight mb-1">
-                    Building Live Presentation Deck...
-                  </h3>
-                  <p className="text-xs text-neutral-400 font-mono">
-                    {status || 'Synthesizing domain analysis & PowerPoint layout...'}
-                  </p>
-                </div>
+          {/* Action Buttons */}
+          <div className="mt-6 pt-5 border-t border-neutral-900 flex flex-col gap-3">
+            <button
+              onClick={handleGenerate}
+              disabled={loading}
+              className="w-full py-4 rounded-2xl text-sm font-extrabold transition-all shadow-xl bg-white text-black hover:bg-neutral-200 disabled:opacity-40"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-3 text-black">
+                  <svg className="animate-spin w-4 h-4 text-black" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                  </svg>
+                  Building Presentation...
+                </span>
+              ) : `Generate Presentation ($0.10 USDC)`}
+            </button>
 
-                {/* Animated Progress Bar */}
-                <div className="space-y-1.5 max-w-md mx-auto">
-                  <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden p-0.5 border border-neutral-800">
-                    <div 
-                      className="h-full rounded-full transition-all duration-500 ease-out animate-pulse"
-                      style={{ 
-                        width: '85%',
-                        backgroundColor: THEME_OPTIONS.find(t => t.id === selectedTheme)?.accent 
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[10px] font-mono text-neutral-500">
-                    <span>STEP 2 / 3: DECK SYNTHESIS</span>
-                    <span>~4s REMAINING</span>
-                  </div>
-                </div>
+            <button
+              onClick={handleDemoGenerate}
+              disabled={loading}
+              className="w-full py-3 rounded-2xl text-xs font-bold text-white bg-black border border-neutral-800 hover:bg-neutral-900 transition-all text-center"
+            >
+              ⚡ Instant Demo Mode (No Wallet / Payment Required)
+            </button>
+          </div>
+        </div>
 
-                <div className="p-4 rounded-2xl bg-neutral-900/80 border border-neutral-800 text-left flex items-start gap-3 max-w-md mx-auto">
-                  <span className="text-sm">💡</span>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">
-                    <span className="text-white font-bold block mb-0.5">Live Dashboard Transformation</span>
-                    Your presentation will render interactively right here on the dashboard with full slide flip controls!
-                  </p>
+        {/* Status & Alerts */}
+        {status && (
+          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl flex items-center justify-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+            {status}
+          </div>
+        )}
+        {error && (
+          <div className="text-sm font-bold text-white bg-neutral-950 border border-neutral-800 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
+            ⚠️ {error}
+          </div>
+        )}
+        {done && (
+          <div className="text-sm font-bold text-white bg-neutral-900 border border-neutral-700 rounded-2xl px-6 py-4 max-w-xl w-full shadow-xl">
+            🎉 Presentation downloaded! Open in PowerPoint / Google Slides.
+          </div>
+        )}
+
+        {/* Dynamic Sleek Loading Modal Overlay */}
+        {loading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-2xl transition-all">
+            <div className="bg-neutral-950 border border-neutral-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6 relative overflow-hidden">
+              
+              {/* Top Accent Bar Glow */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-white animate-pulse" />
+
+              {/* Orbit Ring Spinner */}
+              <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-2 border-neutral-800" />
+                <div className="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin" style={{ animationDuration: '0.85s' }} />
+                <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-lg">
+                  <span className="text-black font-black text-xs">Q</span>
                 </div>
               </div>
-            ) : (
-              <>
-                {mode === 'youtube' && (
-                  <div className="space-y-3">
-                    <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">
-                      YouTube Video URL
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="https://www.youtube.com/watch?v=UF8uR6Z6KLc"
-                      value={youtubeUrl}
-                      onChange={e => { setYoutubeUrl(e.target.value); setError('') }}
-                      disabled={loading}
-                      className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono shadow-inner"
-                    />
-                    <p className="text-xs text-neutral-400 font-medium">✓ Works with standard TED talks, tech keynotes, tutorials, and uncaptioned videos.</p>
-                  </div>
-                )}
 
-                {mode === 'audio' && (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
-                        Upload Speech Audio (.mp3, .wav, .m4a, .txt)
-                      </label>
-                      <input
-                        type="file"
-                        accept="audio/*,text/plain"
-                        onChange={handleFileUpload}
-                        disabled={loading}
-                        className="w-full bg-black border border-neutral-800 rounded-2xl px-5 py-3.5 text-xs text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-white file:text-black hover:file:bg-neutral-200 cursor-pointer shadow-inner"
-                      />
-                      {audioFileName && (
-                        <div className="text-xs font-bold text-white bg-neutral-900 p-3 rounded-xl border border-neutral-800 mt-2">
-                          📁 Audio File Selected: {audioFileName}
-                        </div>
-                      )}
-                    </div>
+              {/* Step Title & Dynamic Progress Message */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-black text-white tracking-tight">Generating Executive Presentation</h3>
+                <p className="text-xs text-neutral-300 font-mono min-h-[32px] flex items-center justify-center transition-all duration-300">
+                  {loadingStep}
+                </p>
+              </div>
 
-                    <div>
-                      <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
-                        Speech Notes & Transcript Context (Optional)
-                      </label>
-                      <textarea
-                        rows={3}
-                        placeholder="Paste speech transcript, speaker notes, or audio summary here..."
-                        value={rawText}
-                        onChange={e => { setRawText(e.target.value); setError('') }}
-                        disabled={loading}
-                        className="w-full bg-black border border-neutral-800 rounded-2xl p-4 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
-                      />
-                    </div>
-                  </div>
-                )}
+              {/* Step Dots Indicator */}
+              <div className="flex items-center justify-center gap-2 pt-1">
+                {[0, 1, 2, 3, 4].map((stepIdx) => (
+                  <div
+                    key={stepIdx}
+                    className={`h-1.5 rounded-full transition-all duration-500 ${
+                      currentStepIndex >= stepIdx ? 'w-6 bg-white' : 'w-2 bg-neutral-800'
+                    }`}
+                  />
+                ))}
+              </div>
 
-                {mode === 'text' && (
-                  <div className="space-y-3">
-                    <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block">
-                      Paste Speech Transcript or Notes
-                    </label>
-                    <textarea
-                      rows={5}
-                      placeholder="Paste speaker notes, lecture transcripts, or draft outline here..."
-                      value={rawText}
-                      onChange={e => { setRawText(e.target.value); setError('') }}
-                      disabled={loading}
-                      className="w-full bg-black border border-neutral-800 rounded-2xl p-5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
-                    />
-                  </div>
-                )}
+              {/* Real-Time Timer Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 border border-neutral-800 text-[11px] font-mono text-neutral-400 shadow-inner">
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                Elapsed: <span className="text-white font-bold">{elapsedSeconds}s</span> (Est. ~6-8s)
+              </div>
 
-                {/* Presentation Depth / Detail Level Option */}
-                <div className="mt-6 pt-5 border-t border-neutral-900 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-white uppercase tracking-wider block">
-                      Presentation Depth & Detail Level
-                    </label>
-                    <span className="text-[11px] font-mono text-neutral-400">
-                      {selectedDetailLevel === 'concise' && '⚡ Concise (7 Slides)'}
-                      {selectedDetailLevel === 'balanced' && '📊 Balanced (9-10 Slides)'}
-                      {selectedDetailLevel === 'detailed' && '🔬 Detailed Report (12-15 Slides)'}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDetailLevel('concise')}
-                      disabled={loading}
-                      className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                        selectedDetailLevel === 'concise'
-                          ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
-                          : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
-                      }`}
-                    >
-                      <span className="text-xs sm:text-sm font-extrabold">⚡ Concise</span>
-                      <span className={`text-[10px] ${selectedDetailLevel === 'concise' ? 'text-neutral-700' : 'text-neutral-500'}`}>7 Slides · Quick</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDetailLevel('balanced')}
-                      disabled={loading}
-                      className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                        selectedDetailLevel === 'balanced'
-                          ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
-                          : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
-                      }`}
-                    >
-                      <span className="text-xs sm:text-sm font-extrabold">📊 Balanced</span>
-                      <span className={`text-[10px] ${selectedDetailLevel === 'balanced' ? 'text-neutral-700' : 'text-neutral-500'}`}>9-10 Slides · Standard</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDetailLevel('detailed')}
-                      disabled={loading}
-                      className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                        selectedDetailLevel === 'detailed'
-                          ? 'bg-white text-black border-white shadow-lg scale-[1.02]'
-                          : 'bg-black text-neutral-400 border-neutral-800 hover:border-neutral-700 hover:text-white'
-                      }`}
-                    >
-                      <span className="text-xs sm:text-sm font-extrabold">🔬 Detailed</span>
-                      <span className={`text-[10px] ${selectedDetailLevel === 'detailed' ? 'text-neutral-700' : 'text-neutral-500'}`}>12-15 Slides · Executive</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Visual Theme Selector - 8 Rich Color Themes with Swatches */}
-                <div className="mt-6 pt-5 border-t border-neutral-900 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-white uppercase tracking-wider block">
-                      Presentation Visual Theme (8 Palettes)
-                    </label>
-                    <span className="text-[11px] font-mono text-neutral-400">
-                      {THEME_OPTIONS.find(t => t.id === selectedTheme)?.name || 'Selected'}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {THEME_OPTIONS.map((th) => (
-                      <button
-                        key={th.id}
-                        type="button"
-                        onClick={() => setSelectedTheme(th.id)}
-                        disabled={loading}
-                        className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between h-16 ${
-                          selectedTheme === th.id
-                            ? 'bg-neutral-900 border-white shadow-lg ring-1 ring-white scale-[1.02]'
-                            : 'bg-black border-neutral-800 hover:border-neutral-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <div className="w-3 h-3 rounded-full border border-neutral-700 shadow-sm" style={{ backgroundColor: th.bg }} />
-                          <div className="w-3 h-3 rounded-full border border-neutral-700 shadow-sm" style={{ backgroundColor: th.card }} />
-                          <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: th.accent }} />
-                        </div>
-                        <span className={`text-[11px] font-bold truncate ${selectedTheme === th.id ? 'text-white' : 'text-neutral-400'}`}>
-                          {th.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="mt-6 pt-5 border-t border-neutral-900 flex flex-col gap-3">
-                  <button
-                    onClick={handleGenerate}
-                    disabled={loading}
-                    className="w-full py-4 rounded-2xl text-sm font-extrabold transition-all shadow-xl bg-white text-black hover:bg-neutral-200 disabled:opacity-40"
-                  >
-                    {loading ? 'Building Presentation...' : `Generate Presentation ($0.10 USDC)`}
-                  </button>
-
-                  <button
-                    onClick={handleDemoGenerate}
-                    disabled={loading}
-                    className="w-full py-3 rounded-2xl text-xs font-bold text-white bg-black border border-neutral-800 hover:bg-neutral-900 transition-all text-center"
-                  >
-                    ⚡ Instant Demo Mode (No Wallet / Payment Required)
-                  </button>
-                </div>
-         {/* Smooth Scroll Down Indicator */}
-        <a href="#how-it-works" className="inline-flex items-center gap-2 mt-8 text-xs text-neutral-500 hover:text-white transition-colors animate-bounce">
-          <span>Scroll down to explore</span>
-          <span>↓</span>
-        </a> </div>
+            </div>
+          </div>
         )}
 
         {/* Smooth Scroll Down Indicator */}
