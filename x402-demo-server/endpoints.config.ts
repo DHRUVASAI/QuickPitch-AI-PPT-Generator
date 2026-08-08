@@ -21,7 +21,7 @@ export function createPaymentConfig(avmAddress: string): EndpointConfig {
       accepts: [
         {
           scheme: 'exact',
-          price: '$0.001',
+          price: '$0.10',
           network: ALGORAND_TESTNET_CAIP2,
           payTo: avmAddress,
           extra: { asset: Number(USDC_TESTNET_ASA_ID) },

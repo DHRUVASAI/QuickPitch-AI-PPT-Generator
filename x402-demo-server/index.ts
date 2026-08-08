@@ -24,6 +24,7 @@ import { bazaarResourceServerExtension } from '@x402-avm/extensions';
 
 // Import handler functions
 import { handleGeneratePpt } from './handlers/generate-ppt';
+import { handleTranscribeAudio } from './handlers/transcribe-audio';
 
 // Import endpoint configuration
 import createPaymentConfig, { EndpointConfig } from './endpoints.config';
@@ -148,6 +149,10 @@ app.post('/generate-ppt', handleGeneratePpt);
 
 // QuickPitch DEMO MODE - No payment required (for testing)
 app.post('/generate-ppt-demo', handleGeneratePpt);
+
+// AWS Transcribe Audio - Real speech-to-text via AWS Transcribe + S3
+// Accepts multipart/form-data with 'audio' field
+app.post('/transcribe-audio', handleTranscribeAudio);
 
 // ════════════════════════════════════════════════════════════════════
 // PUBLIC ENDPOINTS - No payment required

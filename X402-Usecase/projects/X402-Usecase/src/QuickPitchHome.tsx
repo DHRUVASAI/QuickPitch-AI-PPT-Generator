@@ -13,7 +13,9 @@ const QuickPitchHome: React.FC = () => {
   const [mode, setMode] = useState<InputMode>('youtube')
   const [youtubeUrl, setYoutubeUrl] = useState('')
   const [rawText, setRawText] = useState('')
+  const [audioFile, setAudioFile] = useState<File | null>(null)
   const [audioFileName, setAudioFileName] = useState('')
+  const [isTranscribing, setIsTranscribing] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState('monochrome-dark')
   const [selectedDetailLevel, setSelectedDetailLevel] = useState<'concise' | 'balanced' | 'detailed'>('balanced')
 
@@ -36,10 +38,11 @@ const QuickPitchHome: React.FC = () => {
     }
 
     const steps = [
-      '🔍 Extracting video transcript & audio context...',
+      '🎙️ Transcribing audio via AWS Transcribe...',
+      '🔍 Extracting transcript and topic context...',
       '🧠 Performing AI structured topic synthesis...',
       '📐 Designing multi-layout slide structures...',
-      '🎨 Applying selected color theme & typography...',
+      '🎨 Applying selected color theme and typography...',
       '📦 Compiling PowerPoint (.pptx) file stream...'
     ]
 
@@ -64,6 +67,20 @@ const QuickPitchHome: React.FC = () => {
     }
   }, [loading])
 
+  // Ctrl + Enter shortcut listener to generate presentation instantly
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        if (!loading) {
+          handleDemoGenerate()
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [loading, youtubeUrl, rawText, audioFileName])
+
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4021'
 
   const THEME_OPTIONS = [
@@ -77,14 +94,40 @@ const QuickPitchHome: React.FC = () => {
     { id: 'neon-matrix', name: 'Neon Matrix', bg: '#000000', card: '#09090B', accent: '#22C55E' },
   ]
 
-  const getPayload = () => {
+  // Helper: call AWS Transcribe endpoint and return real transcript text
+  const transcribeAudioFile = async (file: File): Promise<string | null> => {
+    const transcribeEndpoints = [
+      '/api-proxy/transcribe-audio',
+      `${apiBaseUrl}/transcribe-audio`,
+      'http://127.0.0.1:4021/transcribe-audio',
+      'http://localhost:4021/transcribe-audio'
+    ]
+    for (const ep of transcribeEndpoints) {
+      try {
+        const fd = new FormData()
+        fd.append('audio', file)
+        const resp = await fetch(ep, { method: 'POST', body: fd })
+        if (resp.ok) {
+          const data = await resp.json()
+          if (data.transcript && data.transcript.length > 30) {
+            console.log(`AWS Transcribe success via ${ep}: ${data.transcript.length} chars`)
+            return data.transcript
+          }
+        }
+      } catch { /* try next */ }
+    }
+    return null
+  }
+
+  const getPayload = (transcribedText?: string) => {
     const base = { theme: selectedTheme, detail_level: selectedDetailLevel }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
     } else if (mode === 'text') {
       return { ...base, source_type: 'text', text: rawText }
     } else {
-      return { ...base, source_type: 'audio', text: rawText || `Audio transcript for file: ${audioFileName}` }
+      const textToSend = transcribedText || rawText || `Audio transcript for file: ${audioFileName}`
+      return { ...base, source_type: 'audio', text: textToSend }
     }
   }
 
@@ -105,6 +148,7 @@ const QuickPitchHome: React.FC = () => {
     const file = e.target.files?.[0]
     if (file) {
       setAudioFileName(file.name)
+      setAudioFile(file)
       setError('')
 
       const isTextFile = file.name.endsWith('.txt') || file.name.endsWith('.vtt') || file.name.endsWith('.srt') || file.name.endsWith('.md') || file.type.includes('text')
@@ -115,13 +159,14 @@ const QuickPitchHome: React.FC = () => {
           const content = event.target?.result as string
           if (content) {
             setRawText(content.slice(0, 50000))
+            setAudioFile(null) // text files don't need AWS transcription
           }
         }
         reader.readAsText(file)
       } else {
-        // Audio binary file (.mp3, .wav, .m4a): Set clean audio topic context instead of corrupt binary bytes
-        const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ')
-        setRawText(`Executive Speech & Audio Analysis: "${cleanName}". Detailed breakdown of key pitch themes, problem statements, strategic pillars, execution roadmap, and takeaways from the uploaded audio file (${Math.round(file.size / 1024)} KB).`)
+        // Real audio file — will be sent to AWS Transcribe
+        // Don't set rawText yet; it will be populated after transcription
+        setRawText('')
       }
     }
   }
@@ -173,8 +218,27 @@ const QuickPitchHome: React.FC = () => {
   const handleDemoGenerate = async () => {
     if (!validateInput()) return
     setLoading(true); setError(''); setDone(false)
-    setStatus(`Building 8-10 Slide Presentation Deck with AI (~8 seconds)...`)
-    
+
+    // STEP 1: If audio file uploaded, transcribe it first via AWS Transcribe
+    let transcribedText: string | undefined
+    if (mode === 'audio' && audioFile) {
+      setStatus('🎙️ Transcribing audio via AWS Transcribe + S3...')
+      setIsTranscribing(true)
+      const result = await transcribeAudioFile(audioFile)
+      setIsTranscribing(false)
+      if (result) {
+        transcribedText = result
+        setRawText(result)
+        setStatus(`✅ Transcribed ${result.length} characters. Building slide deck...`)
+      } else {
+        setStatus('⚠️ Transcription unavailable — using filename context...')
+        transcribedText = undefined
+      }
+    } else {
+      setStatus(`Building ${selectedDetailLevel === 'detailed' ? '12-15' : '8-10'} slide deck with AI...`)
+    }
+
+    // STEP 2: Generate the PPT using the transcript (or rawText)
     const endpoints = [
       '/api-proxy/generate-ppt-demo',
       `${apiBaseUrl}/generate-ppt-demo`,
@@ -189,10 +253,10 @@ const QuickPitchHome: React.FC = () => {
           const response = await fetch(ep, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(getPayload()),
+            body: JSON.stringify(getPayload(transcribedText)),
           });
           if (!response.ok) throw new Error(`Server error (${response.status}). Could not process input.`);
-          setStatus(`Success! Downloaded presentation deck!`);
+          setStatus(`✅ Presentation downloaded!`);
           const blob = await response.blob();
           const a = document.createElement('a');
           a.href = window.URL.createObjectURL(blob);
@@ -259,7 +323,8 @@ const QuickPitchHome: React.FC = () => {
         <div className="hidden md:flex items-center gap-8 text-xs font-semibold text-neutral-400">
           <a href="#generator" className="hover:text-white transition-colors">Generator</a>
           <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
-          <a href="#features" className="hover:text-white transition-colors">Architecture</a>
+          <a href="#features" className="hover:text-white transition-colors">Features</a>
+          <a href="#pricing" className="hover:text-white transition-colors">Pricing (x402)</a>
         </div>
 
         <button
@@ -365,7 +430,7 @@ const QuickPitchHome: React.FC = () => {
 
               <div>
                 <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider block mb-2">
-                  Speech Notes & Transcript Context (Optional)
+                  Speech Notes & Transcript Context
                 </label>
                 <textarea
                   rows={3}
@@ -390,7 +455,7 @@ const QuickPitchHome: React.FC = () => {
                 value={rawText}
                 onChange={e => { setRawText(e.target.value); setError('') }}
                 disabled={loading}
-                className="w-full bg-black border border-neutral-800 rounded-2xl p-5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner"
+                className="w-full bg-black border border-neutral-800 rounded-2xl p-4 text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all shadow-inner font-mono"
               />
             </div>
           )}
@@ -565,58 +630,158 @@ const QuickPitchHome: React.FC = () => {
       {/* How It Works Section */}
       <section id="how-it-works" className="relative z-10 max-w-5xl mx-auto px-6 py-24 border-t border-neutral-900 text-center scroll-mt-28">
         <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block mb-3">HOW IT WORKS</span>
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-12">Three steps to your presentation deck.</h2>
+        <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4">Three steps to your presentation deck.</h2>
+        <p className="text-sm text-neutral-400 max-w-lg mx-auto mb-16">No design experience required. From raw video link to executive slide deck in seconds.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
-            <div className="text-sm font-mono text-neutral-400 mb-4">01 / INPUT</div>
-            <h3 className="text-lg font-bold text-white mb-2">Paste Video or Text</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Input any YouTube URL, speech recording file, or raw transcript outline.</p>
+          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all" />
+            <div className="text-xs font-mono text-neutral-400 mb-6 bg-neutral-900 w-fit px-3 py-1 rounded-full border border-neutral-800">01 / INPUT</div>
+            <h3 className="text-lg font-bold text-white mb-2">Paste Video, Audio or Script</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Input any YouTube URL, speech recording file (.mp3, .wav), or paste raw speaker notes.</p>
           </div>
 
-          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
-            <div className="text-sm font-mono text-neutral-400 mb-4">02 / PAY</div>
-            <h3 className="text-lg font-bold text-white mb-2">Sign Micropayment</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Pay $0.10 USDC via x402 protocol on Algorand. Zero monthly subscriptions.</p>
+          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all" />
+            <div className="text-xs font-mono text-neutral-400 mb-6 bg-neutral-900 w-fit px-3 py-1 rounded-full border border-neutral-800">02 / PAY</div>
+            <h3 className="text-lg font-bold text-white mb-2">Sign On-Chain Micropayment</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Approve a $0.10 USDC payment via x402 protocol on Algorand. Zero monthly subscriptions.</p>
           </div>
 
-          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
-            <div className="text-sm font-mono text-neutral-400 mb-4">03 / PRESENT</div>
-            <h3 className="text-lg font-bold text-white mb-2">Download .pptx Deck</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Get structured PowerPoint slides with multi-card layouts and executive formatting.</p>
+          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all" />
+            <div className="text-xs font-mono text-neutral-400 mb-6 bg-neutral-900 w-fit px-3 py-1 rounded-full border border-neutral-800">03 / PRESENT</div>
+            <h3 className="text-lg font-bold text-white mb-2">Download Native .pptx Deck</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed font-normal">Download a fully formatted PowerPoint deck ready for Microsoft PowerPoint or Google Slides.</p>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="relative z-10 max-w-5xl mx-auto px-6 py-24 border-t border-neutral-900 text-center scroll-mt-28">
-        <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block mb-3">ARCHITECTURE</span>
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-12">Built for speed, accuracy & privacy.</h2>
+      {/* High-Impact Feature Bento Box Grid */}
+      <section id="features" className="relative z-10 max-w-5xl mx-auto px-6 py-24 border-t border-neutral-900 scroll-mt-28">
+        <div className="text-center mb-16">
+          <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block mb-3">ENGINE FEATURES</span>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4">Architected for executive clarity.</h2>
+          <p className="text-sm text-neutral-400 max-w-xl mx-auto">Engineered from the ground up to eliminate hallucinated tech templates and verbatim transcript clutter.</p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
-            <div className="w-7 h-7 rounded-lg bg-white text-black font-black flex items-center justify-center mb-4 text-xs">⚡</div>
-            <h3 className="text-base font-bold text-white mb-2">Groq LLaMA 3.3 70B Engine</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed">Ultra-fast inference extracts key takeaways, metrics, and quotes from video transcripts in under 1 second.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Card 1: 2-Step Synthesizer */}
+          <div className="md:col-span-2 rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all relative overflow-hidden">
+            <div className="w-10 h-10 rounded-2xl bg-white text-black font-black flex items-center justify-center mb-6 text-sm">🧠</div>
+            <h3 className="text-xl font-bold text-white mb-3">2-Step Structured Knowledge Synthesizer</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed mb-6 max-w-md">
+              Before generating slides, Groq LLaMA 3.1 8B analyzes historical context, key themes, rhetorical devices, famous quotes, and lasting legacy. Eliminates generic template placeholders.
+            </p>
+            <div className="flex flex-wrap gap-2 text-[10px] font-mono text-neutral-400">
+              <span className="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800">✓ Context Aware</span>
+              <span className="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800">✓ Speech Analysis</span>
+              <span className="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800">✓ Key Quotes</span>
+            </div>
           </div>
 
+          {/* Card 2: Executive Summarization */}
           <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
-            <div className="w-7 h-7 rounded-lg bg-white text-black font-black flex items-center justify-center mb-4 text-xs">⛓️</div>
-            <h3 className="text-base font-bold text-white mb-2">Algorand x402 Micropayments</h3>
-            <p className="text-xs text-neutral-400 leading-relaxed">Uses HTTP 402 Payment Required standard with TestNet USDC for seamless pay-per-presentation monetization.</p>
+            <div className="w-10 h-10 rounded-2xl bg-white text-black font-black flex items-center justify-center mb-6 text-sm">⚡</div>
+            <h3 className="text-lg font-bold text-white mb-3">Executive Summarization</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed mb-6">
+              Replaces long transcript sentences with punchy, high-impact 3 to 8 word executive takeaway bullets.
+            </p>
+            <div className="text-[11px] font-mono text-white bg-neutral-900 p-3 rounded-xl border border-neutral-800">
+              • Universal equality across all races<br />
+              • Justice over discrimination
+            </div>
+          </div>
+
+          {/* Card 3: 8 Visual Themes */}
+          <div className="rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all">
+            <div className="w-10 h-10 rounded-2xl bg-white text-black font-black flex items-center justify-center mb-6 text-sm">🎨</div>
+            <h3 className="text-lg font-bold text-white mb-3">8 Executive Visual Themes</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed mb-6">
+              From Dark Monochrome to Clean Light and Midnight Purple, select curated color palettes for any presentation context.
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full bg-black border border-neutral-700" />
+              <span className="w-4 h-4 rounded-full bg-white" />
+              <span className="w-4 h-4 rounded-full bg-purple-900" />
+              <span className="w-4 h-4 rounded-full bg-emerald-900" />
+              <span className="w-4 h-4 rounded-full bg-amber-600" />
+            </div>
+          </div>
+
+          {/* Card 4: Algorand x402 Micropayments */}
+          <div className="md:col-span-2 rounded-3xl border border-neutral-900 bg-neutral-950 p-8 shadow-xl hover:border-neutral-700 transition-all relative overflow-hidden">
+            <div className="w-10 h-10 rounded-2xl bg-white text-black font-black flex items-center justify-center mb-6 text-sm">⛓️</div>
+            <h3 className="text-xl font-bold text-white mb-3">Algorand x402 Micropayment Protocol</h3>
+            <p className="text-xs text-neutral-400 leading-relaxed mb-6 max-w-md">
+              Powered by the official HTTP 402 Payment Required standard. Pay $0.10 USDC per presentation deck directly from Pera, Defly, Lute, or Exodus wallet.
+            </p>
+            <div className="flex items-center gap-4 text-xs font-mono text-neutral-300">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /> TestNet USDC</span>
+              <span>•</span>
+              <span>Instant On-Chain Settlement</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Micropayments vs SaaS Comparison Section */}
+      <section id="pricing" className="relative z-10 max-w-5xl mx-auto px-6 py-24 border-t border-neutral-900 text-center scroll-mt-28">
+        <span className="text-xs font-mono text-neutral-400 uppercase tracking-widest block mb-3">PRICING REVOLUTION</span>
+        <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4">Pay per presentation. Zero subscriptions.</h2>
+        <p className="text-sm text-neutral-400 max-w-lg mx-auto mb-16">Why pay $30/month for SaaS apps you use twice a year? Pay only for what you generate.</p>
+
+        <div className="max-w-3xl mx-auto rounded-3xl border border-neutral-900 bg-neutral-950 overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-3 bg-neutral-900/50 p-5 text-left border-b border-neutral-900 text-xs font-bold text-neutral-300 uppercase tracking-wider">
+            <div>Feature</div>
+            <div className="text-neutral-500">Traditional SaaS</div>
+            <div className="text-white">QuickPitch (x402)</div>
+          </div>
+          <div className="divide-y divide-neutral-900 text-xs text-left">
+            <div className="grid grid-cols-3 p-5 items-center">
+              <div className="font-bold text-white">Billing Model</div>
+              <div className="text-neutral-500">$30 / Month Recurring</div>
+              <div className="font-bold text-white bg-neutral-900 px-3 py-1 rounded-full w-fit border border-neutral-800">$0.10 USDC Per Deck</div>
+            </div>
+            <div className="grid grid-cols-3 p-5 items-center">
+              <div className="font-bold text-white">Credit Card Required</div>
+              <div className="text-neutral-500">Yes (Auto-renews)</div>
+              <div className="font-bold text-white">No (Web3 Wallet)</div>
+            </div>
+            <div className="grid grid-cols-3 p-5 items-center">
+              <div className="font-bold text-white">Topic Faithfulness</div>
+              <div className="text-neutral-500">Generic Templates</div>
+              <div className="font-bold text-white">100% Topic-Specific AI</div>
+            </div>
+            <div className="grid grid-cols-3 p-5 items-center">
+              <div className="font-bold text-white">Export Format</div>
+              <div className="text-neutral-500">Proprietary / Watermarked</div>
+              <div className="font-bold text-white">Editable PowerPoint (.pptx)</div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-neutral-900 py-12 px-8 text-center text-xs text-neutral-500">
-        <div className="flex flex-col sm:flex-row items-center justify-between max-w-5xl mx-auto gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-white text-black font-black flex items-center justify-center text-[10px]">Q</div>
-            <span className="font-bold text-white">QuickPitch AI</span>
-            <span>— x402 Protocol Hackathon</span>
+      <footer className="relative z-10 border-t border-neutral-900 bg-black py-12 text-center text-xs text-neutral-500">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded-md bg-white text-black font-black flex items-center justify-center text-xs">Q</div>
+            <span className="font-bold text-white text-sm tracking-tight">QuickPitch</span>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 text-neutral-400 border border-neutral-800">x402</span>
           </div>
-          <div>Algorand TestNet · Account 957036694697</div>
+
+          <div className="flex items-center gap-6 font-mono text-neutral-400">
+            <a href="https://github.com/DHRUVASAI/x402-Project" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+            <a href="https://facilitator.goplausible.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">x402 Facilitator</a>
+            <a href="https://testnet.algoexplorer.io" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Algorand TestNet</a>
+          </div>
+
+          <div>
+            Built for the x402 Hackathon © 2026 QuickPitch AI
+          </div>
         </div>
       </footer>
 
