@@ -10,7 +10,11 @@ export interface TranscriptMetadata {
   description?: string;
   durationSeconds?: number;
   language?: string;
+  detectedLanguage?: string;
+  languageConfidence?: number;
+  lowLanguageConfidence?: boolean;
   fetchedAt?: number;
+  partial?: boolean;
 }
 
 export interface TranscriptData {

@@ -58,8 +58,21 @@ export async function handleTranscribeAudio(c: Context) {
 
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const allowCloudParam = formData.get('allow_cloud_fallback');
+    const allowCloudFallback = allowCloudParam === 'true' || process.env.ALLOW_CLOUD_FALLBACK === 'true';
 
     let transcript: string | null = null;
+    let providerUsed = 'unknown';
+
+    // If cloud fallback is disabled, do not invoke cloud providers
+    if (!allowCloudFallback) {
+      console.warn('[TranscribeAudio] Cloud fallback is disabled (ALLOW_CLOUD_FALLBACK=false). Skipping AWS and Groq.');
+      return c.json({
+        error: 'Cloud transcription fallback is disabled (ALLOW_CLOUD_FALLBACK=false).',
+        hint: 'Enable "Allow Cloud Fallback" in request or env to use AWS/Groq speech transcription.',
+      }, 403);
+    }
+
     const awsProvider = getTranscriptionClient();
 
     // 1. Try AWS Transcribe provider
@@ -67,6 +80,7 @@ export async function handleTranscribeAudio(c: Context) {
       try {
         console.log('[TranscribeAudio] Routing to AWSTranscribeProvider...');
         transcript = await awsProvider.transcribeAudio(buffer, fileName, mimeType);
+        if (transcript) providerUsed = 'aws-transcribe';
       } catch (awsErr: any) {
         console.warn('[TranscribeAudio] AWSTranscribeProvider error:', awsErr.message);
       }
@@ -76,6 +90,7 @@ export async function handleTranscribeAudio(c: Context) {
     if (!transcript) {
       console.log('[TranscribeAudio] Trying Groq Whisper fallback...');
       transcript = await transcribeWithGroqWhisper(arrayBuffer, fileName, mimeType);
+      if (transcript) providerUsed = 'groq-whisper';
     }
 
     if (transcript && transcript.trim().length > 20) {
@@ -84,6 +99,7 @@ export async function handleTranscribeAudio(c: Context) {
         transcript,
         charCount: transcript.length,
         fileName,
+        provider: providerUsed,
       });
     }
 

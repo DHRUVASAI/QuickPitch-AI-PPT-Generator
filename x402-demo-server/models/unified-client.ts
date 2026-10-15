@@ -67,9 +67,15 @@ export class UnifiedModelClient {
       }
     }
 
+    const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
     let lastError: Error | null = null;
 
     for (const provider of priorityList) {
+      // Opt-in cloud fallback: if false, never send transcript/prompt to cloud providers
+      if (!allowCloud && provider.isLocal === false) {
+        continue;
+      }
+
       try {
         const isAvail = await provider.isAvailable();
         if (!isAvail) {
@@ -100,6 +106,10 @@ export class UnifiedModelClient {
     const provider = this.providers.get(providerName);
     if (!provider) {
       throw new Error(`Provider "${providerName}" is not registered.`);
+    }
+    const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
+    if (!allowCloud && provider.isLocal === false) {
+      throw new Error(`Cloud fallback is disabled (ALLOW_CLOUD_FALLBACK=false). Provider "${providerName}" blocked.`);
     }
     return provider.complete(messages, options);
   }

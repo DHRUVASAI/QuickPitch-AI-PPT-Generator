@@ -8,5 +8,6 @@
     "esModuleInterop": true,
     "types": ["node"]
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["demos", "node_modules", "dist"]
 }

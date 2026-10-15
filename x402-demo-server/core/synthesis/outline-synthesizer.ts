@@ -82,11 +82,16 @@ async function callProviderWithValidationRetry(
  * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
  * 3. Partial Deterministic Outline (Never fails the whole request)
  */
+export interface SynthesizeOutlineOptions {
+  allowCloudFallback?: boolean;
+}
+
 export async function synthesizeOutline(
   transcript: TranscriptData,
   client: UnifiedModelClient,
-  detailLevel: string = 'balanced'
-): Promise<PresentationOutline> {
+  detailLevel: string = 'balanced',
+  options?: SynthesizeOutlineOptions
+): Promise<PresentationOutline & { providerUsed?: string }> {
   const targetCount = calculateSlideCount(transcript.charCount, detailLevel);
   const cleanContext = transcript.sanitizedText.slice(0, 14000);
 
@@ -109,18 +114,25 @@ Return strictly valid JSON matching:
   "keyTopics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"]
 }`;
 
-  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
   const primaryName = client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
   for (const providerName of providerOrder) {
+    const provider = client.getProvider(providerName);
+    if (!provider) continue;
+
+    // Cloud fallback is opt-in: skip cloud providers when false
+    if (!allowCloud && provider.isLocal === false) {
+      continue;
+    }
+
     try {
-      const provider = client.getProvider(providerName);
-      if (provider && (await provider.isAvailable())) {
+      if (await provider.isAvailable()) {
         console.log(`[SynthesisChain: Outline] Trying provider: ${providerName}...`);
         const outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
         console.log(`✓ [SynthesisChain: Outline] Provider "${providerName}" succeeded with validated schema`);
-        return { ...outline, targetSlideCount: targetCount };
+        return { ...outline, targetSlideCount: targetCount, providerUsed: providerName };
       }
     } catch (err: any) {
       console.warn(`[SynthesisChain: Outline] Provider "${providerName}" failed:`, err.message);
@@ -128,18 +140,21 @@ Return strictly valid JSON matching:
   }
 
   // Chain 3: Partial Result with clear message (Never fail whole request)
-  console.warn('⚠️ [SynthesisChain: Outline] All model providers failed. Returning partial outline with clear notice.');
-  return validatePresentationOutline({
-    title: transcript.title,
-    subtitle: '[Partial Synthesis] Key strategic takeaways derived directly from transcript',
-    pillars: [
-      { name: 'Core Perspective', description: 'Primary thesis and background extracted from transcript' },
-      { name: 'Key Challenges', description: 'Identified friction points and strategic challenges' },
-      { name: 'Tactical Interventions', description: 'Actionable solutions, frameworks, and insights' },
-      { name: 'Long-term Impact', description: 'Expected trajectory, outcomes, and value' },
-    ],
-    keyTopics: ['Executive Overview', 'Direct Findings', 'Strategic Blueprint', 'Execution Plan'],
-    targetSlideCount: targetCount,
-    rawSynthesis: '[Partial Result: Model synthesis timed out or was offline. Built via deterministic fallback engine]',
-  });
+  console.warn('⚠️ [SynthesisChain: Outline] Local provider unavailable/failed (and cloud fallback disabled). Returning deterministic outline.');
+  return {
+    ...validatePresentationOutline({
+      title: transcript.title,
+      subtitle: '[Partial Synthesis] Key strategic takeaways derived directly from transcript',
+      pillars: [
+        { name: 'Core Perspective', description: 'Primary thesis and background extracted from transcript' },
+        { name: 'Key Challenges', description: 'Identified friction points and strategic challenges' },
+        { name: 'Tactical Interventions', description: 'Actionable solutions, frameworks, and insights' },
+        { name: 'Long-term Impact', description: 'Expected trajectory, outcomes, and value' },
+      ],
+      keyTopics: ['Executive Overview', 'Direct Findings', 'Strategic Blueprint', 'Execution Plan'],
+      targetSlideCount: targetCount,
+      rawSynthesis: '[Partial Result: Model synthesis timed out or was offline. Built via deterministic fallback engine]',
+    }),
+    providerUsed: 'deterministic-fallback',
+  };
 }

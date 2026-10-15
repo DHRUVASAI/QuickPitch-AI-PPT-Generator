@@ -73,7 +73,7 @@ export async function handleYouTubeChat(c: Context) {
       }
     }
 
-    const { url, question, history = [] } = body;
+    const { url, question, history = [], allow_cloud_fallback } = body;
     if (!url) {
       return c.json({ error: 'YouTube URL is required' }, 400);
     }
@@ -81,12 +81,13 @@ export async function handleYouTubeChat(c: Context) {
       return c.json({ error: 'Question is required' }, 400);
     }
 
+    const allowCloudFallback = allow_cloud_fallback === true || process.env.ALLOW_CLOUD_FALLBACK === 'true';
     const modelClient = getModelClient();
-    const transcript = await extractTranscript({ sourceType: 'youtube', url });
+    const transcript = await extractTranscript({ sourceType: 'youtube', url }, { allowCloudFallback });
 
-    console.log(`[TalkWithYT] Asking question on video "${transcript.title}" via fallback chain...`);
+    console.log(`[TalkWithYT] Asking question on video "${transcript.title}" (cloudFallback: ${allowCloudFallback})...`);
 
-    const result = await chatWithVideo(transcript, question, history, modelClient);
+    const result = await chatWithVideo(transcript, question, history, modelClient, { allowCloudFallback });
 
     return c.json({
       success: true,

@@ -33,8 +33,15 @@ console.log('Configuration:');
 console.log(`  Port: ${port}`);
 console.log('═'.repeat(60) + '\n');
 
+export type AppEnv = {
+  Variables: {
+    rawBodyText?: string;
+    parsedBody?: any;
+  };
+};
+
 // Create Hono app
-const app = new Hono();
+const app = new Hono<AppEnv>();
 
 // ════════════════════════════════════════════════════════════════════
 // MIDDLEWARE STACK
@@ -48,7 +55,7 @@ app.use('*', async (c, next) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE, HEAD',
     'Access-Control-Allow-Headers': '*',
-    'Access-Control-Expose-Headers': '*',
+    'Access-Control-Expose-Headers': 'X-QuickPitch-Status, X-QuickPitch-Notice, X-QuickPitch-Provider, Content-Disposition, *',
     'Access-Control-Allow-Private-Network': 'true',
     'Access-Control-Max-Age': '86400',
   };

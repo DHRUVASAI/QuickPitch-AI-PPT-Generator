@@ -117,6 +117,9 @@ export default function QuickPitchHome() {
   // UI States
   const [loading, setLoading] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
+  const [allowCloudFallback, setAllowCloudFallback] = useState(false)
+  const [partialNotice, setPartialNotice] = useState<string | null>(null)
+  const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
@@ -205,7 +208,12 @@ export default function QuickPitchHome() {
   }
 
   const getPayload = (transcribedText?: string) => {
-    const base = { theme: selectedTheme, detail_level: selectedDetailLevel, tone: selectedTone }
+    const base = {
+      theme: selectedTheme,
+      detail_level: selectedDetailLevel,
+      tone: selectedTone,
+      allow_cloud_fallback: allowCloudFallback,
+    }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
     } else if (mode === 'text') {
@@ -277,6 +285,7 @@ export default function QuickPitchHome() {
   const handleGenerate = async () => {
     if (!validateInput()) return
     setLoading(true); setError(''); setDone(false)
+    setPartialNotice(null); setCloudProviderNotice(null)
 
     let transcribedText: string | undefined
     if (mode === 'audio' && audioFile) {
@@ -315,6 +324,19 @@ export default function QuickPitchHome() {
             body: JSON.stringify(getPayload(transcribedText)),
           });
           if (!response.ok) throw new Error(`Server error (${response.status}).`);
+
+          // Read headers for partial notice and cloud provider info
+          const qpStatus = response.headers.get('X-QuickPitch-Status');
+          const qpNotice = response.headers.get('X-QuickPitch-Notice');
+          const qpProvider = response.headers.get('X-QuickPitch-Provider');
+
+          if (qpStatus === 'partial') {
+            setPartialNotice(qpNotice || 'Presentation was compiled using partial recovery synthesis.');
+          }
+          if (qpProvider && qpProvider !== 'ollama' && qpProvider !== 'deterministic-fallback') {
+            setCloudProviderNotice(`Cloud provider fallback was used: ${qpProvider}`);
+          }
+
           setStatus(`✅ Presentation downloaded!`);
           const blob = await response.blob();
           triggerDownload(blob)
@@ -704,6 +726,32 @@ export default function QuickPitchHome() {
                   ))}
                 </div>
               </div>
+
+              {/* Cloud Fallback Toggle (A2) */}
+              <div className="mt-4 p-3.5 bg-[#0e0e11] border border-[#262626] flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-bold font-heading text-white flex items-center space-x-2">
+                    <span>☁️ Allow Cloud Fallback</span>
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${allowCloudFallback ? 'bg-amber-900/60 text-amber-300 border border-amber-600/50' : 'bg-emerald-900/60 text-emerald-300 border border-emerald-600/50'}`}>
+                      {allowCloudFallback ? 'Opt-In (Groq / Gemini / AWS)' : 'Private Local Only'}
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-mono text-neutral-400 mt-0.5">
+                    {allowCloudFallback
+                      ? 'Permits fallback to Groq / Gemini / AWS if local RTX 4060 GPU is offline or times out.'
+                      : 'Never sends transcript, prompts, or audio to cloud providers. Strict local privacy.'}
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer ml-4">
+                  <input
+                    type="checkbox"
+                    checked={allowCloudFallback}
+                    onChange={(e) => setAllowCloudFallback(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-[#262626] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#ff0000]"></div>
+                </label>
+              </div>
             </div>
 
             {/* ERROR DISPLAY */}
@@ -711,6 +759,34 @@ export default function QuickPitchHome() {
               <div className="mt-6 p-4 bg-[#1a0000] border border-[#ff3333] text-[#ff3333] text-xs font-mono flex items-center justify-between">
                 <span>⚠️ {error}</span>
                 <button onClick={() => setError('')} className="text-[#ff3333] hover:text-white">✕</button>
+              </div>
+            )}
+
+            {/* PARTIAL NOTICE DISPLAY (A3) */}
+            {partialNotice && (
+              <div className="mt-6 p-4 bg-amber-950/40 border border-amber-500/60 text-amber-200 text-xs font-mono flex items-start justify-between space-x-3">
+                <div className="flex items-start space-x-2">
+                  <span className="text-base leading-none">⚠️</span>
+                  <div>
+                    <strong className="text-amber-100 font-bold">Partial Result Notice:</strong>
+                    <p className="mt-0.5 text-amber-300/90">{partialNotice}</p>
+                  </div>
+                </div>
+                <button onClick={() => setPartialNotice(null)} className="text-amber-400 hover:text-white text-sm font-bold">✕</button>
+              </div>
+            )}
+
+            {/* CLOUD PROVIDER NOTICE DISPLAY (A2) */}
+            {cloudProviderNotice && (
+              <div className="mt-6 p-4 bg-blue-950/40 border border-blue-500/60 text-blue-200 text-xs font-mono flex items-start justify-between space-x-3">
+                <div className="flex items-start space-x-2">
+                  <span className="text-base leading-none">☁️</span>
+                  <div>
+                    <strong className="text-blue-100 font-bold">Cloud Provider Used:</strong>
+                    <p className="mt-0.5 text-blue-300/90">{cloudProviderNotice}</p>
+                  </div>
+                </div>
+                <button onClick={() => setCloudProviderNotice(null)} className="text-blue-400 hover:text-white text-sm font-bold">✕</button>
               </div>
             )}
 

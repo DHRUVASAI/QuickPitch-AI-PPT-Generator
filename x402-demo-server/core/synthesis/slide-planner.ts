@@ -122,13 +122,18 @@ async function callProviderForSlidesWithValidationRetry(
  * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
  * 3. Partial Deterministic NLP Deck (Never fails the whole request)
  */
+export interface PlanSlideStructureOptions {
+  allowCloudFallback?: boolean;
+}
+
 export async function planSlideStructure(
   outline: PresentationOutline,
   transcript: TranscriptData,
   client: UnifiedModelClient,
   theme: string = 'cyber-blue',
-  detailLevel: 'concise' | 'balanced' | 'detailed' = 'balanced'
-): Promise<SlideDeck> {
+  detailLevel: 'concise' | 'balanced' | 'detailed' = 'balanced',
+  options?: PlanSlideStructureOptions
+): Promise<SlideDeck & { providerUsed?: string }> {
   const targetCount = outline.targetSlideCount || 7;
   const contentSlidesCount = targetCount - 1;
 
@@ -160,14 +165,21 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
   ]
 }`;
 
-  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
   const primaryName = client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
   for (const providerName of providerOrder) {
+    const provider = client.getProvider(providerName);
+    if (!provider) continue;
+
+    // Cloud fallback is opt-in: skip cloud providers when false
+    if (!allowCloud && provider.isLocal === false) {
+      continue;
+    }
+
     try {
-      const provider = client.getProvider(providerName);
-      if (provider && (await provider.isAvailable())) {
+      if (await provider.isAvailable()) {
         console.log(`[SynthesisChain: Slides] Trying provider: ${providerName}...`);
         const deck = await callProviderForSlidesWithValidationRetry(
           client,
@@ -178,7 +190,7 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
           detailLevel
         );
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" succeeded with validated slides`);
-        return deck;
+        return { ...deck, providerUsed: providerName };
       }
     } catch (err: any) {
       console.warn(`[SynthesisChain: Slides] Provider "${providerName}" failed:`, err.message);
@@ -186,7 +198,7 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
   }
 
   // Chain 3: Partial Result with clear message (Never fail whole request)
-  console.warn('⚠️ [SynthesisChain: Slides] All model providers failed. Returning partial slide deck with clear notice.');
+  console.warn('⚠️ [SynthesisChain: Slides] Local provider unavailable/failed (and cloud fallback disabled). Returning partial deterministic slide deck.');
   const fallbackSlides = buildFallbackNLPDeck(transcript, targetCount, true).map((s, idx) => ({
     ...s,
     title: cleanTextForPptx(s.title, 60),
@@ -195,9 +207,12 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
-  return validateSlideDeck({
-    theme,
-    detailLevel,
-    slides: fallbackSlides,
-  });
+  return {
+    ...validateSlideDeck({
+      theme,
+      detailLevel,
+      slides: fallbackSlides,
+    }),
+    providerUsed: 'deterministic-fallback',
+  };
 }

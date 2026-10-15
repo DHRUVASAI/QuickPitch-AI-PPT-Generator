@@ -5,6 +5,7 @@ import { withRetryAndTimeout } from '../../core/utils/retry.js';
 export class GroqProvider implements ILLMProvider {
   public readonly name = 'groq';
   public readonly defaultModel: string;
+  public readonly isLocal = false;
   private client: OpenAI | null = null;
   private apiKey: string | undefined;
 

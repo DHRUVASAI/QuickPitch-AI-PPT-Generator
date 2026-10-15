@@ -79,7 +79,7 @@ async function tryLocalWhisper(buffer: Buffer, fileName: string, contentType: st
     return await withRetryAndTimeout(
       async (signal) => {
         const formData = new FormData();
-        formData.append('file', new Blob([buffer], { type: contentType }), fileName);
+        formData.append('file', new Blob([new Uint8Array(buffer)], { type: contentType }), fileName);
         formData.append('model', 'whisper-1');
 
         const resp = await fetch(localWhisperUrl, {
@@ -112,7 +112,7 @@ async function tryGroqWhisper(buffer: Buffer, fileName: string, contentType: str
     return await withRetryAndTimeout(
       async () => {
         const groqClient = new OpenAI({ apiKey: groqKey, baseURL: 'https://api.groq.com/openai/v1' });
-        const file = new File([buffer], fileName, { type: contentType });
+        const file = new File([new Uint8Array(buffer)], fileName, { type: contentType });
         const response = await groqClient.audio.transcriptions.create({
           file,
           model: 'whisper-large-v3',
@@ -157,9 +157,18 @@ async function tryAwsTranscribe(
  * Main Extract Transcript Function implementing the complete fallback chain:
  * 1. YouTube Captions -> 2. Local Whisper -> 3. Groq -> 4. AWS -> 5. Partial Metadata
  */
+export interface ExtractTranscriptOptions {
+  transcriptionProvider?: ITranscriptionProvider;
+  allowCloudFallback?: boolean;
+}
+
+/**
+ * Main Extract Transcript Function implementing the complete fallback chain:
+ * 1. YouTube Captions -> 2. Local Whisper -> 3. Groq -> 4. AWS -> 5. Partial Metadata
+ */
 export async function extractTranscript(
   input: ExtractTranscriptInput,
-  options?: { transcriptionProvider?: ITranscriptionProvider }
+  options?: ExtractTranscriptOptions
 ): Promise<TranscriptData> {
   const { sourceType, url, text, audioBuffer, fileName, contentType, topicHint } = input;
 
@@ -217,20 +226,22 @@ export async function extractTranscript(
     } else {
       const fName = fileName || 'recording.mp3';
       const cType = contentType || 'audio/mpeg';
+      const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
 
       // Chain 1: Local Whisper
       console.log('[TranscriptChain: Audio] Step 1: Checking Local Whisper...');
       let transcript = await tryLocalWhisper(audioBuffer, fName, cType);
 
-      // Chain 2: Groq Whisper
-      if (!transcript) {
+      // Chain 2: Groq Whisper (Opt-in cloud fallback only)
+      if (!transcript && allowCloud) {
         console.log('[TranscriptChain: Audio] Step 2: Falling back to Groq Cloud Whisper...');
         transcript = await tryGroqWhisper(audioBuffer, fName, cType);
       }
 
-      // Chain 3: AWS Transcribe
-      if (!transcript) {
-        console.log('[TranscriptChain: Audio] Step 3: Falling back to AWS Transcribe...');
+      // Chain 3: AWS Transcribe / Custom Audio Provider
+      const isCloudProvider = options?.transcriptionProvider ? options.transcriptionProvider.isLocal === false : true;
+      if (!transcript && (allowCloud || !isCloudProvider)) {
+        console.log('[TranscriptChain: Audio] Step 3: Falling back to AWS / Audio Transcribe...');
         transcript = await tryAwsTranscribe(audioBuffer, fName, cType, options?.transcriptionProvider);
       }
 

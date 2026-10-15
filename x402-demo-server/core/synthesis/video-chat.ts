@@ -2,11 +2,16 @@ import type { UnifiedModelClient } from '../../models/unified-client.js';
 import type { ChatMessage } from '../../models/types.js';
 import type { TranscriptData } from '../schemas/transcript.schema.js';
 
+export interface VideoChatOptions {
+  allowCloudFallback?: boolean;
+}
+
 export async function chatWithVideo(
   transcript: TranscriptData,
   question: string,
   history: ChatMessage[],
-  client: UnifiedModelClient
+  client: UnifiedModelClient,
+  options?: VideoChatOptions
 ): Promise<{ answer: string; modelUsed: string; provider: string; isPartial?: boolean }> {
   if (!question || !question.trim()) {
     throw new Error('Question is required');
@@ -45,14 +50,21 @@ ${transcript.sanitizedText.slice(0, 30000)}
 
   messages.push({ role: 'user', content: question });
 
-  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
   const primaryName = client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
   for (const providerName of providerOrder) {
+    const provider = client.getProvider(providerName);
+    if (!provider) continue;
+
+    // Cloud fallback is opt-in: skip cloud providers when false
+    if (!allowCloud && provider.isLocal === false) {
+      continue;
+    }
+
     try {
-      const provider = client.getProvider(providerName);
-      if (provider && (await provider.isAvailable())) {
+      if (await provider.isAvailable()) {
         console.log(`[VideoChatChain] Trying provider: ${providerName}...`);
         const completion = await client.completeWith(providerName, messages, {
           temperature: 0.3,

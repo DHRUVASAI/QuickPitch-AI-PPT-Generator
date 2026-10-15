@@ -32,14 +32,16 @@ export async function handleGeneratePpt(c: Context) {
       text,
       theme,
       detail_level = 'balanced',
+      allow_cloud_fallback,
     } = body;
 
+    const allowCloudFallback = allow_cloud_fallback === true || process.env.ALLOW_CLOUD_FALLBACK === 'true';
     const modelClient = getModelClient();
     let isPartial = false;
     let partialNotice = '';
 
     // Stage 1: Transcript Ingestion & Sanitization
-    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type})...`);
+    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback})...`);
     let transcriptData;
     try {
       transcriptData = await extractTranscript({
@@ -47,7 +49,7 @@ export async function handleGeneratePpt(c: Context) {
         url,
         text,
         topicHint: text ? text.slice(0, 60) : undefined,
-      });
+      }, { allowCloudFallback });
       if (transcriptData.metadata?.partial) {
         isPartial = true;
         partialNotice = 'Transcript used partial video metadata';
@@ -70,7 +72,7 @@ export async function handleGeneratePpt(c: Context) {
 
     // Stage 2: Synthesis & Outline Planning (with schema validation & retry-on-failure)
     console.log('[QuickPitch Stage 2] Synthesizing executive outline and slide plan...');
-    const outline = await synthesizeOutline(transcriptData, modelClient, detail_level);
+    const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, { allowCloudFallback });
     if (outline.rawSynthesis?.includes('Partial Result')) {
       isPartial = true;
       partialNotice = 'Model synthesis used deterministic fallback';
@@ -81,11 +83,14 @@ export async function handleGeneratePpt(c: Context) {
       transcriptData,
       modelClient,
       theme,
-      detail_level
+      detail_level,
+      { allowCloudFallback }
     );
 
+    const providerUsed = slideDeck.providerUsed || outline.providerUsed || 'ollama';
+
     // Stage 3: Slide Compilation (.pptx)
-    console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Theme: ${slideDeck.theme})...`);
+    console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
     let pptxResult;
     try {
       pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);
@@ -112,7 +117,7 @@ export async function handleGeneratePpt(c: Context) {
       pptxResult = await compilePptx(safeDeck, 'cyber-blue');
     }
 
-    console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'}`);
+    console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'} (Provider: ${providerUsed})`);
 
     return new Response(pptxResult.buffer as any, {
       status: 200,
@@ -120,6 +125,7 @@ export async function handleGeneratePpt(c: Context) {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'Content-Disposition': `attachment; filename="${pptxResult.fileName}"`,
         'X-QuickPitch-Status': isPartial ? 'partial' : 'complete',
+        'X-QuickPitch-Provider': providerUsed,
         ...(isPartial ? { 'X-QuickPitch-Notice': partialNotice } : {}),
       },
     });

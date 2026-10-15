@@ -16,7 +16,7 @@ export async function compilePptx(
   contextText: string = ''
 ): Promise<CompilePptxResult> {
   const activeTheme = selectTheme(requestedTheme || deck.theme, contextText);
-  const pptx = new PptxGenJS();
+  const pptx: any = new PptxGenJS();
   pptx.layout = 'LAYOUT_16x9';
 
   const BG   = activeTheme.bg;

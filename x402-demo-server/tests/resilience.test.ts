@@ -138,4 +138,76 @@ describe('Resilience & Fallback Chains', () => {
     assert.ok(chatResult.answer.includes('Partial Result'));
     assert.ok(chatResult.answer.includes('circuit breaking'));
   });
+
+  it('with ALLOW_CLOUD_FALLBACK off, a mocked local failure must make zero calls to any cloud provider', async () => {
+    let cloudCalls = 0;
+
+    class FailingLocalProvider implements ILLMProvider {
+      public readonly name = 'failing-local';
+      public readonly defaultModel = 'local-v1';
+      public readonly isLocal = true;
+
+      async isAvailable(): Promise<boolean> {
+        return true;
+      }
+
+      async complete(): Promise<ModelCompletionResult> {
+        throw new Error('Local GPU OOM or connection refused');
+      }
+    }
+
+    class MockCloudProvider implements ILLMProvider {
+      public readonly name = 'mock-cloud';
+      public readonly defaultModel = 'cloud-v1';
+      public readonly isLocal = false;
+
+      async isAvailable(): Promise<boolean> {
+        cloudCalls++;
+        return true;
+      }
+
+      async complete(): Promise<ModelCompletionResult> {
+        cloudCalls++;
+        return {
+          content: '{"title": "Cloud Result"}',
+          model: this.defaultModel,
+          provider: this.name,
+        };
+      }
+    }
+
+    const localProvider = new FailingLocalProvider();
+    const cloudProvider = new MockCloudProvider();
+    const client = new UnifiedModelClient([localProvider, cloudProvider]);
+
+    // Test 1: Direct UnifiedModelClient call with allowCloudFallback: false
+    await assert.rejects(
+      async () => {
+        await client.complete([{ role: 'user', content: 'test' }], { allowCloudFallback: false });
+      },
+      (err: any) => err.message.includes('Local GPU OOM') || err.message.includes('failed')
+    );
+    assert.strictEqual(cloudCalls, 0, 'Zero cloud calls must be made on direct completion when fallback is false');
+
+    // Test 2: Outline synthesis with allowCloudFallback: false must fall back deterministically with 0 cloud calls
+    const outline = await synthesizeOutline(dummyTranscript, client, 'balanced', { allowCloudFallback: false });
+    assert.strictEqual(cloudCalls, 0, 'Zero cloud calls must be made on outline synthesis when fallback is false');
+    assert.strictEqual(outline.providerUsed, 'deterministic-fallback');
+    assert.ok(outline.title.length > 0);
+
+    // Test 3: Slide structure planning with allowCloudFallback: false must fall back deterministically with 0 cloud calls
+    const slideDeck = await planSlideStructure(outline, dummyTranscript, client, 'cyber-blue', 'balanced', { allowCloudFallback: false });
+    assert.strictEqual(cloudCalls, 0, 'Zero cloud calls must be made on slide planning when fallback is false');
+    assert.strictEqual(slideDeck.providerUsed, 'deterministic-fallback');
+
+    // Test 4: Video chat with allowCloudFallback: false must fall back to transcript excerpt with 0 cloud calls
+    const chatRes = await chatWithVideo(dummyTranscript, 'circuit breaking', [], client, { allowCloudFallback: false });
+    assert.strictEqual(cloudCalls, 0, 'Zero cloud calls must be made on video chat when fallback is false');
+    assert.strictEqual(chatRes.provider, 'fallback');
+
+    // Test 5: Conversely, when allowCloudFallback: true, the cloud provider IS allowed to be called
+    const allowedRes = await client.complete([{ role: 'user', content: 'test' }], { allowCloudFallback: true });
+    assert.ok(cloudCalls > 0, 'Cloud provider should be invoked when allowCloudFallback is true');
+    assert.strictEqual(allowedRes.provider, 'mock-cloud');
+  });
 });

@@ -13,6 +13,7 @@ export interface CompletionOptions {
   maxTokens?: number;
   model?: string;
   jsonMode?: boolean;
+  allowCloudFallback?: boolean;
 }
 
 export interface ModelCompletionResult {
@@ -32,6 +33,7 @@ export interface ModelCompletionResult {
 export interface ILLMProvider {
   readonly name: string;
   readonly defaultModel: string;
+  readonly isLocal?: boolean;
   isAvailable(): Promise<boolean>;
   complete(messages: ChatMessage[], options?: CompletionOptions): Promise<ModelCompletionResult>;
 }
@@ -41,6 +43,7 @@ export interface ILLMProvider {
  */
 export interface ITranscriptionProvider {
   readonly name: string;
+  readonly isLocal?: boolean;
   isAvailable(): Promise<boolean>;
   transcribeAudio(audioBuffer: Buffer, fileName: string, contentType: string): Promise<string>;
 }

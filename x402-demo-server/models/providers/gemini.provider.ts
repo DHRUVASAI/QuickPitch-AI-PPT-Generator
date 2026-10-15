@@ -5,6 +5,7 @@ import { withRetryAndTimeout } from '../../core/utils/retry.js';
 export class GeminiProvider implements ILLMProvider {
   public readonly name = 'gemini';
   public readonly defaultModel: string;
+  public readonly isLocal = false;
   private client: GoogleGenerativeAI | null = null;
   private apiKey: string | undefined;
 

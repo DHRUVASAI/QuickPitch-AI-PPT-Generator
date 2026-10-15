@@ -1,4 +1,18 @@
 .env
-node_modules 
-
+*.env
+.env.*
+node_modules/
+dist/
+*.pptx
+*.mp3
+*.wav
+*.m4a
+*.ogg
+*.flac
+*.webm
+*.log
+temp/
+*.tmp
+.DS_Store
+Thumbs.db
 

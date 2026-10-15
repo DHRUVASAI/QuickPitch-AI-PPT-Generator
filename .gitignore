@@ -11,3 +11,9 @@ dist/
 !package.json
 !package-lock.json
 !tsconfig.json
+*.log
+temp/
+*.tmp
+*.flac
+*.ogg
+*.webm
