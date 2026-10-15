@@ -1,7 +1,7 @@
 import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
-import ConnectWallet from './components/ConnectWallet'
-import MemeGenerator from './components/MemeGenerator'
+import ConnectWallet from '../components/ConnectWallet'
+import MemeGenerator from '../components/MemeGenerator'
 
 const MemeHome: React.FC = () => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)

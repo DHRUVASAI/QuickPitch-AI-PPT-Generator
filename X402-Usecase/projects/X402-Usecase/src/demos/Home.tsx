@@ -1,8 +1,8 @@
 // src/components/Home.tsx
 import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
-import ConnectWallet from './components/ConnectWallet'
-import Weather from './components/Weather'
+import ConnectWallet from '../components/ConnectWallet'
+import Weather from '../components/Weather'
 
 interface HomeProps {}
 

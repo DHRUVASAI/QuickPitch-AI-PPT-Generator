@@ -1,0 +1,66 @@
+import OpenAI from 'openai';
+import type { ILLMProvider, ChatMessage, CompletionOptions, ModelCompletionResult } from '../types.js';
+
+export class GroqProvider implements ILLMProvider {
+  public readonly name = 'groq';
+  public readonly defaultModel: string;
+  private client: OpenAI | null = null;
+  private apiKey: string | undefined;
+
+  constructor(options?: { apiKey?: string; defaultModel?: string }) {
+    this.apiKey = options?.apiKey || process.env.GROQ_API_KEY;
+    this.defaultModel = options?.defaultModel || 'llama-3.3-70b-versatile';
+    if (this.apiKey) {
+      this.client = new OpenAI({
+        apiKey: this.apiKey,
+        baseURL: 'https://api.groq.com/openai/v1',
+      });
+    }
+  }
+
+  async isAvailable(): Promise<boolean> {
+    return Boolean(this.apiKey && this.apiKey.trim().length > 0);
+  }
+
+  async complete(messages: ChatMessage[], options?: CompletionOptions): Promise<ModelCompletionResult> {
+    if (!this.client) {
+      throw new Error('GroqProvider is not configured: GROQ_API_KEY is missing');
+    }
+
+    const fallbackModels = [
+      options?.model || this.defaultModel,
+      'llama-3.3-70b-versatile',
+      'llama-3.1-8b-instant',
+    ];
+
+    let lastError: Error | null = null;
+    for (const modelName of Array.from(new Set(fallbackModels))) {
+      try {
+        const response = await this.client.chat.completions.create({
+          model: modelName,
+          messages,
+          temperature: options?.temperature ?? 0.3,
+          max_tokens: options?.maxTokens ?? 2000,
+          ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+        });
+
+        const content = response.choices[0]?.message?.content || '';
+        return {
+          content,
+          model: modelName,
+          provider: this.name,
+          usage: {
+            promptTokens: response.usage?.prompt_tokens,
+            completionTokens: response.usage?.completion_tokens,
+            totalTokens: response.usage?.total_tokens,
+          },
+        };
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[GroqProvider] Model ${modelName} failed, trying next:`, err.message);
+      }
+    }
+
+    throw lastError || new Error('All Groq models failed');
+  }
+}
