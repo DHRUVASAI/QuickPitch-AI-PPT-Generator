@@ -122,8 +122,11 @@ async function callProviderForSlidesWithValidationRetry(
  * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
  * 3. Partial Deterministic NLP Deck (Never fails the whole request)
  */
+import { gpuLock } from '../utils/gpu-lock.js';
+
 export interface PlanSlideStructureOptions {
   allowCloudFallback?: boolean;
+  outputLanguage?: string;
 }
 
 export async function planSlideStructure(
@@ -137,7 +140,12 @@ export async function planSlideStructure(
   const targetCount = outline.targetSlideCount || 7;
   const contentSlidesCount = targetCount - 1;
 
-  const systemPrompt = 'You are a presentation structuring engine. Output strictly valid JSON with a "slides" array.';
+  const langInstruction =
+    options?.outputLanguage && options.outputLanguage.toLowerCase() !== 'same as video'
+      ? `\nOUTPUT LANGUAGE: Output all slide titles, subtitles, category badges, card titles, and bullet points strictly in "${options.outputLanguage}".`
+      : '';
+
+  const systemPrompt = `You are a presentation structuring engine. Output strictly valid JSON with a "slides" array.${langInstruction}`;
   const userPrompt = `Generate exactly ${contentSlidesCount} content slides based on this research outline and source context:
 
 OUTLINE:
@@ -181,14 +189,32 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
     try {
       if (await provider.isAvailable()) {
         console.log(`[SynthesisChain: Slides] Trying provider: ${providerName}...`);
-        const deck = await callProviderForSlidesWithValidationRetry(
-          client,
-          providerName,
-          systemPrompt,
-          userPrompt,
-          theme,
-          detailLevel
-        );
+
+        let deck: any;
+        if (providerName === 'ollama') {
+          const releaseGpu = await gpuLock.acquire('Ollama-Slides');
+          try {
+            deck = await callProviderForSlidesWithValidationRetry(
+              client,
+              providerName,
+              systemPrompt,
+              userPrompt,
+              theme,
+              detailLevel
+            );
+          } finally {
+            releaseGpu();
+          }
+        } else {
+          deck = await callProviderForSlidesWithValidationRetry(
+            client,
+            providerName,
+            systemPrompt,
+            userPrompt,
+            theme,
+            detailLevel
+          );
+        }
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" succeeded with validated slides`);
         return { ...deck, providerUsed: providerName };
       }

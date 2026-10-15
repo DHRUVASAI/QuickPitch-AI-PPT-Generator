@@ -157,14 +157,21 @@ async function tryAwsTranscribe(
  * Main Extract Transcript Function implementing the complete fallback chain:
  * 1. YouTube Captions -> 2. Local Whisper -> 3. Groq -> 4. AWS -> 5. Partial Metadata
  */
+import fs from 'node:fs';
+import { listYouTubeCaptionTracks, evaluateCaptionQuality } from './caption-quality-gate.js';
+import { downloadYouTubeAudio, VideoDownloadError } from './audio-downloader.js';
+import { gpuLock } from '../utils/gpu-lock.js';
+import { getLocalWhisperClient } from '../../models/index.js';
+
 export interface ExtractTranscriptOptions {
   transcriptionProvider?: ITranscriptionProvider;
   allowCloudFallback?: boolean;
+  outputLanguage?: string;
 }
 
 /**
  * Main Extract Transcript Function implementing the complete fallback chain:
- * 1. YouTube Captions -> 2. Local Whisper -> 3. Groq -> 4. AWS -> 5. Partial Metadata
+ * 1. YouTube Captions (Quality Gated) -> 2. Audio Download (yt-dlp) + Local Whisper (VAD, GPU-locked) -> 3. Groq -> 4. AWS -> 5. Partial Metadata
  */
 export async function extractTranscript(
   input: ExtractTranscriptInput,
@@ -192,16 +199,124 @@ export async function extractTranscript(
       title = meta.title || title;
       metadata = { url, description: meta.description };
 
-      // Chain 1: YouTube Captions
-      console.log(`[TranscriptChain: YouTube] Step 1: Fetching captions for ${url}...`);
-      const captions = await tryYouTubeCaptions(url);
+      // Step 1: Caption Quality Gate (Check tracks & word count relative to duration)
+      console.log(`[TranscriptChain: YouTube] Step 1: Checking caption tracks & quality gate for ${url}...`);
+      const trackInfo = await listYouTubeCaptionTracks(url);
+      const durationSeconds = trackInfo.durationSeconds;
+      if (trackInfo.title && trackInfo.title !== 'YouTube Video') {
+        title = trackInfo.title;
+      }
 
-      if (captions && captions.trim().length > 20) {
-        rawText = captions;
-        console.log(`✓ [TranscriptChain] YouTube captions successfully fetched (${rawText.length} chars)`);
+      const captions = await tryYouTubeCaptions(url);
+      const gateResult = captions ? evaluateCaptionQuality(captions, durationSeconds, {
+        isManual: trackInfo.manualTracks.length > 0,
+      }) : null;
+
+      if (gateResult && gateResult.isUsable) {
+        rawText = captions!;
+        console.log(`✓ [TranscriptChain] YouTube captions passed quality gate (${gateResult.wordCount} words, ${gateResult.wordsPerMinute} WPM, manual: ${gateResult.isManual})`);
+        metadata = {
+          url,
+          description: meta.description,
+          durationSeconds,
+          isManualCaptions: gateResult.isManual,
+          language: gateResult.language,
+        };
       } else {
-        // Fallback: Partial Result with clear message
-        console.warn('⚠️ [TranscriptChain] Captions unavailable. Falling back to video metadata context.');
+        const rejectReason = gateResult ? gateResult.reason : 'No captions track available';
+        console.warn(`⚠️ [TranscriptChain] Captions unusable (${rejectReason}). Routing to Audio Download path...`);
+
+        // Step 2: Audio Download & Local Whisper Path (B3 -> B2)
+        try {
+          console.log(`[TranscriptChain: Audio] Downloading audio stream via yt-dlp for ${url}...`);
+          const audioDownload = await downloadYouTubeAudio(url);
+          try {
+            const dlBuffer = await fs.promises.readFile(audioDownload.filePath);
+            const localWhisper = getLocalWhisperClient();
+
+            // Check if local Whisper sidecar is available
+            if (await localWhisper.isAvailable()) {
+              console.log('[TranscriptChain: LocalWhisper] Acquiring GPU lock for speech transcription...');
+              const releaseGpu = await gpuLock.acquire('Whisper-Transcription');
+
+              try {
+                // Language detection from first 30 seconds
+                console.log('[TranscriptChain: LocalWhisper] Detecting spoken language from first 30s...');
+                const detected = await localWhisper.detectLanguage(dlBuffer).catch(() => ({
+                  language: 'en',
+                  probability: 1.0,
+                  duration: durationSeconds,
+                }));
+
+                const lowConfidence = detected.probability < 0.60;
+                console.log(`[TranscriptChain: LocalWhisper] Detected language: "${detected.language}" (${Math.round(detected.probability * 100)}% confidence, lowConfidence=${lowConfidence})`);
+
+                // For mixed language (e.g. Hindi with English), do not force single language unless confidence is high
+                const langToUse = lowConfidence ? undefined : detected.language;
+
+                const detailed = await localWhisper.transcribeAudioDetailed(dlBuffer, 'audio.mp3', 'audio/mpeg', {
+                  language: langToUse,
+                  vadFilter: true,
+                  unloadAfter: true, // Always unload Whisper model from VRAM so Qwen has all 8GB GPU memory
+                });
+
+                if (detailed.text && detailed.text.trim().length > 10) {
+                  rawText = detailed.text;
+                  console.log(`✓ [TranscriptChain: LocalWhisper] Speech transcription succeeded (${rawText.length} chars)`);
+                  metadata = {
+                    url,
+                    description: meta.description,
+                    durationSeconds: audioDownload.durationSeconds,
+                    language: detailed.language,
+                    detectedLanguage: detected.language,
+                    languageConfidence: detected.probability,
+                    lowLanguageConfidence: lowConfidence,
+                  };
+                }
+              } finally {
+                // Guaranteed Whisper model unloading
+                await localWhisper.unload().catch(() => {});
+                releaseGpu();
+              }
+            }
+
+            // Fallback to cloud speech if local whisper did not transcribe and cloud fallback is opt-in
+            if (!rawText || rawText.trim().length <= 10) {
+              const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
+              if (allowCloud) {
+                console.log('[TranscriptChain: Cloud] Trying cloud speech fallback for audio...');
+                let cloudText = await tryGroqWhisper(dlBuffer, 'audio.mp3', 'audio/mpeg');
+                if (!cloudText) {
+                  cloudText = await tryAwsTranscribe(dlBuffer, 'audio.mp3', 'audio/mpeg', options?.transcriptionProvider);
+                }
+                if (cloudText && cloudText.trim().length > 10) {
+                  rawText = cloudText;
+                  metadata = {
+                    url,
+                    description: meta.description,
+                    durationSeconds: audioDownload.durationSeconds,
+                  };
+                }
+              }
+            }
+          } finally {
+            // Guaranteed temp file deletion
+            await audioDownload.cleanup();
+          }
+        } catch (audioErr: any) {
+          console.warn(`[TranscriptChain] Audio path failed (${audioErr.name || 'Error'}): ${audioErr.message}`);
+          isPartial = true;
+          rawText = `[Notice: Video transcript was unavailable (${audioErr.message}). Generated using video context & metadata]\n\nVideo Title: ${title}\n\nDescription: ${meta.description || 'Strategic overview of video topic.'}`;
+          metadata = {
+            url,
+            partial: true,
+            error: audioErr.message,
+            errorCode: audioErr.code || 'ERR_TRANSCRIPT_UNAVAILABLE',
+          };
+        }
+      }
+
+      if (!rawText || rawText.trim().length === 0) {
         isPartial = true;
         rawText = `[Notice: Video transcript was unavailable. Generated using video context & metadata]\n\nVideo Title: ${meta.title || 'YouTube Video'}\n\nDescription: ${meta.description || 'Comprehensive strategic analysis of this video topic.'}`;
       }

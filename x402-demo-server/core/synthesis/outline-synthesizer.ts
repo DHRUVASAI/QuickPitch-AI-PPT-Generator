@@ -82,8 +82,11 @@ async function callProviderWithValidationRetry(
  * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
  * 3. Partial Deterministic Outline (Never fails the whole request)
  */
+import { gpuLock } from '../utils/gpu-lock.js';
+
 export interface SynthesizeOutlineOptions {
   allowCloudFallback?: boolean;
+  outputLanguage?: string;
 }
 
 export async function synthesizeOutline(
@@ -95,8 +98,13 @@ export async function synthesizeOutline(
   const targetCount = calculateSlideCount(transcript.charCount, detailLevel);
   const cleanContext = transcript.sanitizedText.slice(0, 14000);
 
+  const langInstruction =
+    options?.outputLanguage && options.outputLanguage.toLowerCase() !== 'same as video'
+      ? `\n\nOUTPUT LANGUAGE INSTRUCTION: The source content is in ${transcript.metadata?.detectedLanguage || transcript.metadata?.language || 'the original video language'}. Translate the presentation title, subtitle, pillars, and keyTopics strictly into "${options.outputLanguage}".`
+      : '';
+
   const systemPrompt = 'You are an executive research analyst and domain strategist. Output strictly valid JSON matching the schema.';
-  const userPrompt = `Extract a comprehensive, factual research outline from the following content:
+  const userPrompt = `Extract a comprehensive, factual research outline from the following content:${langInstruction}
 
 SOURCE CONTENT (Topic / Title: "${transcript.title}"):
 "${cleanContext}"
@@ -130,7 +138,18 @@ Return strictly valid JSON matching:
     try {
       if (await provider.isAvailable()) {
         console.log(`[SynthesisChain: Outline] Trying provider: ${providerName}...`);
-        const outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+
+        let outline: any;
+        if (providerName === 'ollama') {
+          const releaseGpu = await gpuLock.acquire('Ollama-Outline');
+          try {
+            outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+          } finally {
+            releaseGpu();
+          }
+        } else {
+          outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+        }
         console.log(`✓ [SynthesisChain: Outline] Provider "${providerName}" succeeded with validated schema`);
         return { ...outline, targetSlideCount: targetCount, providerUsed: providerName };
       }

@@ -2,6 +2,7 @@ import { OllamaProvider } from './providers/ollama.provider.js';
 import { GroqProvider } from './providers/groq.provider.js';
 import { GeminiProvider } from './providers/gemini.provider.js';
 import { AWSTranscribeProvider } from './providers/aws-transcribe.provider.js';
+import { LocalWhisperProvider } from './providers/local-whisper.provider.js';
 import { UnifiedModelClient } from './unified-client.js';
 
 export * from './types.js';
@@ -10,9 +11,11 @@ export * from './providers/ollama.provider.js';
 export * from './providers/groq.provider.js';
 export * from './providers/gemini.provider.js';
 export * from './providers/aws-transcribe.provider.js';
+export * from './providers/local-whisper.provider.js';
 
 let defaultModelClient: UnifiedModelClient | null = null;
 let defaultTranscriptionProvider: AWSTranscribeProvider | null = null;
+let defaultLocalWhisperProvider: LocalWhisperProvider | null = null;
 
 /**
  * Returns the application-wide UnifiedModelClient configured with Ollama, Groq, and Gemini
@@ -27,6 +30,16 @@ export function getModelClient(): UnifiedModelClient {
     defaultModelClient = new UnifiedModelClient([ollama, groq, gemini]);
   }
   return defaultModelClient;
+}
+
+/**
+ * Returns the local faster-whisper sidecar client
+ */
+export function getLocalWhisperClient(): LocalWhisperProvider {
+  if (!defaultLocalWhisperProvider) {
+    defaultLocalWhisperProvider = new LocalWhisperProvider();
+  }
+  return defaultLocalWhisperProvider;
 }
 
 /**

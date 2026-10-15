@@ -13,6 +13,7 @@ export interface TranscriptMetadata {
   detectedLanguage?: string;
   languageConfidence?: number;
   lowLanguageConfidence?: boolean;
+  isManualCaptions?: boolean;
   fetchedAt?: number;
   partial?: boolean;
 }

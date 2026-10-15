@@ -15,4 +15,12 @@ temp/
 *.tmp
 .DS_Store
 Thumbs.db
-
+.venv/
+venv/
+__pycache__/
+*.pyc
+sidecar/models/
+*.bin
+*.pt
+*.safetensors
+.cache/

@@ -118,6 +118,7 @@ export default function QuickPitchHome() {
   const [loading, setLoading] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [allowCloudFallback, setAllowCloudFallback] = useState(false)
+  const [outputLanguage, setOutputLanguage] = useState('same as video')
   const [partialNotice, setPartialNotice] = useState<string | null>(null)
   const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
   const [status, setStatus] = useState('')
@@ -213,6 +214,7 @@ export default function QuickPitchHome() {
       detail_level: selectedDetailLevel,
       tone: selectedTone,
       allow_cloud_fallback: allowCloudFallback,
+      output_language: outputLanguage,
     }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
@@ -727,6 +729,39 @@ export default function QuickPitchHome() {
                 </div>
               </div>
 
+              {/* Output Language Selector (B8) */}
+              <div>
+                <label className="block text-xs font-mono font-semibold text-neutral-300 mb-3">
+                  OUTPUT SLIDE DECK LANGUAGE
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { id: 'same as video', label: '🌐 Same as Video', sub: 'Native Source' },
+                    { id: 'English', label: '🇺🇸 English', sub: 'Standard EN' },
+                    { id: 'Hindi', label: '🇮🇳 Hindi', sub: 'हिंदी' },
+                    { id: 'Spanish', label: '🇪🇸 Spanish', sub: 'Español' },
+                    { id: 'French', label: '🇫🇷 French', sub: 'Français' },
+                    { id: 'German', label: '🇩🇪 German', sub: 'Deutsch' },
+                    { id: 'Japanese', label: '🇯🇵 Japanese', sub: '日本語' },
+                    { id: 'Telugu', label: '🇮🇳 Telugu', sub: 'తెలుగు' },
+                  ].map((lang) => (
+                    <button
+                      key={lang.id}
+                      type="button"
+                      onClick={() => setOutputLanguage(lang.id)}
+                      className={`p-2.5 border text-left transition rounded ${
+                        outputLanguage === lang.id
+                          ? 'bg-[#171717] border-[#ff0000] text-white shadow-sm shadow-red-500/20'
+                          : 'bg-[#000000] border-[#262626] text-neutral-400 hover:border-neutral-500'
+                      }`}
+                    >
+                      <div className="text-xs font-bold font-heading truncate">{lang.label}</div>
+                      <div className="text-[10px] font-mono text-neutral-500">{lang.sub}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Cloud Fallback Toggle (A2) */}
               <div className="mt-4 p-3.5 bg-[#0e0e11] border border-[#262626] flex items-center justify-between">
                 <div>
@@ -754,11 +789,39 @@ export default function QuickPitchHome() {
               </div>
             </div>
 
-            {/* ERROR DISPLAY */}
+            {/* ERROR DISPLAY WITH MANUAL ESCAPE HATCHES (B9) */}
             {error && (
-              <div className="mt-6 p-4 bg-[#1a0000] border border-[#ff3333] text-[#ff3333] text-xs font-mono flex items-center justify-between">
-                <span>⚠️ {error}</span>
-                <button onClick={() => setError('')} className="text-[#ff3333] hover:text-white">✕</button>
+              <div className="mt-6 p-4 bg-[#1a0000] border border-[#ff3333] text-[#ff3333] text-xs font-mono space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center space-x-2">
+                    <span className="text-base">⚠️</span>
+                    <span>{error}</span>
+                  </span>
+                  <button onClick={() => setError('')} className="text-[#ff3333] hover:text-white font-bold ml-2">✕</button>
+                </div>
+                <div className="pt-2.5 border-t border-red-900/60 flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold">Escape Hatches:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('audio');
+                      setError('');
+                    }}
+                    className="px-2.5 py-1 text-[11px] bg-[#262626] hover:bg-[#333333] border border-neutral-600 text-white rounded font-mono transition flex items-center space-x-1"
+                  >
+                    <span>🎙️ Upload Audio File</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('text');
+                      setError('');
+                    }}
+                    className="px-2.5 py-1 text-[11px] bg-[#262626] hover:bg-[#333333] border border-neutral-600 text-white rounded font-mono transition flex items-center space-x-1"
+                  >
+                    <span>📝 Paste Transcript Directly</span>
+                  </button>
+                </div>
               </div>
             )}
 

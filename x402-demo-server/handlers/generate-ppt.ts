@@ -33,6 +33,7 @@ export async function handleGeneratePpt(c: Context) {
       theme,
       detail_level = 'balanced',
       allow_cloud_fallback,
+      output_language = 'same as video',
     } = body;
 
     const allowCloudFallback = allow_cloud_fallback === true || process.env.ALLOW_CLOUD_FALLBACK === 'true';
@@ -41,7 +42,7 @@ export async function handleGeneratePpt(c: Context) {
     let partialNotice = '';
 
     // Stage 1: Transcript Ingestion & Sanitization
-    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback})...`);
+    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback}, outputLang: ${output_language})...`);
     let transcriptData;
     try {
       transcriptData = await extractTranscript({
@@ -49,7 +50,7 @@ export async function handleGeneratePpt(c: Context) {
         url,
         text,
         topicHint: text ? text.slice(0, 60) : undefined,
-      }, { allowCloudFallback });
+      }, { allowCloudFallback, outputLanguage: output_language });
       if (transcriptData.metadata?.partial) {
         isPartial = true;
         partialNotice = 'Transcript used partial video metadata';
@@ -68,11 +69,14 @@ export async function handleGeneratePpt(c: Context) {
       };
     }
 
-    console.log(`✓ Transcript ready: "${transcriptData.title}" (${transcriptData.charCount} chars)`);
+    console.log(`✓ Transcript ready: "${transcriptData.title}" (${transcriptData.charCount} chars, detectedLang: ${transcriptData.metadata?.detectedLanguage || 'unknown'})`);
 
     // Stage 2: Synthesis & Outline Planning (with schema validation & retry-on-failure)
-    console.log('[QuickPitch Stage 2] Synthesizing executive outline and slide plan...');
-    const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, { allowCloudFallback });
+    console.log(`[QuickPitch Stage 2] Synthesizing outline (outputLanguage: "${output_language}")...`);
+    const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, {
+      allowCloudFallback,
+      outputLanguage: output_language,
+    });
     if (outline.rawSynthesis?.includes('Partial Result')) {
       isPartial = true;
       partialNotice = 'Model synthesis used deterministic fallback';
@@ -84,7 +88,7 @@ export async function handleGeneratePpt(c: Context) {
       modelClient,
       theme,
       detail_level,
-      { allowCloudFallback }
+      { allowCloudFallback, outputLanguage: output_language }
     );
 
     const providerUsed = slideDeck.providerUsed || outline.providerUsed || 'ollama';

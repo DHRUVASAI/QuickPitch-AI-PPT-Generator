@@ -17,3 +17,12 @@ temp/
 *.flac
 *.ogg
 *.webm
+.venv/
+venv/
+__pycache__/
+*.pyc
+sidecar/models/
+*.bin
+*.pt
+*.safetensors
+.cache/
