@@ -31,15 +31,7 @@ current_model_name: Optional[str] = None
 current_device: Optional[str] = None
 current_compute_type: Optional[str] = None
 
-DEFAULT_MODEL = os.getenv("WHISPER_MODEL", "tiny")
-
-
-def get_torch():
-    try:
-        import torch
-        return torch
-    except ImportError:
-        return None
+DEFAULT_MODEL = os.getenv("WHISPER_MODEL", "small")
 
 
 def get_model(model_name: Optional[str] = None):
@@ -50,11 +42,11 @@ def get_model(model_name: Optional[str] = None):
         return loaded_model
 
     from faster_whisper import WhisperModel
+    import ctranslate2
 
-    torch = get_torch()
-    has_cuda = torch is not None and torch.cuda.is_available()
+    has_cuda = ctranslate2.get_cuda_device_count() > 0
 
-    # Try CUDA first if available, then fallback to CPU int8
+    # Prioritize CUDA GPU (float16) on RTX 4060 hardware
     if has_cuda:
         try:
             logger.info(f"Loading WhisperModel({target_model}) on CUDA float16...")
@@ -65,7 +57,7 @@ def get_model(model_name: Optional[str] = None):
             logger.info("Successfully loaded model on CUDA GPU.")
             return loaded_model
         except Exception as e:
-            logger.warning(f"Failed to load on CUDA float16 ({e}). Trying CPU int8 fallback...")
+            logger.warning(f"Failed to load on CUDA float16 ({e}). Falling back to CPU int8...")
 
     # CPU int8 fallback
     logger.info(f"Loading WhisperModel({target_model}) on CPU int8...")
@@ -80,7 +72,7 @@ def get_model(model_name: Optional[str] = None):
 def unload_model():
     global loaded_model, current_model_name, current_device, current_compute_type
     if loaded_model is not None:
-        logger.info(f"Unloading Whisper model '{current_model_name}' from VRAM...")
+        logger.info(f"Unloading Whisper model '{current_model_name}' ({current_device}) from memory...")
         del loaded_model
         loaded_model = None
         current_model_name = None
@@ -88,10 +80,7 @@ def unload_model():
         current_compute_type = None
 
         gc.collect()
-        torch = get_torch()
-        if torch is not None and torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        logger.info("Whisper model unloaded and VRAM released.")
+        logger.info("Whisper model deleted and memory freed.")
         return True
     return False
 
@@ -118,12 +107,16 @@ class DetectLanguageResponse(BaseModel):
 
 @app.get("/health")
 def health():
+    import ctranslate2
+    cuda_count = ctranslate2.get_cuda_device_count()
     return {
         "status": "ok",
         "service": "faster-whisper-sidecar",
         "loaded_model": current_model_name,
-        "device": current_device,
-        "compute_type": current_compute_type,
+        "device": current_device or ("cuda" if cuda_count > 0 else "cpu"),
+        "compute_type": current_compute_type or ("float16" if cuda_count > 0 else "int8"),
+        "cuda_available": cuda_count > 0,
+        "cuda_device_count": cuda_count,
         "default_model": os.getenv("WHISPER_MODEL", DEFAULT_MODEL),
     }
 
@@ -136,19 +129,26 @@ def unload():
 
 import subprocess
 import shutil
+import glob
 import numpy as np
 
-def decode_audio_ffmpeg(file_path: str) -> np.ndarray:
-    ffmpeg_paths = [
-        "ffmpeg",
-        r"C:\Users\dhruv\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe",
-    ]
-    ffmpeg_bin = "ffmpeg"
-    for p in ffmpeg_paths:
-        if os.path.exists(p) or shutil.which(p):
-            ffmpeg_bin = p
-            break
+def get_ffmpeg_binary() -> str:
+    if os.getenv("FFMPEG_PATH") and os.path.exists(os.getenv("FFMPEG_PATH")):
+        return os.getenv("FFMPEG_PATH")
+    which_ffmpeg = shutil.which("ffmpeg")
+    if which_ffmpeg:
+        return which_ffmpeg
+    local_app_data = os.getenv("LOCALAPPDATA", "")
+    if local_app_data:
+        winget_dir = os.path.join(local_app_data, "Microsoft", "WinGet", "Packages")
+        if os.path.exists(winget_dir):
+            matches = glob.glob(os.path.join(winget_dir, "*ffmpeg*", "**", "ffmpeg.exe"), recursive=True)
+            if matches:
+                return matches[0]
+    return "ffmpeg"
 
+def decode_audio_ffmpeg(file_path: str) -> np.ndarray:
+    ffmpeg_bin = get_ffmpeg_binary()
     cmd = [
         ffmpeg_bin,
         "-nostdin",

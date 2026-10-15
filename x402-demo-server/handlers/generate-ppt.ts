@@ -34,6 +34,7 @@ export async function handleGeneratePpt(c: Context) {
       detail_level = 'balanced',
       allow_cloud_fallback,
       output_language = 'same as video',
+      user_confirmed_language = false,
     } = body;
 
     const allowCloudFallback = allow_cloud_fallback === true || process.env.ALLOW_CLOUD_FALLBACK === 'true';
@@ -70,6 +71,29 @@ export async function handleGeneratePpt(c: Context) {
     }
 
     console.log(`✓ Transcript ready: "${transcriptData.title}" (${transcriptData.charCount} chars, detectedLang: ${transcriptData.metadata?.detectedLanguage || 'unknown'})`);
+
+    const detectedLang = transcriptData.metadata?.detectedLanguage || transcriptData.metadata?.language || 'unknown';
+    const langConfidence = transcriptData.metadata?.languageConfidence ?? 1.0;
+    const isLowConfidence = Boolean(
+      transcriptData.metadata?.lowLanguageConfidence ||
+      (transcriptData.metadata?.languageConfidence !== undefined && transcriptData.metadata.languageConfidence < 0.60)
+    );
+
+    // If language confidence is low and user has not yet confirmed their choice, return 422 for UI prompt
+    if (isLowConfidence && !user_confirmed_language && output_language === 'same as video') {
+      console.log(`⚠️ [QuickPitch Stage 1] Low language confidence (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Prompting UI for language selection.`);
+      return c.json({
+        status: 'needs_language_selection',
+        low_language_confidence: true,
+        detected_language: detectedLang,
+        language_confidence: langConfidence,
+        title: transcriptData.title,
+        message: `Low language confidence detected (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Please confirm or pick the presentation language.`,
+      }, 422, {
+        'X-QuickPitch-Low-Language-Confidence': 'true',
+        'X-QuickPitch-Detected-Language': detectedLang,
+      });
+    }
 
     // Stage 2: Synthesis & Outline Planning (with schema validation & retry-on-failure)
     console.log(`[QuickPitch Stage 2] Synthesizing outline (outputLanguage: "${output_language}")...`);
@@ -130,6 +154,8 @@ export async function handleGeneratePpt(c: Context) {
         'Content-Disposition': `attachment; filename="${pptxResult.fileName}"`,
         'X-QuickPitch-Status': isPartial ? 'partial' : 'complete',
         'X-QuickPitch-Provider': providerUsed,
+        'X-QuickPitch-Low-Language-Confidence': isLowConfidence ? 'true' : 'false',
+        'X-QuickPitch-Detected-Language': detectedLang,
         ...(isPartial ? { 'X-QuickPitch-Notice': partialNotice } : {}),
       },
     });

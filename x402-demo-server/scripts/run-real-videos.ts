@@ -1,20 +1,20 @@
 import { extractTranscript } from '../core/transcript/extractor.js';
 
 const defaultVideos = [
-  'https://www.youtube.com/watch?v=8tK5z83unaM', // English / Indian Tech Community Podcast
-  'https://www.youtube.com/watch?v=jNQXAC9IVRw', // "Me at the zoo" (Short, classic)
-  'https://www.youtube.com/watch?v=kcc_KAhwpa0', // CGP Grey (High-density manual captions)
-  'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // Music & Speech Track
+  'https://www.youtube.com/watch?v=qzAHXO-cN5Q', // Hindi / Hinglish: Simplilearn AI Tutorial
+  'https://www.youtube.com/watch?v=8tK5z83unaM', // Telugu / English: Student Placements & AI Talk
+  'https://www.youtube.com/watch?v=jNQXAC9IVRw', // English: Me at the zoo (Classic short speech)
+  'https://www.youtube.com/watch?v=kcc_KAhwpa0', // English: CGP Grey (High-density manual captions)
 ];
 
 const urls = process.argv.slice(2).filter((u) => u.startsWith('http'));
-const testUrls = urls.length >= 4 ? urls : defaultVideos;
+const testUrls = urls.length > 0 ? urls : defaultVideos;
 
 async function run() {
   console.log('================================================================');
   console.log(' QuickPitch B10: Real Video Extraction & Transcription Runner');
   console.log('================================================================');
-  console.log(`Testing ${testUrls.length} real YouTube videos:\n`);
+  console.log(`Testing ${testUrls.length} real non-music YouTube videos:\n`);
 
   const results: any[] = [];
 
@@ -33,6 +33,24 @@ async function run() {
 
       const elapsedSec = ((Date.now() - startTime) / 1000).toFixed(1);
       const words = transcriptData.sanitizedText.split(/\s+/).filter(Boolean).length;
+
+      // Extract 10-line sample
+      let sample10Lines: string[] = [];
+      const punctuatedLines = transcriptData.sanitizedText
+        .split(/(?<=[.?!।])\s+|\n+/)
+        .map((l) => l.trim())
+        .filter((l) => l.length > 5);
+
+      if (punctuatedLines.length >= 10) {
+        sample10Lines = punctuatedLines.slice(0, 10);
+      } else {
+        const wordsArr = transcriptData.sanitizedText.split(/\s+/).filter(Boolean);
+        const chunkSize = 12;
+        for (let idx = 0; idx < Math.min(wordsArr.length, 120); idx += chunkSize) {
+          sample10Lines.push(wordsArr.slice(idx, idx + chunkSize).join(' '));
+        }
+        sample10Lines = sample10Lines.slice(0, 10);
+      }
 
       const report = {
         index: i + 1,
@@ -54,7 +72,7 @@ async function run() {
         charCount: transcriptData.charCount,
         wordCount: words,
         elapsedSec: `${elapsedSec}s`,
-        excerpt: transcriptData.sanitizedText.slice(0, 150).replace(/\n/g, ' ') + '...',
+        sample10Lines,
       };
 
       results.push(report);
@@ -65,7 +83,10 @@ async function run() {
       console.log(`  Spoken Language:     ${report.detectedLanguage} (Conf: ${report.languageConfidence}, LowConf: ${report.lowConfidence})`);
       console.log(`  Transcript Length:   ${report.charCount} chars (${report.wordCount} words)`);
       console.log(`  Time Elapsed:        ${report.elapsedSec}`);
-      console.log(`  Excerpt:             "${report.excerpt}"`);
+      console.log(`  10-Line Transcript Sample:`);
+      sample10Lines.forEach((line, idx) => {
+        console.log(`    [Line ${idx + 1}] ${line}`);
+      });
     } catch (err: any) {
       console.error(`❌ Failed for ${url}:`, err.message);
       results.push({

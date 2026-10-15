@@ -234,6 +234,18 @@ describe('Part B: Caption Quality Gate, Audio Download, GPU Lock, and VAD Dedupl
       assert.strictEqual(checkConfidence(highConfidenceProbe.probability).lowLanguageConfidence, false);
       assert.strictEqual(checkConfidence(lowConfidenceProbe.probability).lowLanguageConfidence, true);
     });
+
+    it('should require user confirmation when lowLanguageConfidence is true and outputLanguage is same as video', () => {
+      const metadata = { lowLanguageConfidence: true, languageConfidence: 0.42, detectedLanguage: 'hi' };
+      const shouldPromptUser = (meta: typeof metadata, userConfirmed: boolean, outputLang: string) => {
+        const isLow = meta.lowLanguageConfidence || meta.languageConfidence < 0.60;
+        return isLow && !userConfirmed && outputLang === 'same as video';
+      };
+
+      assert.strictEqual(shouldPromptUser(metadata, false, 'same as video'), true);
+      assert.strictEqual(shouldPromptUser(metadata, true, 'same as video'), false);
+      assert.strictEqual(shouldPromptUser(metadata, false, 'English'), false);
+    });
   });
 
   // ── 5. yt-dlp Audio Downloader & Error Classification (B3) ────────────────

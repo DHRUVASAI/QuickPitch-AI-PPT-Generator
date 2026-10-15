@@ -56,15 +56,20 @@ QuickPitch is a high-accuracy, production-grade web application built for the **
 
 ---
 
-## 3. 🤖 Resilient Multi-Provider AI Engine
+## 3. 🤖 Resilient Multi-Provider AI & Speech Engine
 
-To guarantee 100% uptime and zero-downtime quota failures during pitch demos, the backend uses an automated failover LLM pipeline:
+To guarantee 100% privacy, reliability, and local execution on NVIDIA RTX hardware (RTX 4060 8GB VRAM), QuickPitch implements a strict layered architecture:
 
-1. **Primary LLM:** **Groq LLaMA 3.1 8B Instant** — Ultra-fast inference (~0.6 seconds) with 500,000 tokens/day free-tier capacity.
-2. **Secondary LLM:** **Groq LLaMA 3.3 70B Versatile** — High-accuracy fallback.
-3. **Tertiary LLM:** **OpenAI GPT-4o** — High-precision semantic extraction.
-4. **Quaternary LLM:** **Google Gemini 1.5 Flash** — Direct multimodal processing capability.
-5. **Resilience Fallback:** Smart NLP text chunk extractor that guarantees a valid presentation is returned even if external LLM APIs experience downtime.
+### Speech-to-Text Pipeline (Part B)
+1. **YouTube Subtitle Gate:** Evaluates subtitle quality via `yt-dlp` subtitle tracks (prefers manual over auto-generated, rejects sparse captions < 35 WPM, rejects repetitive glitch loops > 25%).
+2. **Local Faster-Whisper Sidecar (Python 3.12):** Standalone FastAPI microservice on port 8000 powered by CTranslate2 with native CUDA `float16` acceleration.
+3. **GPU Memory Serialization (`GPULock`):** Single-GPU mutual exclusion guarantees Faster-Whisper and Ollama Qwen 2.5 are never loaded simultaneously. Whisper unloads and clears VRAM before Ollama synthesis begins.
+4. **Cloud Fallback Chain (Opt-In Only):** If `ALLOW_CLOUD_FALLBACK=true`, falls back to Groq Whisper and AWS Transcribe.
+
+### Synthesis & Presentation Engine
+1. **Primary Local LLM:** Local Ollama (`qwen2.5:7b`) with 8192 context window and persistent residency (`keep_alive`).
+2. **Deterministic Fallback:** Guaranteed non-AI structured synthesis if local model is offline.
+3. **Cloud Fallbacks (Opt-In):** Groq LLaMA 3.3 70B, Google Gemini 1.5 Flash, and OpenAI GPT-4o.
 
 ---
 

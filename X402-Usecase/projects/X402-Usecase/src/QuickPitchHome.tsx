@@ -121,6 +121,12 @@ export default function QuickPitchHome() {
   const [outputLanguage, setOutputLanguage] = useState('same as video')
   const [partialNotice, setPartialNotice] = useState<string | null>(null)
   const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
+  const [languagePrompt, setLanguagePrompt] = useState<{
+    detectedLanguage: string;
+    confidence: number;
+    message: string;
+    transcribedText?: string;
+  } | null>(null)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
@@ -208,13 +214,14 @@ export default function QuickPitchHome() {
     return null
   }
 
-  const getPayload = (transcribedText?: string) => {
+  const getPayload = (transcribedText?: string, confirmedLanguage: boolean = false, overrideLang?: string) => {
     const base = {
       theme: selectedTheme,
       detail_level: selectedDetailLevel,
       tone: selectedTone,
       allow_cloud_fallback: allowCloudFallback,
-      output_language: outputLanguage,
+      output_language: overrideLang || outputLanguage,
+      user_confirmed_language: confirmedLanguage,
     }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
@@ -284,13 +291,15 @@ export default function QuickPitchHome() {
   }
 
   // Main Generation Handler (Free - no payment required)
-  const handleGenerate = async () => {
+  const handleGenerate = async (confirmedLang?: string | React.MouseEvent, cachedTranscribedText?: string) => {
     if (!validateInput()) return
     setLoading(true); setError(''); setDone(false)
     setPartialNotice(null); setCloudProviderNotice(null)
+    setLanguagePrompt(null)
 
-    let transcribedText: string | undefined
-    if (mode === 'audio' && audioFile) {
+    const chosenLang = typeof confirmedLang === 'string' ? confirmedLang : undefined;
+    let transcribedText: string | undefined = cachedTranscribedText
+    if (mode === 'audio' && audioFile && !transcribedText) {
       setStatus('🎙️ Transcribing audio via AWS Transcribe + S3...')
       setIsTranscribing(true)
       const result = await transcribeAudioFile(audioFile)
@@ -306,6 +315,9 @@ export default function QuickPitchHome() {
     } else {
       setStatus(`Building ${selectedDetailLevel === 'detailed' ? '12-15' : '8-10'} slide deck with AI...`)
     }
+
+    const isConfirmed = Boolean(chosenLang);
+    const langToUse = chosenLang || outputLanguage;
 
     const endpoints = [
       '/api-proxy/generate-ppt',
@@ -323,8 +335,29 @@ export default function QuickPitchHome() {
           const response = await fetch(ep, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(getPayload(transcribedText)),
+            body: JSON.stringify(getPayload(transcribedText, isConfirmed, langToUse)),
           });
+
+          // Check if server flagged low language confidence and requested user confirmation (B5 / Gap 3)
+          if (response.status === 422) {
+            try {
+              const errJson = await response.json();
+              if (errJson.status === 'needs_language_selection') {
+                setLoading(false);
+                setStatus('');
+                setLanguagePrompt({
+                  detectedLanguage: errJson.detected_language || 'unknown',
+                  confidence: errJson.language_confidence || 0,
+                  message: errJson.message || 'Low language confidence detected. Please confirm presentation language.',
+                  transcribedText,
+                });
+                return;
+              }
+            } catch {
+              // fallback to regular error handling
+            }
+          }
+
           if (!response.ok) throw new Error(`Server error (${response.status}).`);
 
           // Read headers for partial notice and cloud provider info
@@ -788,6 +821,63 @@ export default function QuickPitchHome() {
                 </label>
               </div>
             </div>
+
+            {/* INTERACTIVE LOW LANGUAGE CONFIDENCE PROMPT (B5 / Gap 3) */}
+            {languagePrompt && (
+              <div className="mt-6 p-5 bg-[#171408] border-2 border-amber-500 rounded-xl space-y-4 shadow-xl">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-2 text-amber-400">
+                    <span className="text-xl">⚠️</span>
+                    <span className="font-heading font-bold text-sm text-amber-300">
+                      Low Language Confidence ({Math.round(languagePrompt.confidence * 100)}%)
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setLanguagePrompt(null)}
+                    className="text-neutral-500 hover:text-white text-xs font-mono"
+                  >
+                    ✕ Dismiss
+                  </button>
+                </div>
+
+                <p className="text-xs text-neutral-300 font-mono leading-relaxed">
+                  Speech transcription detected audio with low confidence as{' '}
+                  <strong className="text-amber-300 uppercase">[{languagePrompt.detectedLanguage}]</strong>.
+                  Please select your preferred language for the slide deck to proceed:
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { id: 'English', label: '🇺🇸 English', sub: 'Standard EN' },
+                    { id: 'Hindi', label: '🇮🇳 Hindi', sub: 'हिंदी' },
+                    { id: 'Telugu', label: '🇮🇳 Telugu', sub: 'తెలుగు' },
+                    { id: 'Spanish', label: '🇪🇸 Spanish', sub: 'Español' },
+                    { id: 'French', label: '🇫🇷 French', sub: 'Français' },
+                    { id: 'German', label: '🇩🇪 German', sub: 'Deutsch' },
+                    { id: languagePrompt.detectedLanguage, label: `🌐 Detected (${languagePrompt.detectedLanguage})`, sub: 'Keep Original' },
+                  ].map((choice) => (
+                    <button
+                      key={choice.id}
+                      type="button"
+                      onClick={() => {
+                        setOutputLanguage(choice.id);
+                        const cachedText = languagePrompt.transcribedText;
+                        setLanguagePrompt(null);
+                        handleGenerate(choice.id, cachedText);
+                      }}
+                      className="p-2.5 bg-[#221f11] hover:bg-amber-500 hover:text-black border border-amber-600/70 rounded text-left transition group"
+                    >
+                      <div className="text-xs font-bold font-heading text-neutral-100 group-hover:text-black">
+                        {choice.label}
+                      </div>
+                      <div className="text-[10px] font-mono text-neutral-400 group-hover:text-neutral-900">
+                        {choice.sub}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* ERROR DISPLAY WITH MANUAL ESCAPE HATCHES (B9) */}
             {error && (

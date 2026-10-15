@@ -77,6 +77,34 @@ export function classifyYtDlpError(rawError: string): VideoDownloadError {
   return new VideoDownloadError(`Audio download failed: ${rawError.slice(0, 150)}`, 'ERR_DOWNLOAD_FAILED');
 }
 
+function getFfmpegLocation(): string | null {
+  if (process.env.FFMPEG_PATH && fs.existsSync(process.env.FFMPEG_PATH)) {
+    return process.env.FFMPEG_PATH;
+  }
+  const localAppData = process.env.LOCALAPPDATA;
+  if (localAppData) {
+    const wingetDir = path.join(localAppData, 'Microsoft', 'WinGet', 'Packages');
+    if (fs.existsSync(wingetDir)) {
+      try {
+        const pkgs = fs.readdirSync(wingetDir);
+        for (const pkg of pkgs) {
+          if (pkg.toLowerCase().includes('ffmpeg')) {
+            const pkgPath = path.join(wingetDir, pkg);
+            const subdirs = fs.readdirSync(pkgPath);
+            for (const sub of subdirs) {
+              const binCandidate = path.join(pkgPath, sub, 'bin');
+              if (fs.existsSync(path.join(binCandidate, 'ffmpeg.exe'))) {
+                return binCandidate;
+              }
+            }
+          }
+        }
+      } catch {}
+    }
+  }
+  return null;
+}
+
 /**
  * Downloads audio for caption-less YouTube videos using yt-dlp with duration & size limits
  */
@@ -99,7 +127,7 @@ export async function downloadYouTubeAudio(
   // 1. Probe video metadata (duration & title) without downloading
   let metadata: any;
   try {
-    const { stdout } = await execAsync(`yt-dlp --dump-json --no-playlist "${url}"`, {
+    const { stdout } = await execAsync(`yt-dlp --js-runtimes node --dump-json --no-playlist "${url}"`, {
       timeout: 20000,
       maxBuffer: 10 * 1024 * 1024,
     });
@@ -133,8 +161,9 @@ export async function downloadYouTubeAudio(
   };
 
   try {
-    const ffmpegLoc = 'C:\\Users\\dhruv\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0.2-full_build\\bin';
-    const cmd = `yt-dlp --ffmpeg-location "${ffmpegLoc}" -f "ba/b" -x --audio-format mp3 --audio-quality 0 --max-filesize ${maxFileSizeMb}M -o "${outputPath}" --no-playlist "${url}"`;
+    const ffmpegLoc = getFfmpegLocation();
+    const ffmpegOpt = ffmpegLoc ? `--ffmpeg-location "${ffmpegLoc}" ` : '';
+    const cmd = `yt-dlp --js-runtimes node ${ffmpegOpt}-f "ba/b" -x --audio-format mp3 --audio-quality 0 --max-filesize ${maxFileSizeMb}M -o "${outputPath}" --no-playlist "${url}"`;
     await execAsync(cmd, {
       timeout: 120000, // 2 minutes max
       maxBuffer: 20 * 1024 * 1024,
