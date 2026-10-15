@@ -2,7 +2,9 @@ import type { ITranscriptionProvider } from '../types.js';
 import { withRetryAndTimeout } from '../../core/utils/retry.js';
 
 export interface LocalWhisperTranscribeOptions {
+  model?: string;
   language?: string;
+  task?: 'transcribe' | 'translate';
   initialPrompt?: string;
   vadFilter?: boolean;
   unloadAfter?: boolean;
@@ -89,6 +91,11 @@ export class LocalWhisperProvider implements ITranscriptionProvider {
         const formData = new FormData();
         formData.append('file', new Blob([new Uint8Array(audioBuffer)], { type: contentType }), fileName);
 
+        const task = options?.task || 'transcribe';
+        formData.append('task', task);
+        if (options?.model) {
+          formData.append('model', options.model);
+        }
         if (options?.language && options.language.toLowerCase() !== 'auto') {
           formData.append('language', options.language);
         }
@@ -99,6 +106,8 @@ export class LocalWhisperProvider implements ITranscriptionProvider {
         if (options?.unloadAfter) {
           formData.append('unload_after', 'true');
         }
+
+        console.log(`[LocalWhisperProvider] Sending to sidecar: model=${options?.model || 'default'}, language=${options?.language || 'auto'}, task=${task}, vad=${options?.vadFilter !== false}`);
 
         const resp = await fetch(`${this.baseUrl}/v1/audio/transcriptions`, {
           method: 'POST',
@@ -120,7 +129,7 @@ export class LocalWhisperProvider implements ITranscriptionProvider {
           segments: data.segments,
         };
       },
-      { name: 'Local Whisper Transcribe', timeoutMs: 120000, retries: 1, initialDelayMs: 500 }
+      { name: 'Local Whisper Transcribe', timeoutMs: 300000, retries: 1, initialDelayMs: 500 }
     );
   }
 

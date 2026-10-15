@@ -426,49 +426,54 @@ export default function QuickPitchHome() {
   }, [openSlideshowModal])
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-[#ff0000] selection:text-white relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#07090e] text-white selection:bg-[#ff1744] selection:text-white relative overflow-hidden font-sans">
       
-      {/* Swiss Clean Background */}
-      <div className="absolute inset-0 pointer-events-none z-0 bg-black" />
+      {/* Dynamic Ambient Background Glows */}
+      <div className="glow-backdrop-red" />
+      <div className="glow-backdrop-blue" />
+      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none z-0" />
 
       {/* 🧭 NAVIGATION HEADER */}
-      <header className="relative z-20 border-b border-[#262626] bg-black sticky top-0">
+      <header className="relative z-20 border-b border-white/[0.08] bg-[#07090e]/80 backdrop-blur-xl sticky top-0 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-10 h-10 bg-[#ff0000] flex items-center justify-center text-white font-bold text-xl">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center space-x-3.5 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#d50000] to-[#ff334b] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-red-500/25 group-hover:scale-105 transition-transform">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
             <div>
-              <span className="font-heading font-extrabold text-2xl tracking-tight text-white">
-                Quick<span className="text-[#ff0000]">Pitch</span>
-              </span>
-              <span className="ml-2 text-xs font-mono px-2 py-0.5 bg-[#171717] text-white border border-[#262626]">
-                FREE AI
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className="font-heading font-extrabold text-2xl tracking-tight text-white">
+                  Quick<span className="text-gradient-red">Pitch</span>
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold uppercase tracking-wider">
+                  AI v2.5
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium -mt-0.5">Presentation Intelligence Engine</p>
             </div>
           </div>
 
           {/* Quick Stats Ticker */}
-          <div className="hidden md:flex items-center space-x-6 text-xs text-neutral-400 font-mono">
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2 h-2 bg-emerald-500" />
-              <span>Server Active</span>
+          <div className="hidden md:flex items-center space-x-6 text-xs text-slate-400 font-mono">
+            <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06]">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-300 font-medium">Local GPU Engine Ready</span>
             </div>
-            <div className="h-4 w-px bg-[#262626]" />
-            <div>Price: <span className="text-emerald-400 font-bold">FREE</span></div>
-            <div className="h-4 w-px bg-[#262626]" />
-            <div>Execution: <span className="text-[#ffb703] font-bold">~3.3 sec</span></div>
+            <div className="h-4 w-px bg-white/10" />
+            <div>Tier: <span className="text-emerald-400 font-bold">100% Free</span></div>
+            <div className="h-4 w-px bg-white/10" />
+            <div>Speed: <span className="text-amber-400 font-bold">~3.3s</span></div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
             <button
               onClick={triggerReplaySplash}
-              className="px-3 py-2 bg-[#0a0a0a] border border-[#262626] hover:border-white text-neutral-300 hover:text-white font-mono text-xs transition flex items-center space-x-1.5"
+              className="px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs transition flex items-center space-x-1.5"
               title="Replay Opening Intro Animation"
             >
               <span>🎬 Replay Intro</span>
@@ -481,62 +486,69 @@ export default function QuickPitchHome() {
       <section className="relative z-10 pt-16 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
         
         {/* Badge */}
-        <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626] text-xs font-mono text-neutral-300 mb-8">
-          <span className="px-1.5 py-0.5 bg-[#ff0000] text-white font-bold text-[10px] uppercase">FREE</span>
-          <span>AI Multi-Layout Presentation Engine v2.5</span>
-          <svg className="w-3.5 h-3.5 text-[#ff0000]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="inline-flex items-center space-x-2.5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.1] text-xs font-mono text-slate-300 mb-8 backdrop-blur-md shadow-xl hover:border-red-500/30 transition">
+          <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-[10px] uppercase tracking-wide">
+            POWERED BY AI
+          </span>
+          <span>Adaptive Presentation Synthesizer</span>
+          <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-heading font-black tracking-tight max-w-5xl mx-auto leading-[1.05] mb-6 text-white">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-heading font-black tracking-tight max-w-5xl mx-auto leading-[1.08] mb-6">
           Transform YouTube, Audio & Text into <br />
-          <span className="text-[#ff0000]">Investor-Grade Presentation Decks</span>
+          <span className="text-gradient-red">Executive-Grade Slide Decks</span>
         </h1>
 
-        <p className="text-lg sm:text-xl text-neutral-400 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
-          Powered by <strong className="text-white font-semibold">AWS Transcribe + Groq Llama 3.1 AI</strong>. Generate beautifully structured .pptx files in seconds — <strong className="text-emerald-400 font-semibold">completely free</strong>.
+        <p className="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+          Synthesize any video or audio lecture into structured, beautifully styled <strong className="text-white font-semibold">.pptx presentation decks</strong> in seconds — completely free with native offline AI acceleration.
         </p>
 
         {/* Feature Highlights Badges */}
-        <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto mb-12 text-xs font-mono text-neutral-400">
-          <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626]">
-            <span className="text-[#ff0000]">✓</span> <span>8 Dynamic Visual Themes</span>
+        <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto mb-12 text-xs font-mono text-slate-300">
+          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
+            <span className="text-red-400">✓</span> <span>8 Curated Executive Color Themes</span>
           </div>
-          <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626]">
-            <span className="text-[#ff0000]">✓</span> <span>AWS Speech-to-Text Integration</span>
+          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
+            <span className="text-red-400">✓</span> <span>Multilingual Indic & Global Script Support</span>
           </div>
-          <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626]">
-            <span className="text-[#ff0000]">✓</span> <span>100% Native PowerPoint (.pptx)</span>
+          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
+            <span className="text-red-400">✓</span> <span>100% Native PowerPoint (.pptx) Format</span>
           </div>
-          <div className="flex items-center space-x-2 px-3 py-1.5 bg-[#0a0a0a] border border-[#262626]">
-            <span className="text-emerald-400">✓</span> <span>100% Free — No Account Required</span>
+          <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-sm">
+            <span className="text-emerald-400">✓</span> <span>Instant Download — Zero Signups</span>
           </div>
         </div>
 
         {/* 🌟 PRESET DEMO GALLERY (1-CLICK TEST DRIVE) */}
         <div className="mb-12">
-          <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-4">
-            ⚡ 1-Click Instant Demo Presets (Test Drive Without Typing)
+          <div className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-5 flex items-center justify-center space-x-2">
+            <span className="w-8 h-px bg-slate-700" />
+            <span>⚡ 1-Click Instant Demo Presets (Test Drive Without Typing)</span>
+            <span className="w-8 h-px bg-slate-700" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left max-w-6xl mx-auto">
             {PRESET_DEMOS.map((preset) => (
               <div
                 key={preset.id}
                 onClick={() => loadPreset(preset)}
-                className="bg-[#0a0a0a] p-4 cursor-pointer hover:border-white transition border border-[#262626] group"
+                className="glass-card p-5 cursor-pointer group hover:border-red-500/40 relative overflow-hidden"
               >
-                <div className="text-[10px] font-mono font-bold text-[#ff0000] mb-1">{preset.category}</div>
-                <div className="font-heading font-bold text-sm text-white group-hover:text-[#ff0000] transition mb-2">
+                <div className="text-[10px] font-mono font-bold text-red-400 mb-1.5 uppercase tracking-wider">{preset.category}</div>
+                <div className="font-heading font-bold text-sm text-white group-hover:text-red-400 transition mb-2">
                   {preset.title}
                 </div>
-                <div className="text-xs text-neutral-400 line-clamp-2 mb-3 leading-relaxed">
+                <div className="text-xs text-slate-400 line-clamp-2 mb-4 leading-relaxed">
                   {preset.desc}
                 </div>
-                <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500">
+                <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-2 border-t border-white/[0.06]">
                   <span className="capitalize">{preset.theme.replace('-', ' ')}</span>
-                  <span className="text-white font-semibold group-hover:text-[#ff0000] group-hover:translate-x-1 transition">Load Preset →</span>
+                  <span className="text-white font-semibold group-hover:text-red-400 group-hover:translate-x-1 transition flex items-center space-x-1">
+                    <span>Try Preset</span>
+                    <span>→</span>
+                  </span>
                 </div>
               </div>
             ))}
@@ -549,36 +561,36 @@ export default function QuickPitchHome() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* LEFT COLUMN: CONTROLS & INPUT FORM (7 COLS) */}
-          <div className="lg:col-span-7 bg-[#0a0a0a] p-6 sm:p-8 border border-[#262626] relative">
+          <div className="lg:col-span-7 glass-panel p-6 sm:p-8 relative shadow-2xl">
             
             {/* Input Mode Selector Tabs */}
-            <div className="flex bg-[#000000] p-1 border border-[#262626] mb-8">
+            <div className="flex bg-white/[0.03] p-1.5 rounded-xl border border-white/[0.08] mb-8">
               <button
                 onClick={() => setMode('youtube')}
-                className={`flex-1 py-2.5 px-4 text-xs font-semibold transition flex items-center justify-center space-x-2 ${
+                className={`flex-1 py-2.5 px-4 text-xs font-semibold rounded-lg transition-all flex items-center justify-center space-x-2 ${
                   mode === 'youtube'
-                    ? 'bg-[#ff0000] text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/30 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
                 <span>📺 YouTube Video</span>
               </button>
               <button
                 onClick={() => setMode('audio')}
-                className={`flex-1 py-2.5 px-4 text-xs font-semibold transition flex items-center justify-center space-x-2 ${
+                className={`flex-1 py-2.5 px-4 text-xs font-semibold rounded-lg transition-all flex items-center justify-center space-x-2 ${
                   mode === 'audio'
-                    ? 'bg-[#ff0000] text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/30 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
                 <span>🎙️ Audio / Speech</span>
               </button>
               <button
                 onClick={() => setMode('text')}
-                className={`flex-1 py-2.5 px-4 text-xs font-semibold transition flex items-center justify-center space-x-2 ${
+                className={`flex-1 py-2.5 px-4 text-xs font-semibold rounded-lg transition-all flex items-center justify-center space-x-2 ${
                   mode === 'text'
-                    ? 'bg-[#ff0000] text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/30 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
                 <span>📝 Text / Prompt</span>
@@ -1005,18 +1017,18 @@ export default function QuickPitchHome() {
                   backgroundColor: activeThemeConfig.bg,
                   borderColor: activeThemeConfig.border,
                 }}
-                className="tilt-card p-6 border shadow-2xl relative min-h-[420px] flex flex-col justify-between transition-colors duration-500"
+                className="tilt-card p-6 rounded-2xl border shadow-2xl relative min-h-[440px] flex flex-col justify-between transition-colors duration-500 overflow-hidden"
               >
                 {/* Slide Category Header */}
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span 
-                      className="text-[10px] font-mono font-extrabold uppercase px-2 py-0.5"
+                      className="text-[10px] font-mono font-extrabold uppercase px-2.5 py-1 rounded-full border border-current"
                       style={{ backgroundColor: activeThemeConfig.cardBg, color: activeThemeConfig.accent }}
                     >
                       {SAMPLE_PREVIEW_SLIDES[currentSlideIndex].category}
                     </span>
-                    <span className="text-[10px] font-mono text-neutral-500">SLIDE 0{currentSlideIndex + 1} / 0{SAMPLE_PREVIEW_SLIDES.length}</span>
+                    <span className="text-[10px] font-mono text-slate-400">SLIDE 0{currentSlideIndex + 1} / 0{SAMPLE_PREVIEW_SLIDES.length}</span>
                   </div>
 
                   {/* Slide Title & Subtitle */}
@@ -1038,26 +1050,27 @@ export default function QuickPitchHome() {
                     {SAMPLE_PREVIEW_SLIDES[currentSlideIndex].cards.map((card, ci) => (
                       <div
                         key={ci}
-                        className="p-3 border text-left"
+                        className="p-3.5 rounded-xl border text-left shadow-sm relative overflow-hidden"
                         style={{
                           backgroundColor: activeThemeConfig.cardBg,
                           borderColor: ci === 0 ? activeThemeConfig.accent : activeThemeConfig.border,
                         }}
                       >
                         <div 
-                          className="font-heading font-bold text-xs mb-2"
+                          className="font-heading font-bold text-xs mb-2 flex items-center space-x-1.5"
                           style={{ color: activeThemeConfig.textPrimary }}
                         >
-                          {card.card_title}
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: activeThemeConfig.accent }} />
+                          <span>{card.card_title}</span>
                         </div>
-                        <ul className="space-y-1">
+                        <ul className="space-y-1.5">
                           {card.points.map((pt, pi) => (
                             <li 
                               key={pi} 
-                              className="text-[10px] flex items-start space-x-1.5"
+                              className="text-[10px] flex items-start space-x-1.5 leading-relaxed"
                               style={{ color: activeThemeConfig.textMuted }}
                             >
-                              <span style={{ color: activeThemeConfig.accent }}>•</span>
+                              <span style={{ color: activeThemeConfig.accent }}>▪</span>
                               <span className="line-clamp-2">{pt}</span>
                             </li>
                           ))}
@@ -1068,17 +1081,17 @@ export default function QuickPitchHome() {
                 </div>
 
                 {/* Footer Controls */}
-                <div className="pt-4 border-t border-[#262626] flex items-center justify-between text-xs">
+                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setCurrentSlideIndex(prev => (prev - 1 + SAMPLE_PREVIEW_SLIDES.length) % SAMPLE_PREVIEW_SLIDES.length)}
-                      className="w-7 h-7 bg-[#000000] border border-[#262626] flex items-center justify-center text-white hover:border-[#ff0000]"
+                      className="w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-white hover:border-red-500 transition"
                     >
                       ←
                     </button>
                     <button
                       onClick={() => setCurrentSlideIndex(prev => (prev + 1) % SAMPLE_PREVIEW_SLIDES.length)}
-                      className="w-7 h-7 bg-[#000000] border border-[#262626] flex items-center justify-center text-white hover:border-[#ff0000]"
+                      className="w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-white hover:border-red-500 transition"
                     >
                       →
                     </button>
@@ -1086,7 +1099,7 @@ export default function QuickPitchHome() {
 
                   <button
                     onClick={() => setOpenSlideshowModal(true)}
-                    className="text-xs font-mono font-bold px-3 py-1.5 bg-[#000000] text-white border border-[#262626] hover:border-[#ff0000] transition flex items-center space-x-1"
+                    className="text-xs font-mono font-bold px-3 py-1.5 rounded-lg bg-black/40 text-white border border-white/10 hover:border-red-500 transition flex items-center space-x-1.5"
                   >
                     <span>🔍 Fullscreen Inspector</span>
                   </button>
@@ -1095,20 +1108,20 @@ export default function QuickPitchHome() {
             </div>
 
             {/* Server Status Terminal */}
-            <div className="bg-[#0a0a0a] p-5 border border-[#262626] font-mono text-xs text-neutral-400">
-              <div className="flex items-center justify-between pb-3 border-b border-[#262626] mb-3">
+            <div className="glass-panel p-5 font-mono text-xs text-slate-400">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] mb-3">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 bg-emerald-500" />
-                  <span className="font-bold text-white uppercase tracking-wider">Server Status</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="font-bold text-white uppercase tracking-wider">Engine Status</span>
                 </div>
-                <span className="text-[10px] text-neutral-500">QuickPitch AI</span>
+                <span className="text-[10px] text-slate-500">QuickPitch v2.5</span>
               </div>
               
               <div className="space-y-1.5 text-[11px] font-mono leading-relaxed">
-                <div className="text-neutral-500">&gt; Endpoint: POST /generate-ppt</div>
-                <div className="text-neutral-500">&gt; Backend: {apiBaseUrl}</div>
-                <div className="text-emerald-400">&gt; Status: Ready — Free Mode Active</div>
-                <div className="text-white">&gt; Cost: FREE (No payment required)</div>
+                <div className="text-slate-500">&gt; Endpoint: POST /generate-ppt</div>
+                <div className="text-slate-500">&gt; Backend: {apiBaseUrl}</div>
+                <div className="text-emerald-400">&gt; Local Synthesis: Qwen 2.5 7B (num_ctx 8192)</div>
+                <div className="text-white">&gt; Cost: FREE (Open AI presentation pipeline)</div>
               </div>
             </div>
           </div>

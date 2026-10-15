@@ -170,6 +170,8 @@ export interface ExtractTranscriptOptions {
   outputLanguage?: string;
   spokenLanguage?: string;
   forcedSpokenLanguage?: string;
+  whisperModel?: string;
+  whisperTask?: 'transcribe' | 'translate';
   forceAudio?: boolean;
   accuracyMode?: boolean;
 }
@@ -186,7 +188,7 @@ export async function extractTranscript(
 
   const targetSpokenLang = options?.spokenLanguage || options?.forcedSpokenLanguage;
   const isForceAudio = options?.forceAudio === true;
-  const cacheKey = buildCacheKey(url || text || fileName || 'source', targetSpokenLang, isForceAudio);
+  let cacheKey = buildCacheKey(url || text || fileName || 'source', targetSpokenLang, isForceAudio);
 
   // Requirement 3: Check transcript cache (memory + disk by video ID and language)
   const cachedTranscript = getCachedTranscript(cacheKey);
@@ -227,11 +229,23 @@ export async function extractTranscript(
       }) : null;
 
       if (gateResult && gateResult.isUsable) {
-        // Requirement 5: Accuracy mode: when only auto-generated captions exist, use Whisper instead.
-        // Default accuracy mode ON for non-English videos.
-        const isNonEnglish = gateResult.language && gateResult.language !== 'en';
+        // Fix Round Item 3: Accuracy mode OFF by default for non-English. Keep it as a setting.
+        // Only default it ON for a language after a benchmark shows Whisper beats that language's captions.
         const isAuto = !gateResult.isManual;
-        const accuracyModeActive = options?.accuracyMode ?? (isNonEnglish || process.env.ACCURACY_MODE === 'true');
+        const lang = (gateResult.language || 'auto').toLowerCase();
+        const isEnglish = lang === 'en' || lang.startsWith('en-');
+        // Currently bench-verified languages where Whisper beats captions:
+        const BENCHMARKED_WHISPER_BEATS_CAPTIONS = new Set<string>(['en']);
+
+        let accuracyModeActive: boolean;
+        if (options?.accuracyMode !== undefined) {
+          accuracyModeActive = options.accuracyMode;
+        } else if (process.env.ACCURACY_MODE !== undefined) {
+          accuracyModeActive = process.env.ACCURACY_MODE === 'true';
+        } else {
+          // Default ON only if language is English or specifically benchmarked
+          accuracyModeActive = isEnglish || BENCHMARKED_WHISPER_BEATS_CAPTIONS.has(lang);
+        }
 
         if (isAuto && accuracyModeActive) {
           console.log(`[TranscriptChain: AccuracyMode] Only auto-generated captions exist (${gateResult.language || 'auto'}). Accuracy mode is ON; routing to Faster-Whisper audio path...`);
@@ -294,23 +308,29 @@ export async function extractTranscript(
               }
 
               const detailed = await localWhisper.transcribeAudioDetailed(dlBuffer, 'audio.mp3', 'audio/mpeg', {
+                model: options?.whisperModel,
                 language: langToUse,
+                task: options?.whisperTask || 'transcribe',
                 vadFilter: true,
                 unloadAfter: true,
               });
 
               if (detailed.text && detailed.text.trim().length > 10) {
                 rawText = detailed.text;
-                console.log(`✓ [TranscriptChain: LocalWhisper] Speech transcription succeeded (${rawText.length} chars)`);
+                const resolvedSpoken = targetSpokenLang || detailed.language || detected?.language || 'auto';
+                cacheKey = buildCacheKey(url || text || fileName || 'source', resolvedSpoken, isForceAudio);
+                console.log(`✓ [TranscriptChain: LocalWhisper] Speech transcription succeeded (${rawText.length} chars, resolvedLanguage: ${resolvedSpoken})`);
                 metadata = {
                   url,
                   description: meta.description,
                   durationSeconds: audioDownload.durationSeconds,
                   language: detailed.language,
-                  detectedLanguage: targetSpokenLang || detected?.language || detailed.language,
+                  detectedLanguage: resolvedSpoken,
                   languageConfidence: targetSpokenLang ? 1.0 : (detected?.probability ?? 0.9),
                   lowLanguageConfidence: targetSpokenLang ? false : lowConfidence,
                   forcedSpokenLanguage: targetSpokenLang,
+                  whisperModel: options?.whisperModel || 'small',
+                  whisperTask: options?.whisperTask || 'transcribe',
                 };
               }
             } finally {

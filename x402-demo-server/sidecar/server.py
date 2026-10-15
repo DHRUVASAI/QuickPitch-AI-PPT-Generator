@@ -38,26 +38,31 @@ def get_model(model_name: Optional[str] = None):
     global loaded_model, current_model_name, current_device, current_compute_type
     target_model = model_name or os.getenv("WHISPER_MODEL", DEFAULT_MODEL)
 
-    if loaded_model is not None and current_model_name == target_model:
+    desired_compute = "int8_float16" if target_model == "large-v3" else "float16"
+
+    if loaded_model is not None and current_model_name == target_model and current_compute_type == desired_compute:
         return loaded_model
+
+    if loaded_model is not None:
+        unload_model()
 
     from faster_whisper import WhisperModel
     import ctranslate2
 
     has_cuda = ctranslate2.get_cuda_device_count() > 0
 
-    # Prioritize CUDA GPU (float16) on RTX 4060 hardware
+    # Prioritize CUDA GPU (float16 / int8_float16) on RTX 4060 hardware
     if has_cuda:
         try:
-            logger.info(f"Loading WhisperModel({target_model}) on CUDA float16...")
-            loaded_model = WhisperModel(target_model, device="cuda", compute_type="float16")
+            logger.info(f"Loading WhisperModel({target_model}) on CUDA {desired_compute}...")
+            loaded_model = WhisperModel(target_model, device="cuda", compute_type=desired_compute)
             current_model_name = target_model
             current_device = "cuda"
-            current_compute_type = "float16"
-            logger.info("Successfully loaded model on CUDA GPU.")
+            current_compute_type = desired_compute
+            logger.info(f"Successfully loaded {target_model} on CUDA {desired_compute}.")
             return loaded_model
         except Exception as e:
-            logger.warning(f"Failed to load on CUDA float16 ({e}). Falling back to CPU int8...")
+            logger.warning(f"Failed to load on CUDA {desired_compute} ({e}). Falling back to CPU int8...")
 
     # CPU int8 fallback
     logger.info(f"Loading WhisperModel({target_model}) on CPU int8...")
@@ -65,7 +70,7 @@ def get_model(model_name: Optional[str] = None):
     current_model_name = target_model
     current_device = "cpu"
     current_compute_type = "int8"
-    logger.info("Successfully loaded model on CPU int8.")
+    logger.info(f"Successfully loaded {target_model} on CPU int8.")
     return loaded_model
 
 
@@ -196,10 +201,12 @@ async def transcribe_audio(
     file: UploadFile = File(...),
     model: Optional[str] = Form(None),
     language: Optional[str] = Form(None),
+    task: str = Form("transcribe"),
     initial_prompt: Optional[str] = Form(None),
     vad_filter: bool = Form(True),
     unload_after: bool = Form(False),
 ):
+    logger.info(f"[SIDECAR RECEIVED PARAMS] model={model}, language={language}, task={task}, vad_filter={vad_filter}, initial_prompt={initial_prompt}")
     suffix = os.path.splitext(file.filename or "audio.mp3")[1] or ".mp3"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
         tmp_path = tmp.name
@@ -210,9 +217,13 @@ async def transcribe_audio(
         audio = decode_audio_ffmpeg(tmp_path)
         whisper_model = get_model(model)
 
+        resolved_lang = language if (language and language.lower() not in ["auto", "same as video", ""]) else None
+        logger.info(f"[FASTER-WHISPER TRANSCRIBE CALL] model={current_model_name}, device={current_device}, compute={current_compute_type}, task={task}, language={resolved_lang}")
+
         segments_gen, info = whisper_model.transcribe(
             audio,
-            language=language if (language and language.lower() not in ["auto", "same as video", ""]) else None,
+            task=task,
+            language=resolved_lang,
             initial_prompt=initial_prompt,
             vad_filter=vad_filter,
             vad_parameters=dict(min_silence_duration_ms=500),
