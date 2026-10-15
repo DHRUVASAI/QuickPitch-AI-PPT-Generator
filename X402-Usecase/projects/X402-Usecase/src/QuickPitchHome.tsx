@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { TalkWithYouTubeModal } from './components/TalkWithYouTubeModal'
 
 // ── COLOR THEMES DEFINITION ──────────────────────────────────────────────────
 interface ThemeConfig {
@@ -120,6 +121,7 @@ export default function QuickPitchHome() {
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
   const [openSlideshowModal, setOpenSlideshowModal] = useState(false)
+  const [openChatModal, setOpenChatModal] = useState(false)
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
 
   // ROI Calculator States
@@ -544,8 +546,32 @@ export default function QuickPitchHome() {
                     </button>
                   )}
                 </div>
+
+                {/* Talk with Video Action Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-[#0e0e11] border border-[#262626]">
+                  <div className="flex items-center space-x-2 text-xs text-neutral-400 font-mono">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>AI Model: <strong className="text-white">Qwen 2.5 7B Local GPU</strong></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!youtubeUrl.includes('youtube.com') && !youtubeUrl.includes('youtu.be')) {
+                        setError('Please enter a valid YouTube URL first to chat with it');
+                        return;
+                      }
+                      setError('');
+                      setOpenChatModal(true);
+                    }}
+                    className="px-4 py-2 bg-[#ff0000] hover:bg-red-600 text-white font-mono text-xs font-bold transition flex items-center justify-center space-x-2 shadow-lg shadow-red-950/40"
+                  >
+                    <span>💬 Talk with YouTube Video</span>
+                    <span className="text-[10px] bg-black/40 px-1.5 py-0.5 rounded font-mono">AI Q&A</span>
+                  </button>
+                </div>
+
                 <p className="text-xs text-neutral-500">
-                  💡 Works with lectures, podcasts, interviews, product keynotes, and pitch videos.
+                  💡 Works with lectures, podcasts, interviews, product keynotes, and pitch videos. Click <strong>Talk with YouTube Video</strong> to ask our local model any questions grounded in the video transcript!
                 </p>
               </div>
             )}
@@ -1024,13 +1050,18 @@ export default function QuickPitchHome() {
                 </button>
               </div>
 
-              <div className="text-neutral-500">
-                Use Left / Right Arrow keys to navigate
-              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* 💬 TALK WITH YOUTUBE MODAL (LOCAL GPU QWEN 2.5 7B) */}
+      <TalkWithYouTubeModal
+        isOpen={openChatModal}
+        onClose={() => setOpenChatModal(false)}
+        videoUrl={youtubeUrl}
+        apiBaseUrl={apiBaseUrl}
+      />
 
       {/* 🎬 OPENING INTRO ANIMATION SPLASH SCREEN */}
       {showSplash && (

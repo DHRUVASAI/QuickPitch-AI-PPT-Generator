@@ -15,6 +15,7 @@ import { serve } from '@hono/node-server';
 // Import handler functions
 import { handleGeneratePpt } from './handlers/generate-ppt';
 import { handleTranscribeAudio } from './handlers/transcribe-audio';
+import { handleLoadYouTubeTranscript, handleYouTubeChat } from './handlers/youtube-chat';
 
 // Load environment variables
 config();
@@ -110,6 +111,10 @@ app.post('/generate-ppt-demo', handleGeneratePpt);
 
 // AWS Transcribe Audio - Real speech-to-text via AWS Transcribe + S3
 app.post('/transcribe-audio', handleTranscribeAudio);
+
+// Talk with YouTube Video (Local Qwen 2.5 7B via Ollama / OpenAI-compatible REST API)
+app.post('/youtube/load-transcript', handleLoadYouTubeTranscript);
+app.post('/youtube/chat', handleYouTubeChat);
 
 // ════════════════════════════════════════════════════════════════════
 // PUBLIC ENDPOINTS
