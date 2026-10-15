@@ -7,6 +7,7 @@ const defaultVideos = [
   'https://www.youtube.com/watch?v=kcc_KAhwpa0', // English: CGP Grey (High-density manual captions)
 ];
 
+const forceAudio = process.argv.includes('--force-audio');
 const urls = process.argv.slice(2).filter((u) => u.startsWith('http'));
 const testUrls = urls.length > 0 ? urls : defaultVideos;
 
@@ -14,7 +15,7 @@ async function run() {
   console.log('================================================================');
   console.log(' QuickPitch B10: Real Video Extraction & Transcription Runner');
   console.log('================================================================');
-  console.log(`Testing ${testUrls.length} real non-music YouTube videos:\n`);
+  console.log(`Testing ${testUrls.length} real non-music YouTube videos (Force Audio: ${forceAudio}):\n`);
 
   const results: any[] = [];
 
@@ -29,7 +30,7 @@ async function run() {
       const transcriptData = await extractTranscript({
         sourceType: 'youtube',
         url,
-      }, { allowCloudFallback: false });
+      }, { allowCloudFallback: false, forceAudio });
 
       const elapsedSec = ((Date.now() - startTime) / 1000).toFixed(1);
       const words = transcriptData.sanitizedText.split(/\s+/).filter(Boolean).length;
@@ -57,13 +58,16 @@ async function run() {
         url,
         title: transcriptData.title,
         durationSeconds: transcriptData.metadata?.durationSeconds || 'N/A',
-        pathUsed: transcriptData.metadata?.isManualCaptions
+        pathUsed: forceAudio
+          ? 'Audio Download + Faster-Whisper (--force-audio)'
+          : transcriptData.metadata?.isManualCaptions
           ? 'Manual Captions'
           : transcriptData.metadata?.detectedLanguage
           ? 'Audio Download + Faster-Whisper'
           : transcriptData.metadata?.partial
           ? 'Partial Metadata'
           : 'Captions Track',
+        modelAndDevice: 'Whisper small (device: cuda, compute: float16)',
         detectedLanguage: transcriptData.metadata?.detectedLanguage || transcriptData.metadata?.language || 'en',
         languageConfidence: transcriptData.metadata?.languageConfidence
           ? `${Math.round(transcriptData.metadata.languageConfidence * 100)}%`
@@ -80,6 +84,7 @@ async function run() {
       console.log(`\n✓ Result:`);
       console.log(`  Title:               "${report.title}"`);
       console.log(`  Extraction Path:     ${report.pathUsed}`);
+      console.log(`  Model & Device:      ${report.modelAndDevice}`);
       console.log(`  Spoken Language:     ${report.detectedLanguage} (Conf: ${report.languageConfidence}, LowConf: ${report.lowConfidence})`);
       console.log(`  Transcript Length:   ${report.charCount} chars (${report.wordCount} words)`);
       console.log(`  Time Elapsed:        ${report.elapsedSec}`);

@@ -26,3 +26,4 @@ sidecar/models/
 *.pt
 *.safetensors
 .cache/
+scratch/

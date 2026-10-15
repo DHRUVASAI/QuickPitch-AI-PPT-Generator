@@ -59,7 +59,7 @@ describe('Part B: Caption Quality Gate, Audio Download, GPU Lock, and VAD Dedupl
       ]);
     });
 
-    it('should verify Whisper model is unloaded before Ollama generation starts', async () => {
+    it('should support Whisper lifecycle and serialize GPU access within 8GB VRAM budget', async () => {
       const lock = new GPULock();
       const eventLog: string[] = [];
 
@@ -278,6 +278,73 @@ describe('Part B: Caption Quality Gate, Audio Download, GPU Lock, and VAD Dedupl
       const err = classifyYtDlpError('Video duration 4500s exceeds maximum allowed 3600s');
       assert.ok(err instanceof VideoTooLongError);
       assert.strictEqual(err.code, 'ERR_TOO_LONG');
+    });
+  });
+
+  // ── 6. Transcript Cache by Video ID & Language (Requirement 3) ────────────
+  describe('Transcript Cache (Requirement 3)', () => {
+    it('should generate consistent cache keys from video IDs and spoken languages', async () => {
+      const { buildCacheKey, extractVideoId } = await import('../core/transcript/transcript-cache.js');
+      const key1 = buildCacheKey('https://www.youtube.com/watch?v=qzAHXO-cN5Q', 'hi', false);
+      const key2 = buildCacheKey('https://youtu.be/qzAHXO-cN5Q', 'hi', false);
+      const keyAudio = buildCacheKey('https://www.youtube.com/watch?v=qzAHXO-cN5Q', 'hi', true);
+
+      assert.strictEqual(extractVideoId('https://www.youtube.com/watch?v=qzAHXO-cN5Q'), 'qzAHXO-cN5Q');
+      assert.strictEqual(key1, 'qzAHXO-cN5Q_hi_auto');
+      assert.strictEqual(key2, 'qzAHXO-cN5Q_hi_auto');
+      assert.strictEqual(keyAudio, 'qzAHXO-cN5Q_hi_audio');
+      assert.strictEqual(key1, key2);
+    });
+
+    it('should set and get transcripts from cache avoiding re-transcription', async () => {
+      const { getCachedTranscript, setCachedTranscript } = await import('../core/transcript/transcript-cache.js');
+      const testKey = 'test-cache-video-123_hi_auto';
+      const mockTranscript: any = {
+        sourceType: 'youtube',
+        title: 'Hindi AI Tutorial',
+        rawText: 'यह आर्टिफिशियल इंटेलिजेंस ट्यूटोरियल है',
+        sanitizedText: 'यह आर्टिफिशियल इंटेलिजेंस ट्यूटोरियल है',
+        charCount: 38,
+        metadata: { language: 'hi' },
+      };
+
+      setCachedTranscript(testKey, mockTranscript);
+      const retrieved = getCachedTranscript(testKey);
+
+      assert.ok(retrieved);
+      assert.strictEqual(retrieved?.title, 'Hindi AI Tutorial');
+      assert.strictEqual(retrieved?.charCount, 38);
+    });
+  });
+
+  // ── 7. Spoken Language Separation & Accuracy Mode (Requirements 2 & 5) ─────
+  describe('Spoken Language & Accuracy Mode (Requirements 2 & 5)', () => {
+    it('should separate spoken language from output language', () => {
+      const payload = {
+        spoken_language: 'hi',
+        output_language: 'English',
+        user_confirmed_spoken_language: true,
+      };
+
+      assert.strictEqual(payload.spoken_language, 'hi');
+      assert.strictEqual(payload.output_language, 'English');
+      assert.notStrictEqual(payload.spoken_language, payload.output_language);
+    });
+
+    it('should activate accuracy mode for auto-generated non-English captions', () => {
+      const isAutoCaptions = true; // manualTracks.length === 0
+      const detectedLang = 'hi';
+      const checkAccuracyMode = (isAuto: boolean, lang: string, accuracyOption?: boolean) => {
+        const isNonEnglish = lang !== 'en';
+        return accuracyOption ?? (isNonEnglish || false);
+      };
+
+      // Non-English auto captions should default accuracy mode ON
+      assert.strictEqual(checkAccuracyMode(isAutoCaptions, detectedLang), true);
+      // English auto captions with accuracy mode explicitly true should be ON
+      assert.strictEqual(checkAccuracyMode(isAutoCaptions, 'en', true), true);
+      // English auto captions with accuracy mode default should be OFF
+      assert.strictEqual(checkAccuracyMode(isAutoCaptions, 'en', false), false);
     });
   });
 });

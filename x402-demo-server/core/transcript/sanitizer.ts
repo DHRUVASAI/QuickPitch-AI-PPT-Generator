@@ -43,7 +43,7 @@ export function sanitizeTranscriptText(textContext: string, maxLen: number = 250
       if (!line) return false;
       if (/^[0-9\s.,\-_:\[\]]+$/.test(line)) return false;
       if (line.length < 5) return false;
-      const words = line.match(/[a-zA-Z]{2,}/g);
+      const words = line.match(/[\p{L}\p{M}]{2,}/gu);
       return Boolean(words && words.length >= 2);
     })
     .join(' ');

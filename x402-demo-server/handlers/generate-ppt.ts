@@ -34,7 +34,11 @@ export async function handleGeneratePpt(c: Context) {
       detail_level = 'balanced',
       allow_cloud_fallback,
       output_language = 'same as video',
+      spoken_language,
+      user_confirmed_spoken_language = false,
       user_confirmed_language = false,
+      force_audio = false,
+      accuracy_mode,
     } = body;
 
     const allowCloudFallback = allow_cloud_fallback === true || process.env.ALLOW_CLOUD_FALLBACK === 'true';
@@ -43,7 +47,7 @@ export async function handleGeneratePpt(c: Context) {
     let partialNotice = '';
 
     // Stage 1: Transcript Ingestion & Sanitization
-    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback}, outputLang: ${output_language})...`);
+    console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback}, outputLang: ${output_language}, spokenLang: ${spoken_language || 'auto'})...`);
     let transcriptData;
     try {
       transcriptData = await extractTranscript({
@@ -51,7 +55,13 @@ export async function handleGeneratePpt(c: Context) {
         url,
         text,
         topicHint: text ? text.slice(0, 60) : undefined,
-      }, { allowCloudFallback, outputLanguage: output_language });
+      }, {
+        allowCloudFallback,
+        outputLanguage: output_language,
+        spokenLanguage: spoken_language,
+        forceAudio: force_audio,
+        accuracyMode: accuracy_mode,
+      });
       if (transcriptData.metadata?.partial) {
         isPartial = true;
         partialNotice = 'Transcript used partial video metadata';
@@ -79,16 +89,19 @@ export async function handleGeneratePpt(c: Context) {
       (transcriptData.metadata?.languageConfidence !== undefined && transcriptData.metadata.languageConfidence < 0.60)
     );
 
-    // If language confidence is low and user has not yet confirmed their choice, return 422 for UI prompt
-    if (isLowConfidence && !user_confirmed_language && output_language === 'same as video') {
-      console.log(`⚠️ [QuickPitch Stage 1] Low language confidence (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Prompting UI for language selection.`);
+    // Requirement 2: Spoken-language picker
+    // If language confidence is low and user has not yet specified/confirmed the SPOKEN language, return 422
+    const isSpokenConfirmed = user_confirmed_spoken_language || user_confirmed_language || Boolean(spoken_language);
+    if (isLowConfidence && !isSpokenConfirmed) {
+      console.log(`⚠️ [QuickPitch Stage 1] Low spoken language confidence (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Prompting UI for SPOKEN language.`);
       return c.json({
-        status: 'needs_language_selection',
+        status: 'needs_spoken_language_selection',
         low_language_confidence: true,
         detected_language: detectedLang,
         language_confidence: langConfidence,
         title: transcriptData.title,
-        message: `Low language confidence detected (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Please confirm or pick the presentation language.`,
+        output_language,
+        message: `Low language confidence detected (${Math.round(langConfidence * 100)}% for "${detectedLang}"). Please select the SPOKEN language of the video so Whisper can transcribe accurately.`,
       }, 422, {
         'X-QuickPitch-Low-Language-Confidence': 'true',
         'X-QuickPitch-Detected-Language': detectedLang,

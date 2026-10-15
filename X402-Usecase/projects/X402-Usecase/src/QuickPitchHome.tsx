@@ -119,12 +119,14 @@ export default function QuickPitchHome() {
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [allowCloudFallback, setAllowCloudFallback] = useState(false)
   const [outputLanguage, setOutputLanguage] = useState('same as video')
+  const [spokenLanguage, setSpokenLanguage] = useState<string | undefined>(undefined)
   const [partialNotice, setPartialNotice] = useState<string | null>(null)
   const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
   const [languagePrompt, setLanguagePrompt] = useState<{
     detectedLanguage: string;
     confidence: number;
     message: string;
+    outputLanguage?: string;
     transcribedText?: string;
   } | null>(null)
   const [status, setStatus] = useState('')
@@ -214,14 +216,17 @@ export default function QuickPitchHome() {
     return null
   }
 
-  const getPayload = (transcribedText?: string, confirmedLanguage: boolean = false, overrideLang?: string) => {
+  const getPayload = (transcribedText?: string, confirmedSpokenLang?: string, overrideOutputLang?: string) => {
+    const activeSpoken = confirmedSpokenLang || spokenLanguage;
     const base = {
       theme: selectedTheme,
       detail_level: selectedDetailLevel,
       tone: selectedTone,
       allow_cloud_fallback: allowCloudFallback,
-      output_language: overrideLang || outputLanguage,
-      user_confirmed_language: confirmedLanguage,
+      output_language: overrideOutputLang || outputLanguage,
+      spoken_language: activeSpoken,
+      user_confirmed_spoken_language: Boolean(activeSpoken),
+      user_confirmed_language: Boolean(activeSpoken),
     }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
@@ -291,13 +296,17 @@ export default function QuickPitchHome() {
   }
 
   // Main Generation Handler (Free - no payment required)
-  const handleGenerate = async (confirmedLang?: string | React.MouseEvent, cachedTranscribedText?: string) => {
+  const handleGenerate = async (confirmedSpokenLang?: string | React.MouseEvent, cachedTranscribedText?: string) => {
     if (!validateInput()) return
     setLoading(true); setError(''); setDone(false)
     setPartialNotice(null); setCloudProviderNotice(null)
     setLanguagePrompt(null)
 
-    const chosenLang = typeof confirmedLang === 'string' ? confirmedLang : undefined;
+    const chosenSpoken = typeof confirmedSpokenLang === 'string' ? confirmedSpokenLang : spokenLanguage;
+    if (typeof confirmedSpokenLang === 'string') {
+      setSpokenLanguage(confirmedSpokenLang);
+    }
+
     let transcribedText: string | undefined = cachedTranscribedText
     if (mode === 'audio' && audioFile && !transcribedText) {
       setStatus('🎙️ Transcribing audio via AWS Transcribe + S3...')
@@ -316,9 +325,6 @@ export default function QuickPitchHome() {
       setStatus(`Building ${selectedDetailLevel === 'detailed' ? '12-15' : '8-10'} slide deck with AI...`)
     }
 
-    const isConfirmed = Boolean(chosenLang);
-    const langToUse = chosenLang || outputLanguage;
-
     const endpoints = [
       '/api-proxy/generate-ppt',
       `${apiBaseUrl}/generate-ppt`,
@@ -335,20 +341,21 @@ export default function QuickPitchHome() {
           const response = await fetch(ep, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(getPayload(transcribedText, isConfirmed, langToUse)),
+            body: JSON.stringify(getPayload(transcribedText, chosenSpoken)),
           });
 
-          // Check if server flagged low language confidence and requested user confirmation (B5 / Gap 3)
+          // Check if server flagged low spoken language confidence and requested user clarification (Requirement 2)
           if (response.status === 422) {
             try {
               const errJson = await response.json();
-              if (errJson.status === 'needs_language_selection') {
+              if (errJson.status === 'needs_spoken_language_selection' || errJson.status === 'needs_language_selection') {
                 setLoading(false);
                 setStatus('');
                 setLanguagePrompt({
                   detectedLanguage: errJson.detected_language || 'unknown',
                   confidence: errJson.language_confidence || 0,
-                  message: errJson.message || 'Low language confidence detected. Please confirm presentation language.',
+                  message: errJson.message || 'Low language confidence detected in spoken audio. Please confirm spoken language.',
+                  outputLanguage: errJson.current_output_language || outputLanguage,
                   transcribedText,
                 });
                 return;
@@ -822,14 +829,14 @@ export default function QuickPitchHome() {
               </div>
             </div>
 
-            {/* INTERACTIVE LOW LANGUAGE CONFIDENCE PROMPT (B5 / Gap 3) */}
+            {/* INTERACTIVE SPOKEN-LANGUAGE PICKER ON LOW CONFIDENCE (Requirement 2) */}
             {languagePrompt && (
               <div className="mt-6 p-5 bg-[#171408] border-2 border-amber-500 rounded-xl space-y-4 shadow-xl">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-2 text-amber-400">
-                    <span className="text-xl">⚠️</span>
+                    <span className="text-xl">🎙️</span>
                     <span className="font-heading font-bold text-sm text-amber-300">
-                      Low Language Confidence ({Math.round(languagePrompt.confidence * 100)}%)
+                      Spoken Audio Clarification (Confidence: {Math.round(languagePrompt.confidence * 100)}%)
                     </span>
                   </div>
                   <button
@@ -840,27 +847,33 @@ export default function QuickPitchHome() {
                   </button>
                 </div>
 
-                <p className="text-xs text-neutral-300 font-mono leading-relaxed">
-                  Speech transcription detected audio with low confidence as{' '}
-                  <strong className="text-amber-300 uppercase">[{languagePrompt.detectedLanguage}]</strong>.
-                  Please select your preferred language for the slide deck to proceed:
-                </p>
+                <div className="text-xs text-neutral-300 font-mono space-y-1.5 leading-relaxed">
+                  <p>
+                    Whisper detected audio with low confidence as{' '}
+                    <strong className="text-amber-300 uppercase">[{languagePrompt.detectedLanguage}]</strong>.
+                  </p>
+                  <p className="text-amber-200">
+                    👉 Please select the <strong>primary language spoken in the video</strong> so Whisper can re-transcribe with forced language accuracy:
+                  </p>
+                  <p className="text-[11px] text-neutral-400">
+                    (Slide deck output language will remain: <span className="text-white font-semibold">{outputLanguage}</span>)
+                  </p>
+                </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
-                    { id: 'English', label: '🇺🇸 English', sub: 'Standard EN' },
-                    { id: 'Hindi', label: '🇮🇳 Hindi', sub: 'हिंदी' },
-                    { id: 'Telugu', label: '🇮🇳 Telugu', sub: 'తెలుగు' },
-                    { id: 'Spanish', label: '🇪🇸 Spanish', sub: 'Español' },
-                    { id: 'French', label: '🇫🇷 French', sub: 'Français' },
-                    { id: 'German', label: '🇩🇪 German', sub: 'Deutsch' },
-                    { id: languagePrompt.detectedLanguage, label: `🌐 Detected (${languagePrompt.detectedLanguage})`, sub: 'Keep Original' },
+                    { id: 'hi', label: '🇮🇳 Hindi', sub: 'Audio spoken in Hindi' },
+                    { id: 'te', label: '🇮🇳 Telugu', sub: 'Audio spoken in Telugu' },
+                    { id: 'en', label: '🇺🇸 English', sub: 'Audio spoken in English' },
+                    { id: 'es', label: '🇪🇸 Spanish', sub: 'Audio spoken in Spanish' },
+                    { id: 'fr', label: '🇫🇷 French', sub: 'Audio spoken in French' },
+                    { id: 'de', label: '🇩🇪 German', sub: 'Audio spoken in German' },
+                    { id: languagePrompt.detectedLanguage, label: `🌐 Detected (${languagePrompt.detectedLanguage})`, sub: 'Use original detection' },
                   ].map((choice) => (
                     <button
                       key={choice.id}
                       type="button"
                       onClick={() => {
-                        setOutputLanguage(choice.id);
                         const cachedText = languagePrompt.transcribedText;
                         setLanguagePrompt(null);
                         handleGenerate(choice.id, cachedText);

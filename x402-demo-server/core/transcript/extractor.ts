@@ -162,11 +162,16 @@ import { listYouTubeCaptionTracks, evaluateCaptionQuality } from './caption-qual
 import { downloadYouTubeAudio, VideoDownloadError } from './audio-downloader.js';
 import { gpuLock } from '../utils/gpu-lock.js';
 import { getLocalWhisperClient } from '../../models/index.js';
+import { buildCacheKey, getCachedTranscript, setCachedTranscript } from './transcript-cache.js';
 
 export interface ExtractTranscriptOptions {
   transcriptionProvider?: ITranscriptionProvider;
   allowCloudFallback?: boolean;
   outputLanguage?: string;
+  spokenLanguage?: string;
+  forcedSpokenLanguage?: string;
+  forceAudio?: boolean;
+  accuracyMode?: boolean;
 }
 
 /**
@@ -179,6 +184,17 @@ export async function extractTranscript(
 ): Promise<TranscriptData> {
   const { sourceType, url, text, audioBuffer, fileName, contentType, topicHint } = input;
 
+  const targetSpokenLang = options?.spokenLanguage || options?.forcedSpokenLanguage;
+  const isForceAudio = options?.forceAudio === true;
+  const cacheKey = buildCacheKey(url || text || fileName || 'source', targetSpokenLang, isForceAudio);
+
+  // Requirement 3: Check transcript cache (memory + disk by video ID and language)
+  const cachedTranscript = getCachedTranscript(cacheKey);
+  if (cachedTranscript) {
+    console.log(`[TranscriptCache] Cache HIT for key "${cacheKey}". Returning cached transcript.`);
+    return cachedTranscript;
+  }
+
   let title = topicHint || 'Executive Presentation';
   let rawText = '';
   let metadata: any = undefined;
@@ -189,16 +205,14 @@ export async function extractTranscript(
       throw new Error('Valid YouTube URL is required');
     }
 
-    const cached = youtubeCache.get(url);
-    if (cached && Date.now() - cached.fetchedAt < 1000 * 60 * 60) {
-      title = cached.title;
-      rawText = cached.transcript;
-      metadata = { url, description: cached.description };
-    } else {
-      const meta = await fetchYouTubeMetadata(url);
-      title = meta.title || title;
-      metadata = { url, description: meta.description };
+    const meta = await fetchYouTubeMetadata(url);
+    title = meta.title || title;
+    metadata = { url, description: meta.description };
 
+    let useCaptions = false;
+
+    // Requirement 1: --force-audio skips captions and routes directly to audio download + Whisper
+    if (!isForceAudio) {
       // Step 1: Caption Quality Gate (Check tracks & word count relative to duration)
       console.log(`[TranscriptChain: YouTube] Step 1: Checking caption tracks & quality gate for ${url}...`);
       const trackInfo = await listYouTubeCaptionTracks(url);
@@ -213,72 +227,97 @@ export async function extractTranscript(
       }) : null;
 
       if (gateResult && gateResult.isUsable) {
-        rawText = captions!;
-        console.log(`✓ [TranscriptChain] YouTube captions passed quality gate (${gateResult.wordCount} words, ${gateResult.wordsPerMinute} WPM, manual: ${gateResult.isManual})`);
-        metadata = {
-          url,
-          description: meta.description,
-          durationSeconds,
-          isManualCaptions: gateResult.isManual,
-          language: gateResult.language,
-        };
+        // Requirement 5: Accuracy mode: when only auto-generated captions exist, use Whisper instead.
+        // Default accuracy mode ON for non-English videos.
+        const isNonEnglish = gateResult.language && gateResult.language !== 'en';
+        const isAuto = !gateResult.isManual;
+        const accuracyModeActive = options?.accuracyMode ?? (isNonEnglish || process.env.ACCURACY_MODE === 'true');
+
+        if (isAuto && accuracyModeActive) {
+          console.log(`[TranscriptChain: AccuracyMode] Only auto-generated captions exist (${gateResult.language || 'auto'}). Accuracy mode is ON; routing to Faster-Whisper audio path...`);
+        } else {
+          rawText = captions!;
+          useCaptions = true;
+          console.log(`✓ [TranscriptChain] YouTube captions passed quality gate (${gateResult.wordCount} words, ${gateResult.wordsPerMinute} WPM, manual: ${gateResult.isManual})`);
+          metadata = {
+            url,
+            description: meta.description,
+            durationSeconds,
+            isManualCaptions: gateResult.isManual,
+            language: gateResult.language,
+          };
+        }
       } else {
         const rejectReason = gateResult ? gateResult.reason : 'No captions track available';
         console.warn(`⚠️ [TranscriptChain] Captions unusable (${rejectReason}). Routing to Audio Download path...`);
+      }
+    } else {
+      console.log(`[TranscriptChain: ForceAudio] --force-audio active: skipping captions track and routing directly to Audio Download + Whisper...`);
+    }
 
-        // Step 2: Audio Download & Local Whisper Path (B3 -> B2)
+    if (!useCaptions) {
+      // Step 2: Audio Download & Local Whisper Path (B3 -> B2)
+      try {
+        console.log(`[TranscriptChain: Audio] Downloading audio stream via yt-dlp for ${url}...`);
+        const audioDownload = await downloadYouTubeAudio(url);
         try {
-          console.log(`[TranscriptChain: Audio] Downloading audio stream via yt-dlp for ${url}...`);
-          const audioDownload = await downloadYouTubeAudio(url);
-          try {
-            const dlBuffer = await fs.promises.readFile(audioDownload.filePath);
-            const localWhisper = getLocalWhisperClient();
+          const dlBuffer = await fs.promises.readFile(audioDownload.filePath);
+          const localWhisper = getLocalWhisperClient();
 
-            // Check if local Whisper sidecar is available
-            if (await localWhisper.isAvailable()) {
-              console.log('[TranscriptChain: LocalWhisper] Acquiring GPU lock for speech transcription...');
-              const releaseGpu = await gpuLock.acquire('Whisper-Transcription');
+          // Check if local Whisper sidecar is available
+          if (await localWhisper.isAvailable()) {
+            console.log('[TranscriptChain: LocalWhisper] Acquiring GPU lock for speech transcription...');
+            const releaseGpu = await gpuLock.acquire('Whisper-Transcription');
 
-              try {
-                // Language detection from first 30 seconds
+            try {
+              let detected: { language: string; probability: number; duration: number } | undefined;
+              let lowConfidence = false;
+              let langToUse: string | undefined;
+
+              // Requirement 2: Forced spoken language support
+              if (targetSpokenLang) {
+                langToUse = targetSpokenLang;
+                console.log(`[TranscriptChain: LocalWhisper] Using user-forced spoken language: "${langToUse}"`);
+              } else {
                 console.log('[TranscriptChain: LocalWhisper] Detecting spoken language from first 30s...');
-                const detected = await localWhisper.detectLanguage(dlBuffer).catch(() => ({
+                detected = await localWhisper.detectLanguage(dlBuffer).catch(() => ({
                   language: 'en',
                   probability: 1.0,
-                  duration: durationSeconds,
+                  duration: audioDownload.durationSeconds,
                 }));
 
-                const lowConfidence = detected.probability < 0.60;
-                console.log(`[TranscriptChain: LocalWhisper] Detected language: "${detected.language}" (${Math.round(detected.probability * 100)}% confidence, lowConfidence=${lowConfidence})`);
+                lowConfidence = (detected?.probability ?? 1.0) < 0.60;
+                console.log(`[TranscriptChain: LocalWhisper] Detected language: "${detected?.language}" (${Math.round((detected?.probability ?? 0) * 100)}% confidence, lowConfidence=${lowConfidence})`);
 
-                // For mixed language (e.g. Hindi with English), do not force single language unless confidence is high
-                const langToUse = lowConfidence ? undefined : detected.language;
-
-                const detailed = await localWhisper.transcribeAudioDetailed(dlBuffer, 'audio.mp3', 'audio/mpeg', {
-                  language: langToUse,
-                  vadFilter: true,
-                  unloadAfter: true, // Always unload Whisper model from VRAM so Qwen has all 8GB GPU memory
-                });
-
-                if (detailed.text && detailed.text.trim().length > 10) {
-                  rawText = detailed.text;
-                  console.log(`✓ [TranscriptChain: LocalWhisper] Speech transcription succeeded (${rawText.length} chars)`);
-                  metadata = {
-                    url,
-                    description: meta.description,
-                    durationSeconds: audioDownload.durationSeconds,
-                    language: detailed.language,
-                    detectedLanguage: detected.language,
-                    languageConfidence: detected.probability,
-                    lowLanguageConfidence: lowConfidence,
-                  };
-                }
-              } finally {
-                // Guaranteed Whisper model unloading
-                await localWhisper.unload().catch(() => {});
-                releaseGpu();
+                // For mixed language, only force if confidence is high
+                langToUse = lowConfidence ? undefined : detected?.language;
               }
+
+              const detailed = await localWhisper.transcribeAudioDetailed(dlBuffer, 'audio.mp3', 'audio/mpeg', {
+                language: langToUse,
+                vadFilter: true,
+                unloadAfter: true,
+              });
+
+              if (detailed.text && detailed.text.trim().length > 10) {
+                rawText = detailed.text;
+                console.log(`✓ [TranscriptChain: LocalWhisper] Speech transcription succeeded (${rawText.length} chars)`);
+                metadata = {
+                  url,
+                  description: meta.description,
+                  durationSeconds: audioDownload.durationSeconds,
+                  language: detailed.language,
+                  detectedLanguage: targetSpokenLang || detected?.language || detailed.language,
+                  languageConfidence: targetSpokenLang ? 1.0 : (detected?.probability ?? 0.9),
+                  lowLanguageConfidence: targetSpokenLang ? false : lowConfidence,
+                  forcedSpokenLanguage: targetSpokenLang,
+                };
+              }
+            } finally {
+              await localWhisper.unload().catch(() => {});
+              releaseGpu();
             }
+          }
 
             // Fallback to cloud speech if local whisper did not transcribe and cloud fallback is opt-in
             if (!rawText || rawText.trim().length <= 10) {
@@ -327,7 +366,6 @@ export async function extractTranscript(
         description: meta.description,
         fetchedAt: Date.now(),
       });
-    }
   } else if (sourceType === 'audio') {
     title = topicHint || fileName || 'Audio Speech Transcript';
     metadata = { fileName };
@@ -378,7 +416,7 @@ export async function extractTranscript(
 
   const sanitizedText = sanitizeTranscriptText(rawText);
 
-  return validateTranscriptData({
+  const validated = validateTranscriptData({
     sourceType,
     title,
     rawText,
@@ -389,4 +427,9 @@ export async function extractTranscript(
       partial: isPartial,
     },
   });
+
+  // Persist to memory + disk cache
+  setCachedTranscript(cacheKey, validated);
+
+  return validated;
 }

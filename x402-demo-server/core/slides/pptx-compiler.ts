@@ -26,8 +26,10 @@ export async function compilePptx(
   const TXT  = activeTheme.textPrimary;
   const MUT  = activeTheme.textMuted;
   const BDR  = activeTheme.cardBorder;
-  const FT   = activeTheme.fontTitle;
-  const FB   = activeTheme.fontBody;
+  // Requirement 6: Guarantee crisp Devanagari & Indic glyph rendering via Nirmala UI
+  const hasIndic = /[\u0900-\u097F\u0C00-\u0C7F]/.test(JSON.stringify(deck));
+  const FT   = hasIndic ? 'Nirmala UI' : activeTheme.fontTitle;
+  const FB   = hasIndic ? 'Nirmala UI' : activeTheme.fontBody;
 
   const slidesData = deck.slides;
   const totalSlides = slidesData.length + 1; // +1 for cover slide
