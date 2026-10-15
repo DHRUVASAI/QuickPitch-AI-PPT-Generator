@@ -1,7 +1,7 @@
 {
-  "name": "x402-demo-server",
-  "version": "1.0.0",
-  "description": "",
+  "name": "quickpitch-server",
+  "version": "2.0.0",
+  "description": "QuickPitch AI Presentation Generator - Free Server",
   "main": "index.js",
   "scripts": {
     "start": "tsx index.ts",
@@ -22,10 +22,6 @@
     "@aws-sdk/lib-storage": "^3.1106.0",
     "@google/generative-ai": "^0.24.1",
     "@hono/node-server": "^2.0.2",
-    "@x402-avm/extensions": "^2.6.1",
-    "@x402/avm": "^2.12.0",
-    "@x402/core": "^2.12.0",
-    "@x402/hono": "^2.12.0",
     "canvas": "^3.2.3",
     "dotenv": "^17.4.2",
     "hono": "^4.12.19",

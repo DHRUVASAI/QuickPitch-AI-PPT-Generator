@@ -1,62 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Enhanced color grading for data displays */
-.mockup-code {
-  @apply bg-gradient-to-br from-slate-900 to-slate-800 !important;
+:root {
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Grotesk', monospace;
+  --radius: 0px;
 }
 
-/* Improved code text styling */
-pre code {
-  @apply text-emerald-300 font-mono text-sm leading-relaxed;
+body {
+  font-family: var(--font-body);
+  background-color: #000000;
+  color: #ffffff;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Alert styling with better contrast */
-.alert {
-  @apply rounded-lg shadow-md;
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
-.alert-success {
-  @apply bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-500;
+/* Custom Scrollbar - Swiss Sharp */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff0000;
 }
 
-.alert-error {
-  @apply bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500;
+/* Swiss Panels & Cards (0px radius, sharp borders, pure black background) */
+.glass-panel {
+  background: #0a0a0a;
+  border: 1px solid #262626;
+  border-radius: 0px !important;
 }
 
-.alert-warning {
-  @apply bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500;
+.glass-card {
+  background: #0a0a0a;
+  border: 1px solid #262626;
+  border-radius: 0px !important;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.alert-info {
-  @apply bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-500;
+.glass-card:hover {
+  border-color: #ffffff;
 }
 
-/* Enhanced card styling */
-.card {
-  @apply shadow-lg rounded-xl border border-gray-200/50;
+.glass-pill {
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 0px !important;
 }
 
-/* Better visibility for data content */
-.card-body {
-  @apply p-6;
+.cyber-border {
+  position: relative;
+  border: 1px solid #262626;
+  border-radius: 0px !important;
 }
 
-/* Text color improvements */
-.alert-success span {
-  @apply text-emerald-700 font-medium;
+/* Swiss Red Theme Solid Color Accents */
+.text-gradient-purple {
+  color: #ff0000 !important; /* Swiss Red Primary */
 }
 
-.alert-error span {
-  @apply text-red-700 font-medium;
+.text-gradient-cyan {
+  color: #ffffff !important; /* Secondary White */
 }
 
-.alert-warning span {
-  @apply text-amber-700 font-medium;
+.text-gradient-gold {
+  color: #ffb703 !important; /* Swiss Accent Yellow */
 }
 
-.alert-info span {
-  @apply text-cyan-700 font-medium;
+/* Keyframe Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
 }
 
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes waveBar {
+  0%, 100% { height: 4px; }
+  50% { height: 28px; }
+}
+
+@keyframes borderRotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes spinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseBeam {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+.animate-spin-ring {
+  animation: spinRing 12s linear infinite;
+}
+
+.animate-pulse-beam {
+  animation: pulseBeam 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.wave-bar {
+  animation: waveBar 1.2s ease-in-out infinite;
+}
+
+/* Glow utility classes */
+.glow-purple {
+  box-shadow: 0 0 40px -10px rgba(168, 85, 247, 0.4);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 40px -10px rgba(56, 189, 248, 0.4);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 40px -10px rgba(52, 211, 153, 0.4);
+}
+
+/* Interactive 3D Card Perspective */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.tilt-card {
+  transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+/* Custom Checkbox / Switch */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #6366f1;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #4f46e5;
+}

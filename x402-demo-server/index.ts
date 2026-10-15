@@ -1,33 +1,20 @@
 /**
- * X402 Hackathon Starter Kit - Main Server
+ * QuickPitch AI - Main Server (Free Mode)
  *
- * This server demonstrates how to build payment-protected API endpoints
- * using the x402 protocol on Algorand TestNet.
+ * This server provides free AI presentation generation endpoints.
  *
- * TEAM QUICK START:
- * 1. Import handlers from ./handlers/ directory
- * 2. Enable endpoints in endpoints.config.ts
- * 3. Register routes below
- * 4. Start server: npm start
- * 5. Test: curl http://localhost:4021/your-endpoint
+ * QUICK START:
+ * 1. Start server: npm run dev
+ * 2. Test: curl http://localhost:4021/health
  */
 
 import { config } from 'dotenv';
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
-import { paymentMiddleware } from '@x402/hono';
-import { x402ResourceServer, HTTPFacilitatorClient } from '@x402/core/server';
-import type { ResourceServerExtension } from '@x402/core/types';
-import { ExactAvmScheme } from '@x402/avm/exact/server';
-import { ALGORAND_TESTNET_CAIP2 } from '@x402/avm';
-import { bazaarResourceServerExtension } from '@x402-avm/extensions';
 
 // Import handler functions
 import { handleGeneratePpt } from './handlers/generate-ppt';
 import { handleTranscribeAudio } from './handlers/transcribe-audio';
-
-// Import endpoint configuration
-import createPaymentConfig, { EndpointConfig } from './endpoints.config';
 
 // Load environment variables
 config();
@@ -36,34 +23,14 @@ config();
 // CONFIGURATION & SETUP
 // ════════════════════════════════════════════════════════════════════
 
-const avmAddress = process.env.AVM_ADDRESS;
-const facilitatorUrl = process.env.FACILITATOR_URL;
 const port = parseInt(process.env.PORT || '4021', 10);
 
-// Validate required environment
-if (!avmAddress || !facilitatorUrl) {
-  console.error(
-    '❌ Missing required environment variables:\n' +
-    '   - AVM_ADDRESS (your Algorand wallet receiving payments)\n' +
-    '   - FACILITATOR_URL (x402 facilitator service)'
-  );
-  process.exit(1);
-}
-
 console.log('\n' + '═'.repeat(60));
-console.log('x402 HACKATHON STARTER KIT');
+console.log('QuickPitch AI - Free Server');
 console.log('═'.repeat(60));
 console.log('Configuration:');
-console.log(`  Receiver Address: ${avmAddress}`);
-console.log(`  Facilitator: ${facilitatorUrl}`);
 console.log(`  Port: ${port}`);
 console.log('═'.repeat(60) + '\n');
-
-// Initialize x402 Resource Server
-const facilitatorClient = new HTTPFacilitatorClient({ url: facilitatorUrl });
-const x402Server = new x402ResourceServer(facilitatorClient)
-  .register(ALGORAND_TESTNET_CAIP2, new ExactAvmScheme())
-  .registerExtension(bazaarResourceServerExtension as unknown as ResourceServerExtension);
 
 // Create Hono app
 const app = new Hono();
@@ -74,16 +41,13 @@ const app = new Hono();
 
 /**
  * CORS Middleware - MUST be first!
- *
- * Handles browser preflight requests and exposes payment headers
- * x402 requires wildcard CORS to expose Payment-Signature headers
  */
 app.use('*', async (c, next) => {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE, HEAD',
-    'Access-Control-Allow-Headers': '*', // Critical for x402
-    'Access-Control-Expose-Headers': '*', // Critical for x402
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Expose-Headers': '*',
     'Access-Control-Allow-Private-Network': 'true',
     'Access-Control-Max-Age': '86400',
   };
@@ -103,89 +67,82 @@ app.use('*', async (c, next) => {
 
 /**
  * Logging Middleware
- *
- * Logs all requests for debugging and monitoring
  */
 app.use('*', async (c, next) => {
   const timestamp = new Date().toISOString();
   console.log(`\n[${timestamp}] ${c.req.method.toUpperCase()} ${c.req.path}`);
-
-  // Log headers (useful for debugging)
-  if (c.req.header('payment-signature')) {
-    console.log('  ✓ Payment-Signature header detected');
-  }
-
   await next();
   console.log(`  Response: ${c.res.status}`);
 });
 
 /**
- * X402 Payment Middleware
- *
- * Applies payment protection to configured endpoints
- * Intercepts requests and enforces x402 protocol
+ * Body Caching Middleware
+ * Preserves request JSON body for handlers
  */
-const paymentConfig: EndpointConfig = createPaymentConfig(avmAddress);
-console.log('📋 Registered Payment-Protected Endpoints:');
-Object.entries(paymentConfig).forEach(([route, config]) => {
-  const price = config.accepts[0]?.price || 'unknown';
-  console.log(`   ${route} - ${price} USDC - ${config.description}`);
+app.use('*', async (c, next) => {
+  if (c.req.method === 'POST' || c.req.method === 'PUT') {
+    try {
+      const cloned = c.req.raw.clone();
+      const text = await cloned.text();
+      if (text && text.trim().startsWith('{')) {
+        c.set('rawBodyText', text);
+        try {
+          const parsed = JSON.parse(text);
+          c.set('parsedBody', parsed);
+        } catch { /* ignore invalid JSON */ }
+      }
+    } catch (e: any) {
+      // Body may not be cloneable (e.g. multipart/form-data)
+    }
+  }
+  await next();
 });
-console.log();
-
-app.use(paymentMiddleware(paymentConfig as any, x402Server));
 
 // ════════════════════════════════════════════════════════════════════
-// ROUTE HANDLERS - Payment-Protected Endpoints
+// ROUTE HANDLERS - All Free Endpoints
 // ════════════════════════════════════════════════════════════════════
 
-/**
- * These handlers are only called AFTER payment is verified
- * by the x402 middleware
- */
-
-// QuickPitch MVP - Pay $0.001 USDC (Payment Protected)
+// QuickPitch - Generate presentation (FREE)
 app.post('/generate-ppt', handleGeneratePpt);
 
-// QuickPitch DEMO MODE - No payment required (for testing)
+// QuickPitch - Demo mode endpoint (also FREE, kept for compatibility)
 app.post('/generate-ppt-demo', handleGeneratePpt);
 
 // AWS Transcribe Audio - Real speech-to-text via AWS Transcribe + S3
-// Accepts multipart/form-data with 'audio' field
 app.post('/transcribe-audio', handleTranscribeAudio);
 
 // ════════════════════════════════════════════════════════════════════
-// PUBLIC ENDPOINTS - No payment required
+// PUBLIC ENDPOINTS
 // ════════════════════════════════════════════════════════════════════
 
 /**
  * Health check - Use this to verify server is running
- * No payment required
  */
 app.get('/health', (c) => {
   return c.json({
     status: 'ok',
-    service: 'x402-hackathon-starter',
+    service: 'quickpitch-ai-free',
     uptime: process.uptime(),
   });
 });
 
 /**
  * Info endpoint - Shows configured endpoints
- * Helpful for debugging and integration
  */
 app.get('/info', (c) => {
   return c.json({
-    service: 'x402-hackathon-starter',
-    version: '1.0.0',
-    network: 'Algorand TestNet',
-    receiver: avmAddress,
-    endpoints: Object.keys(paymentConfig),
-    documentation: 'See README.md in project root',
+    service: 'quickpitch-ai-free',
+    version: '2.0.0',
+    mode: 'free',
+    endpoints: [
+      'POST /generate-ppt',
+      'POST /generate-ppt-demo',
+      'POST /transcribe-audio',
+      'GET /health',
+      'GET /info',
+    ],
   });
 });
-
-
 
 // ════════════════════════════════════════════════════════════════════
 // ERROR HANDLING
@@ -193,8 +150,6 @@ app.get('/info', (c) => {
 
 /**
  * 404 Handler
- *
- * Called when no route matches
  */
 app.notFound((c) => {
   return c.json(
@@ -212,19 +167,15 @@ app.notFound((c) => {
 // ════════════════════════════════════════════════════════════════════
 
 serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
-  console.log('\n✅ x402 Resource Server is running!\n');
+  console.log('\n✅ QuickPitch AI Server is running! (Free Mode)\n');
   console.log('═'.repeat(60));
   console.log('Endpoints:');
-  console.log(`  API:     http://localhost:${port}`);
-  console.log(`  Health:  http://localhost:${port}/health`);
-  console.log(`  Info:    http://localhost:${port}/info`);
+  console.log(`  API:           http://localhost:${port}`);
+  console.log(`  Generate PPT:  http://localhost:${port}/generate-ppt`);
+  console.log(`  Health:        http://localhost:${port}/health`);
+  console.log(`  Info:          http://localhost:${port}/info`);
   console.log('═'.repeat(60));
-  console.log('\n📚 QUICK COMMANDS:\n');
-  console.log('Test health endpoint (no payment):');
+  console.log('\n📚 QUICK TEST:\n');
   console.log(`  curl http://localhost:${port}/health\n`);
-  console.log('Test payment endpoint (will request payment):');
-  console.log(`  curl http://localhost:${port}/weather\n`);
-  console.log('See handlers/ directory for examples');
-  console.log('See endpoints.config.ts to add new endpoints');
-  console.log('\n' + '═'.repeat(60) + '\n');
+  console.log('═'.repeat(60) + '\n');
 });

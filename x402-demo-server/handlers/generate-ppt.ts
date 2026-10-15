@@ -431,7 +431,7 @@ Return ONLY the structured English research outline as clear factual bullet poin
 
   if (groqKey) {
     const groqClient = new OpenAI({ apiKey: groqKey, baseURL: 'https://api.groq.com/openai/v1' });
-    const modelsToTry = ['llama-3.3-70b-versatile', 'qwen/qwen3.6-27b', 'groq/compound', 'llama-3.1-8b-instant'];
+    const modelsToTry = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'qwen/qwen3.6-27b'];
 
     for (const modelName of modelsToTry) {
       try {
@@ -595,7 +595,7 @@ ${synthesizedAnalysis}`;
 
   if (groqKey) {
     const groqClient = new OpenAI({ apiKey: groqKey, baseURL: 'https://api.groq.com/openai/v1' });
-    const slideModelsToTry = ['llama-3.3-70b-versatile', 'qwen/qwen3.6-27b', 'groq/compound', 'llama-3.1-8b-instant'];
+    const slideModelsToTry = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'qwen/qwen3.6-27b'];
 
     for (const modelName of slideModelsToTry) {
       try {
@@ -826,7 +826,19 @@ export async function handleGeneratePpt(c: Context) {
   try {
     console.log('✓ QuickPitch Multi-Layout Engine executing...');
     
-    const body = await c.req.json();
+    let body = c.get('parsedBody');
+    if (!body || typeof body !== 'object') {
+      try {
+        body = await c.req.json();
+      } catch (e) {
+        try {
+          const rawText = c.get('rawBodyText') || (await c.req.text());
+          body = rawText ? JSON.parse(rawText) : {};
+        } catch (e2) {
+          body = {};
+        }
+      }
+    }
     const { source_type, url, text, theme: requestedTheme, detail_level } = body;
 
     let transcript = '';
