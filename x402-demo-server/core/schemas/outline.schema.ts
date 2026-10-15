@@ -15,7 +15,8 @@ export interface PresentationOutline {
 }
 
 /**
- * Validates and normalizes synthesis stage outline data
+ * Validates and normalizes synthesis stage outline data.
+ * Throws ValidationError if required fields are missing or invalid.
  */
 export function validatePresentationOutline(input: unknown): PresentationOutline {
   if (!input || typeof input !== 'object') {
@@ -24,30 +25,31 @@ export function validatePresentationOutline(input: unknown): PresentationOutline
 
   const candidate = input as Partial<PresentationOutline>;
 
-  const title = typeof candidate.title === 'string' && candidate.title.trim().length > 0
-    ? candidate.title.trim()
-    : 'Executive Presentation';
+  if (!candidate.title || typeof candidate.title !== 'string' || candidate.title.trim().length === 0) {
+    throw new ValidationError('Outline', 'Outline must include a non-empty string "title"');
+  }
+
+  const title = candidate.title.trim();
 
   const subtitle = typeof candidate.subtitle === 'string' && candidate.subtitle.trim().length > 0
     ? candidate.subtitle.trim()
     : 'Strategic Overview and Key Takeaways';
 
-  let pillars: OutlinePillar[] = [];
-  if (Array.isArray(candidate.pillars)) {
-    pillars = candidate.pillars.filter(p => p && typeof p.name === 'string' && typeof p.description === 'string');
+  if (!Array.isArray(candidate.pillars) || candidate.pillars.length === 0) {
+    throw new ValidationError('Outline', 'Outline must include a non-empty array of "pillars"');
   }
+
+  const pillars: OutlinePillar[] = candidate.pillars
+    .filter((p) => p && typeof p === 'object' && typeof p.name === 'string' && typeof p.description === 'string')
+    .map((p) => ({ name: p.name.trim(), description: p.description.trim() }));
+
   if (pillars.length === 0) {
-    pillars = [
-      { name: 'Core Context', description: 'Background and framing of the domain' },
-      { name: 'Strategic Challenges', description: 'Core friction points and problems identified' },
-      { name: 'Core Insights', description: 'Tactical interventions, ideas, and frameworks' },
-      { name: 'Impact & Takeaways', description: 'Long term execution trajectory and vision' },
-    ];
+    throw new ValidationError('Outline', 'Outline pillars must have valid "name" and "description" strings');
   }
 
   let keyTopics: string[] = [];
   if (Array.isArray(candidate.keyTopics)) {
-    keyTopics = candidate.keyTopics.filter(t => typeof t === 'string' && t.trim().length > 0);
+    keyTopics = candidate.keyTopics.filter((t) => typeof t === 'string' && t.trim().length > 0);
   }
   if (keyTopics.length === 0) {
     keyTopics = ['Executive Overview', 'Key Drivers', 'Deep Dive', 'Action Plan'];

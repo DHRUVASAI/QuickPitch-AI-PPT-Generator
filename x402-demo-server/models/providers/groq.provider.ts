@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import type { ILLMProvider, ChatMessage, CompletionOptions, ModelCompletionResult } from '../types.js';
+import { withRetryAndTimeout } from '../../core/utils/retry.js';
 
 export class GroqProvider implements ILLMProvider {
   public readonly name = 'groq';
@@ -36,28 +37,42 @@ export class GroqProvider implements ILLMProvider {
     let lastError: Error | null = null;
     for (const modelName of Array.from(new Set(fallbackModels))) {
       try {
-        const response = await this.client.chat.completions.create({
-          model: modelName,
-          messages,
-          temperature: options?.temperature ?? 0.3,
-          max_tokens: options?.maxTokens ?? 2000,
-          ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
-        });
+        return await withRetryAndTimeout(
+          async (signal) => {
+            const response = await this.client!.chat.completions.create(
+              {
+                model: modelName,
+                messages,
+                temperature: options?.temperature ?? 0.3,
+                max_tokens: options?.maxTokens ?? 2000,
+                ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+              },
+              { signal }
+            );
 
-        const content = response.choices[0]?.message?.content || '';
-        return {
-          content,
-          model: modelName,
-          provider: this.name,
-          usage: {
-            promptTokens: response.usage?.prompt_tokens,
-            completionTokens: response.usage?.completion_tokens,
-            totalTokens: response.usage?.total_tokens,
+            const content = response.choices[0]?.message?.content || '';
+            return {
+              content,
+              model: modelName,
+              provider: this.name,
+              usage: {
+                promptTokens: response.usage?.prompt_tokens,
+                completionTokens: response.usage?.completion_tokens,
+                totalTokens: response.usage?.total_tokens,
+              },
+            };
           },
-        };
+          {
+            name: `Groq (${modelName})`,
+            timeoutMs: 10000,
+            retries: 2,
+            initialDelayMs: 300,
+            backoffFactor: 2,
+          }
+        );
       } catch (err: any) {
         lastError = err;
-        console.warn(`[GroqProvider] Model ${modelName} failed, trying next:`, err.message);
+        console.warn(`[GroqProvider] Model ${modelName} attempt failed: ${err.message}. Trying next model...`);
       }
     }
 

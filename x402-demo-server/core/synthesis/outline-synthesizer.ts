@@ -1,4 +1,5 @@
 import type { UnifiedModelClient } from '../../models/unified-client.js';
+import type { ChatMessage } from '../../models/types.js';
 import type { TranscriptData } from '../schemas/transcript.schema.js';
 import { type PresentationOutline, validatePresentationOutline } from '../schemas/outline.schema.js';
 
@@ -17,6 +18,70 @@ export function calculateSlideCount(textLen: number, detailLevel: string = 'bala
   return 7;
 }
 
+/**
+ * Executes a synthesis prompt against a specific provider with:
+ * 1. Schema validation
+ * 2. On validation failure, retries ONCE with the error message
+ * 3. Throws if retry also fails so the next provider in the fallback chain is tried
+ */
+async function callProviderWithValidationRetry(
+  client: UnifiedModelClient,
+  providerName: string,
+  systemPrompt: string,
+  userPrompt: string
+): Promise<any> {
+  const initialMessages: ChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt },
+  ];
+
+  const firstAttempt = await client.completeWith(providerName, initialMessages, {
+    temperature: 0.2,
+    maxTokens: 1800,
+    jsonMode: true,
+  });
+
+  let rawContent = firstAttempt.content;
+  let validationError: Error | null = null;
+
+  try {
+    const match = rawContent.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON object found in response');
+    const parsed = JSON.parse(match[0]);
+    return validatePresentationOutline(parsed);
+  } catch (err: any) {
+    validationError = err;
+    console.warn(`[Synthesis: ${providerName}] Schema validation failed on 1st attempt: ${err.message}. Retrying once with error feedback...`);
+  }
+
+  // Retry ONCE with the error message
+  const correctionMessages: ChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt },
+    { role: 'assistant', content: rawContent },
+    {
+      role: 'user',
+      content: `Your previous response failed schema validation with error: "${validationError?.message}".\nPlease fix the errors and output strictly valid JSON matching the schema.`,
+    },
+  ];
+
+  const secondAttempt = await client.completeWith(providerName, correctionMessages, {
+    temperature: 0.1,
+    maxTokens: 1800,
+    jsonMode: true,
+  });
+
+  const match2 = secondAttempt.content.match(/\{[\s\S]*\}/);
+  if (!match2) throw new Error(`Schema validation failed on retry: ${validationError?.message}`);
+  return validatePresentationOutline(JSON.parse(match2[0]));
+}
+
+/**
+ * Synthesizes an executive presentation outline using the fallback chain:
+ * 1. Local Ollama (Qwen 2.5 7B)
+ * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
+ * 3. Partial Deterministic Outline (Never fails the whole request)
+ */
 export async function synthesizeOutline(
   transcript: TranscriptData,
   client: UnifiedModelClient,
@@ -25,26 +90,13 @@ export async function synthesizeOutline(
   const targetCount = calculateSlideCount(transcript.charCount, detailLevel);
   const cleanContext = transcript.sanitizedText.slice(0, 14000);
 
-  const synthesisPrompt = `You are a master presentation research analyst and domain strategist.
-Extract a comprehensive, factual, topic-grounded research outline from the following content:
+  const systemPrompt = 'You are an executive research analyst and domain strategist. Output strictly valid JSON matching the schema.';
+  const userPrompt = `Extract a comprehensive, factual research outline from the following content:
 
 SOURCE CONTENT (Topic / Title: "${transcript.title}"):
 "${cleanContext}"
 
-══ MANDATORY EXTRACTION INSTRUCTIONS ══
-1. 360° SOURCE OVERVIEW (For Cover & Executive Blueprint):
-   - Executive Title & Subtitle: A compelling, comprehensive 12–18 word synthesis sentence explaining the entire subject.
-   - 4-Pillar Executive Summary: (1) Subject Context, (2) Primary Challenges/Themes, (3) Core Interventions/Perspectives, (4) Ultimate Impact/Outcome.
-
-2. STRICT FACTUAL GROUNDING & ANCHORING:
-   - EVERY claim, metric, name, statement, or quote MUST be explicitly anchored in facts present in the source.
-   - DO NOT invent artificial statistics, fake percentages, or unverified claims.
-
-3. CONTENT CLASSIFICATION & TOPIC EXTRACTION:
-   - Extract 6-8 specific topics discussed with real names, concepts, and takeaways.
-   - No generic placeholders like "Theme A" or "Future Scope".
-
-Return the result as JSON matching:
+Return strictly valid JSON matching:
 {
   "title": "Clear Executive Title",
   "subtitle": "Informative subtitle capturing the essence",
@@ -57,30 +109,37 @@ Return the result as JSON matching:
   "keyTopics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"]
 }`;
 
-  let parsed: any = null;
-  let rawText = '';
+  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const primaryName = client.getPrimaryProviderName();
+  const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
-  try {
-    const res = await client.complete([
-      { role: 'system', content: 'You are an executive research analyst. Return strictly valid JSON.' },
-      { role: 'user', content: synthesisPrompt },
-    ], { temperature: 0.2, maxTokens: 1800, jsonMode: true });
-
-    rawText = res.content;
-    const match = rawText.match(/\{[\s\S]*\}/);
-    if (match) {
-      parsed = JSON.parse(match[0]);
+  for (const providerName of providerOrder) {
+    try {
+      const provider = client.getProvider(providerName);
+      if (provider && (await provider.isAvailable())) {
+        console.log(`[SynthesisChain: Outline] Trying provider: ${providerName}...`);
+        const outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+        console.log(`✓ [SynthesisChain: Outline] Provider "${providerName}" succeeded with validated schema`);
+        return { ...outline, targetSlideCount: targetCount };
+      }
+    } catch (err: any) {
+      console.warn(`[SynthesisChain: Outline] Provider "${providerName}" failed:`, err.message);
     }
-  } catch (err: any) {
-    console.warn('[SynthesizeOutline] LLM call failed or produced non-JSON, using structured defaults:', err.message);
   }
 
+  // Chain 3: Partial Result with clear message (Never fail whole request)
+  console.warn('⚠️ [SynthesisChain: Outline] All model providers failed. Returning partial outline with clear notice.');
   return validatePresentationOutline({
-    title: parsed?.title || transcript.title,
-    subtitle: parsed?.subtitle || 'Executive analysis and strategic takeaways',
-    pillars: parsed?.pillars,
-    keyTopics: parsed?.keyTopics,
+    title: transcript.title,
+    subtitle: '[Partial Synthesis] Key strategic takeaways derived directly from transcript',
+    pillars: [
+      { name: 'Core Perspective', description: 'Primary thesis and background extracted from transcript' },
+      { name: 'Key Challenges', description: 'Identified friction points and strategic challenges' },
+      { name: 'Tactical Interventions', description: 'Actionable solutions, frameworks, and insights' },
+      { name: 'Long-term Impact', description: 'Expected trajectory, outcomes, and value' },
+    ],
+    keyTopics: ['Executive Overview', 'Direct Findings', 'Strategic Blueprint', 'Execution Plan'],
     targetSlideCount: targetCount,
-    rawSynthesis: rawText,
+    rawSynthesis: '[Partial Result: Model synthesis timed out or was offline. Built via deterministic fallback engine]',
   });
 }

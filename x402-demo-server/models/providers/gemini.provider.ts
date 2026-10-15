@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { ILLMProvider, ChatMessage, CompletionOptions, ModelCompletionResult } from '../types.js';
+import { withRetryAndTimeout } from '../../core/utils/retry.js';
 
 export class GeminiProvider implements ILLMProvider {
   public readonly name = 'gemini';
@@ -28,23 +29,32 @@ export class GeminiProvider implements ILLMProvider {
     const model = this.client.getGenerativeModel({ model: modelToUse });
 
     // Format messages for Gemini API
-    const systemMsg = messages.find(m => m.role === 'system');
+    const systemMsg = messages.find((m) => m.role === 'system');
     const conversation = messages
-      .filter(m => m.role !== 'system')
-      .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+      .filter((m) => m.role !== 'system')
+      .map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
       .join('\n\n');
 
     const prompt = systemMsg
       ? `${systemMsg.content}\n\n${conversation}`
       : conversation;
 
-    const result = await model.generateContent(prompt);
-    const content = result.response.text();
-
-    return {
-      content,
-      model: modelToUse,
-      provider: this.name,
-    };
+    return withRetryAndTimeout(
+      async () => {
+        const result = await model.generateContent(prompt);
+        const content = result.response.text();
+        return {
+          content,
+          model: modelToUse,
+          provider: this.name,
+        };
+      },
+      {
+        name: `Gemini (${modelToUse})`,
+        timeoutMs: 12000,
+        retries: 2,
+        initialDelayMs: 400,
+      }
+    );
   }
 }

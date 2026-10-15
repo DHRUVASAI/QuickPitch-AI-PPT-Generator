@@ -5,6 +5,7 @@ import {
   synthesizeOutline,
   planSlideStructure,
   compilePptx,
+  validateSlideDeck,
 } from '../core/index.js';
 
 export async function handleGeneratePpt(c: Context) {
@@ -34,21 +35,46 @@ export async function handleGeneratePpt(c: Context) {
     } = body;
 
     const modelClient = getModelClient();
+    let isPartial = false;
+    let partialNotice = '';
 
     // Stage 1: Transcript Ingestion & Sanitization
     console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type})...`);
-    const transcriptData = await extractTranscript({
-      sourceType: source_type,
-      url,
-      text,
-      topicHint: text ? text.slice(0, 60) : undefined,
-    });
+    let transcriptData;
+    try {
+      transcriptData = await extractTranscript({
+        sourceType: source_type,
+        url,
+        text,
+        topicHint: text ? text.slice(0, 60) : undefined,
+      });
+      if (transcriptData.metadata?.partial) {
+        isPartial = true;
+        partialNotice = 'Transcript used partial video metadata';
+      }
+    } catch (err: any) {
+      console.warn('⚠️ [QuickPitch Stage 1] Transcript extraction encountered error, using safe partial fallback:', err.message);
+      isPartial = true;
+      partialNotice = `Transcript extraction error: ${err.message}`;
+      transcriptData = {
+        sourceType: source_type as any,
+        title: url || 'Presentation Subject',
+        rawText: `[Partial Source]: ${text || url || 'Executive Analysis'}`,
+        sanitizedText: text || url || 'Executive Analysis and Insights',
+        charCount: (text || url || '').length,
+        metadata: { partial: true },
+      };
+    }
+
     console.log(`✓ Transcript ready: "${transcriptData.title}" (${transcriptData.charCount} chars)`);
 
-    // Stage 2: Synthesis & Outline Planning
+    // Stage 2: Synthesis & Outline Planning (with schema validation & retry-on-failure)
     console.log('[QuickPitch Stage 2] Synthesizing executive outline and slide plan...');
     const outline = await synthesizeOutline(transcriptData, modelClient, detail_level);
-    console.log(`✓ Outline generated: "${outline.title}" (${outline.targetSlideCount} slides targeted)`);
+    if (outline.rawSynthesis?.includes('Partial Result')) {
+      isPartial = true;
+      partialNotice = 'Model synthesis used deterministic fallback';
+    }
 
     const slideDeck = await planSlideStructure(
       outline,
@@ -57,22 +83,54 @@ export async function handleGeneratePpt(c: Context) {
       theme,
       detail_level
     );
-    console.log(`✓ Structured ${slideDeck.slides.length} slides with layout archetypes`);
 
     // Stage 3: Slide Compilation (.pptx)
     console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Theme: ${slideDeck.theme})...`);
-    const pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);
-    console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes)`);
+    let pptxResult;
+    try {
+      pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);
+    } catch (compileErr: any) {
+      console.warn('⚠️ [QuickPitch Stage 3] Primary slide compilation error, building safe recovery deck:', compileErr.message);
+      isPartial = true;
+      partialNotice = 'Compiled via recovery slide generator';
+
+      const safeDeck = validateSlideDeck({
+        theme: 'cyber-blue',
+        detailLevel: 'balanced',
+        slides: [
+          {
+            title: transcriptData.title,
+            subtitle: '[Notice: Partial Recovery Presentation]',
+            category: 'RECOVERY DECK',
+            cards: [
+              { card_title: 'Source Overview', points: [transcriptData.sanitizedText.slice(0, 200)] },
+              { card_title: 'Notice', points: ['Presentation compiled in safe recovery mode.'] },
+            ],
+          },
+        ],
+      });
+      pptxResult = await compilePptx(safeDeck, 'cyber-blue');
+    }
+
+    console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'}`);
 
     return new Response(pptxResult.buffer as any, {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'Content-Disposition': `attachment; filename="${pptxResult.fileName}"`,
+        'X-QuickPitch-Status': isPartial ? 'partial' : 'complete',
+        ...(isPartial ? { 'X-QuickPitch-Notice': partialNotice } : {}),
       },
     });
   } catch (error: any) {
+    // Ultimate safety: return a clear JSON message with partial details rather than a blank 500 crash
     console.error('[QuickPitch] Generate PPT Error:', error);
-    return c.json({ error: error.message || 'Internal Server Error' }, 500);
+    return c.json({
+      status: 'partial_error',
+      message: 'Presentation request encountered an issue but was caught safely by our resilience layer.',
+      error: error.message || 'Internal Server Error',
+      hint: 'You can retry with direct text prompt or check Ollama / Groq status.',
+    }, 200);
   }
 }

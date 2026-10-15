@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import type { ILLMProvider, ChatMessage, CompletionOptions, ModelCompletionResult } from '../types.js';
+import { withRetryAndTimeout } from '../../core/utils/retry.js';
 
 export class OllamaProvider implements ILLMProvider {
   public readonly name = 'ollama';
@@ -12,7 +13,7 @@ export class OllamaProvider implements ILLMProvider {
     this.defaultModel = options?.defaultModel || process.env.OLLAMA_MODEL || 'qwen2.5:7b';
     this.client = new OpenAI({
       baseURL: this.baseUrl,
-      apiKey: 'ollama', // Dummy key for local Ollama
+      apiKey: 'ollama',
     });
   }
 
@@ -28,24 +29,38 @@ export class OllamaProvider implements ILLMProvider {
 
   async complete(messages: ChatMessage[], options?: CompletionOptions): Promise<ModelCompletionResult> {
     const modelToUse = options?.model || this.defaultModel;
-    const response = await this.client.chat.completions.create({
-      model: modelToUse,
-      messages,
-      temperature: options?.temperature ?? 0.3,
-      max_tokens: options?.maxTokens ?? 2000,
-      ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
-    });
 
-    const content = response.choices[0]?.message?.content || '';
-    return {
-      content,
-      model: modelToUse,
-      provider: this.name,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens,
-        completionTokens: response.usage?.completion_tokens,
-        totalTokens: response.usage?.total_tokens,
+    return withRetryAndTimeout(
+      async (signal) => {
+        const response = await this.client.chat.completions.create(
+          {
+            model: modelToUse,
+            messages,
+            temperature: options?.temperature ?? 0.3,
+            max_tokens: options?.maxTokens ?? 2000,
+            ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+          },
+          { signal }
+        );
+
+        const content = response.choices[0]?.message?.content || '';
+        return {
+          content,
+          model: modelToUse,
+          provider: this.name,
+          usage: {
+            promptTokens: response.usage?.prompt_tokens,
+            completionTokens: response.usage?.completion_tokens,
+            totalTokens: response.usage?.total_tokens,
+          },
+        };
       },
-    };
+      {
+        name: `Ollama (${modelToUse})`,
+        timeoutMs: 25000, // Generous timeout for local GPU generation
+        retries: 1,
+        initialDelayMs: 400,
+      }
+    );
   }
 }

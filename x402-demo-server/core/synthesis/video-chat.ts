@@ -7,7 +7,7 @@ export async function chatWithVideo(
   question: string,
   history: ChatMessage[],
   client: UnifiedModelClient
-): Promise<{ answer: string; modelUsed: string; provider: string }> {
+): Promise<{ answer: string; modelUsed: string; provider: string; isPartial?: boolean }> {
   if (!question || !question.trim()) {
     throw new Error('Question is required');
   }
@@ -32,7 +32,6 @@ ${transcript.sanitizedText.slice(0, 30000)}
     { role: 'system', content: systemPrompt },
   ];
 
-  // Include last 6 conversational turns for continuity
   if (Array.isArray(history)) {
     for (const msg of history.slice(-6)) {
       if (msg.role && msg.content) {
@@ -46,14 +45,42 @@ ${transcript.sanitizedText.slice(0, 30000)}
 
   messages.push({ role: 'user', content: question });
 
-  const completion = await client.complete(messages, {
-    temperature: 0.3,
-    maxTokens: 1200,
-  });
+  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const primaryName = client.getPrimaryProviderName();
+  const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
+
+  for (const providerName of providerOrder) {
+    try {
+      const provider = client.getProvider(providerName);
+      if (provider && (await provider.isAvailable())) {
+        console.log(`[VideoChatChain] Trying provider: ${providerName}...`);
+        const completion = await client.completeWith(providerName, messages, {
+          temperature: 0.3,
+          maxTokens: 1200,
+        });
+        return {
+          answer: completion.content,
+          modelUsed: `${completion.model} (${providerName === 'ollama' ? 'Local GPU' : providerName})`,
+          provider: providerName,
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[VideoChatChain] Provider "${providerName}" failed:`, err.message);
+    }
+  }
+
+  // Chain 3: Partial Result with clear message (Never fail whole request)
+  console.warn('⚠️ [VideoChatChain] All LLM providers failed. Extracting keyword-matched transcript excerpt as partial answer.');
+  const qTerms = question.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const sentences = transcript.sanitizedText.split(/(?<=[.?!])\s+/);
+  const matching = sentences.filter(s => qTerms.some(term => s.toLowerCase().includes(term))).slice(0, 4);
+
+  const excerpt = matching.length > 0 ? matching.join(' ') : transcript.sanitizedText.slice(0, 500);
 
   return {
-    answer: completion.content,
-    modelUsed: `${completion.model} (${completion.provider === 'ollama' ? 'Local GPU' : completion.provider})`,
-    provider: completion.provider,
+    answer: `⚠️ **[Partial Result - AI Engines Timed Out]**\n\nOur neural inference models were temporarily unreachable. Here is the relevant excerpt directly from the video transcript relating to your question:\n\n> "${excerpt}"\n\n*Please ensure Ollama is running on port 11434 with qwen2.5:7b or configure a hosted GROQ_API_KEY for complete answers.*`,
+    modelUsed: 'Transcript Excerpt (Offline Fallback)',
+    provider: 'fallback',
+    isPartial: true,
   };
 }

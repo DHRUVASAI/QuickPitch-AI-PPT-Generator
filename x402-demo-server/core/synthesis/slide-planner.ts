@@ -1,4 +1,5 @@
 import type { UnifiedModelClient } from '../../models/unified-client.js';
+import type { ChatMessage } from '../../models/types.js';
 import type { TranscriptData } from '../schemas/transcript.schema.js';
 import type { PresentationOutline } from '../schemas/outline.schema.js';
 import { type SlideDeck, type SlideItem, type SlideLayoutType, validateSlideDeck } from '../schemas/slide.schema.js';
@@ -18,12 +19,12 @@ const LAYOUT_CYCLE: SlideLayoutType[] = [
   'outro_slide',
 ];
 
-function buildFallbackNLPDeck(transcript: TranscriptData, targetCount: number): SlideItem[] {
+function buildFallbackNLPDeck(transcript: TranscriptData, targetCount: number, isPartial: boolean = true): SlideItem[] {
   const text = transcript.sanitizedText;
   const sentences = text
     .split(/(?<=[.?!])\s+/)
-    .map(s => s.trim())
-    .filter(s => s.length > 25 && s.length < 180 && !/^(and|but|or|so|because)/i.test(s));
+    .map((s) => s.trim())
+    .filter((s) => s.length > 25 && s.length < 180 && !/^(and|but|or|so|because)/i.test(s));
 
   const slides: SlideItem[] = [];
   const contentCount = Math.max(4, targetCount - 1);
@@ -36,7 +37,7 @@ function buildFallbackNLPDeck(transcript: TranscriptData, targetCount: number): 
 
     slides.push({
       title: `${transcript.title} - Pillar ${i + 1}`,
-      subtitle: `Key insight analysis for section ${i + 1}`,
+      subtitle: isPartial ? `[Partial Result] Key insights for section ${i + 1}` : `Key insights for section ${i + 1}`,
       category: `PILLAR 0${i + 1}`,
       layout_type: layout,
       quote: layout === 'hero_quote' ? s1 : undefined,
@@ -51,6 +52,76 @@ function buildFallbackNLPDeck(transcript: TranscriptData, targetCount: number): 
   return slides;
 }
 
+async function callProviderForSlidesWithValidationRetry(
+  client: UnifiedModelClient,
+  providerName: string,
+  systemPrompt: string,
+  userPrompt: string,
+  theme: string,
+  detailLevel: 'concise' | 'balanced' | 'detailed'
+): Promise<SlideDeck> {
+  const initialMessages: ChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt },
+  ];
+
+  const firstAttempt = await client.completeWith(providerName, initialMessages, {
+    temperature: 0.3,
+    maxTokens: 3500,
+    jsonMode: true,
+  });
+
+  let rawContent = firstAttempt.content;
+  let validationError: Error | null = null;
+
+  try {
+    const match = rawContent.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON object found in response');
+    const parsed = JSON.parse(match[0]);
+    return validateSlideDeck({
+      theme,
+      detailLevel,
+      slides: parsed.slides,
+    });
+  } catch (err: any) {
+    validationError = err;
+    console.warn(`[SlidePlanner: ${providerName}] Schema validation failed on 1st attempt: ${err.message}. Retrying once with error feedback...`);
+  }
+
+  // Retry ONCE with error message
+  const correctionMessages: ChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt },
+    { role: 'assistant', content: rawContent },
+    {
+      role: 'user',
+      content: `Your previous response failed slide schema validation with error: "${validationError?.message}".\nPlease fix the errors and output strictly valid JSON with a "slides" array matching the requested schema.`,
+    },
+  ];
+
+  const secondAttempt = await client.completeWith(providerName, correctionMessages, {
+    temperature: 0.2,
+    maxTokens: 3500,
+    jsonMode: true,
+  });
+
+  const match2 = secondAttempt.content.match(/\{[\s\S]*\}/);
+  if (!match2) throw new Error(`Slide schema validation failed on retry: ${validationError?.message}`);
+  const parsed2 = JSON.parse(match2[0]);
+
+  return validateSlideDeck({
+    theme,
+    detailLevel,
+    slides: parsed2.slides,
+  });
+}
+
+/**
+ * Plans and generates structured slides using the fallback chain:
+ * 1. Local Ollama (Qwen 2.5 7B)
+ * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
+ * 3. Partial Deterministic NLP Deck (Never fails the whole request)
+ */
 export async function planSlideStructure(
   outline: PresentationOutline,
   transcript: TranscriptData,
@@ -61,8 +132,8 @@ export async function planSlideStructure(
   const targetCount = outline.targetSlideCount || 7;
   const contentSlidesCount = targetCount - 1;
 
-  const prompt = `You are a world-class presentation designer.
-Generate exactly ${contentSlidesCount} content slides based on this research outline and source context:
+  const systemPrompt = 'You are a presentation structuring engine. Output strictly valid JSON with a "slides" array.';
+  const userPrompt = `Generate exactly ${contentSlidesCount} content slides based on this research outline and source context:
 
 OUTLINE:
 Title: ${outline.title}
@@ -89,31 +160,34 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
   ]
 }`;
 
-  let slides: SlideItem[] = [];
+  // Chain: Primary provider (e.g. Local Ollama) first, then hosted models (Groq, Gemini)
+  const primaryName = client.getPrimaryProviderName();
+  const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
-  try {
-    const res = await client.complete([
-      { role: 'system', content: 'You are a presentation structuring engine. Output strictly valid JSON with a "slides" array.' },
-      { role: 'user', content: prompt },
-    ], { temperature: 0.3, maxTokens: 3500, jsonMode: true });
-
-    const match = res.content.match(/\{[\s\S]*\}/);
-    if (match) {
-      const parsed = JSON.parse(match[0]);
-      if (Array.isArray(parsed.slides) && parsed.slides.length > 0) {
-        slides = parsed.slides;
+  for (const providerName of providerOrder) {
+    try {
+      const provider = client.getProvider(providerName);
+      if (provider && (await provider.isAvailable())) {
+        console.log(`[SynthesisChain: Slides] Trying provider: ${providerName}...`);
+        const deck = await callProviderForSlidesWithValidationRetry(
+          client,
+          providerName,
+          systemPrompt,
+          userPrompt,
+          theme,
+          detailLevel
+        );
+        console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" succeeded with validated slides`);
+        return deck;
       }
+    } catch (err: any) {
+      console.warn(`[SynthesisChain: Slides] Provider "${providerName}" failed:`, err.message);
     }
-  } catch (err: any) {
-    console.warn('[SlidePlanner] LLM generation failed, using intelligent NLP fallback deck:', err.message);
   }
 
-  if (slides.length === 0) {
-    slides = buildFallbackNLPDeck(transcript, targetCount);
-  }
-
-  // Ensure each slide has a layout_type
-  slides = slides.map((s, idx) => ({
+  // Chain 3: Partial Result with clear message (Never fail whole request)
+  console.warn('⚠️ [SynthesisChain: Slides] All model providers failed. Returning partial slide deck with clear notice.');
+  const fallbackSlides = buildFallbackNLPDeck(transcript, targetCount, true).map((s, idx) => ({
     ...s,
     title: cleanTextForPptx(s.title, 60),
     subtitle: cleanTextForPptx(s.subtitle || '', 100),
@@ -124,6 +198,6 @@ Generate a JSON object with a "slides" array containing ${contentSlidesCount} ob
   return validateSlideDeck({
     theme,
     detailLevel,
-    slides,
+    slides: fallbackSlides,
   });
 }
