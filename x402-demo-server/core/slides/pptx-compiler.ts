@@ -27,11 +27,8 @@ export async function compilePptx(
   const MUT  = activeTheme.textMuted;
   const BDR  = activeTheme.cardBorder;
 
-  // Cross-platform font fallback ensuring Indic scripts (Devanagari, Telugu, etc.) render crisply
-  const hasIndic = /[\u0900-\u097F\u0C00-\u0C7F]/.test(JSON.stringify(deck));
-  const INDIC_FONT_STACK = 'Noto Sans Devanagari, Kohinoor Devanagari, Nirmala UI, Mangal, Arial Unicode MS, sans-serif';
-  const FT   = hasIndic ? INDIC_FONT_STACK : activeTheme.fontTitle;
-  const FB   = hasIndic ? INDIC_FONT_STACK : activeTheme.fontBody;
+  const FT   = activeTheme.fontTitle;
+  const FB   = activeTheme.fontBody;
 
   const slidesData = deck.slides;
   const totalSlides = slidesData.length + 1; // +1 for cover slide
@@ -330,6 +327,10 @@ export async function compilePptx(
       x: 8.85, y: 5.04, w: 0.5, h: 0.2,
       fontSize: 8, color: ACC, align: 'right', fontFace: FT, bold: true
     });
+
+    if (slideItem.speaker_notes) {
+      slide.addNotes(cleanTextForPptx(slideItem.speaker_notes, 1500));
+    }
   });
 
   const pptxBuffer = (await pptx.write({ outputType: 'nodebuffer' })) as Buffer;

@@ -30,6 +30,7 @@ export interface SlideItem {
   table_rows?: string[][];
   stats?: { value: string; label: string; note?: string }[];
   roadmap_steps?: { phase: string; title: string; description: string }[];
+  speaker_notes?: string;
   cards: SlideCard[];
 }
 
@@ -213,6 +214,7 @@ export function validateSlideDeck(input: unknown): SlideDeck {
       table_rows: Array.isArray(s.table_rows) ? s.table_rows : undefined,
       stats: Array.isArray(s.stats) ? s.stats : undefined,
       roadmap_steps: Array.isArray(s.roadmap_steps) ? s.roadmap_steps : undefined,
+      speaker_notes: typeof s.speaker_notes === 'string' && s.speaker_notes.trim().length > 0 ? s.speaker_notes.trim() : undefined,
       cards,
     };
   });

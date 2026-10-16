@@ -2,6 +2,7 @@ import type { UnifiedModelClient } from '../../models/unified-client.js';
 import type { ChatMessage } from '../../models/types.js';
 import type { TranscriptData } from '../schemas/transcript.schema.js';
 import { type PresentationOutline, validatePresentationOutline } from '../schemas/outline.schema.js';
+import { gpuLock } from '../utils/gpu-lock.js';
 
 export function calculateSlideCount(textLen: number, detailLevel: string = 'balanced'): number {
   if (detailLevel === 'concise') {
@@ -18,12 +19,27 @@ export function calculateSlideCount(textLen: number, detailLevel: string = 'bala
   return 7;
 }
 
-/**
- * Executes a synthesis prompt against a specific provider with:
- * 1. Schema validation
- * 2. On validation failure, retries ONCE with the error message
- * 3. Throws if retry also fails so the next provider in the fallback chain is tried
- */
+export function chunkTranscriptText(text: string, chunkSize: number = 5500, overlap: number = 300): string[] {
+  if (!text || text.length <= chunkSize) return [text || ''];
+  const chunks: string[] = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + chunkSize, text.length);
+    if (end < text.length) {
+      const lastPeriod = text.lastIndexOf('.', end);
+      const lastNewline = text.lastIndexOf('\n', end);
+      const bestBreak = Math.max(lastPeriod, lastNewline);
+      if (bestBreak > start + chunkSize * 0.7) {
+        end = bestBreak + 1;
+      }
+    }
+    chunks.push(text.slice(start, end).trim());
+    if (end >= text.length) break;
+    start = end - overlap;
+  }
+  return chunks;
+}
+
 async function callProviderWithValidationRetry(
   client: UnifiedModelClient,
   providerName: string,
@@ -37,7 +53,7 @@ async function callProviderWithValidationRetry(
 
   const firstAttempt = await client.completeWith(providerName, initialMessages, {
     temperature: 0.2,
-    maxTokens: 1800,
+    maxTokens: 2000,
     jsonMode: true,
   });
 
@@ -61,13 +77,13 @@ async function callProviderWithValidationRetry(
     { role: 'assistant', content: rawContent },
     {
       role: 'user',
-      content: `Your previous response failed schema validation with error: "${validationError?.message}".\nPlease fix the errors and output strictly valid JSON matching the schema.`,
+      content: `Your previous response failed schema validation with error: "${validationError?.message}".\nPlease fix the errors and output strictly valid JSON matching the schema. Output STRICTLY IN ENGLISH.`,
     },
   ];
 
   const secondAttempt = await client.completeWith(providerName, correctionMessages, {
     temperature: 0.1,
-    maxTokens: 1800,
+    maxTokens: 2000,
     jsonMode: true,
   });
 
@@ -76,17 +92,16 @@ async function callProviderWithValidationRetry(
   return validatePresentationOutline(JSON.parse(match2[0]));
 }
 
-/**
- * Synthesizes an executive presentation outline using the fallback chain:
- * 1. Local Ollama (Qwen 2.5 7B)
- * 2. Hosted Model (Groq LLaMA 3.3 / Gemini)
- * 3. Partial Deterministic Outline (Never fails the whole request)
- */
-import { gpuLock } from '../utils/gpu-lock.js';
-
 export interface SynthesizeOutlineOptions {
   allowCloudFallback?: boolean;
   outputLanguage?: string;
+  targetSlideCount?: number;
+  slideCount?: number;
+  audience?: string;
+  tone?: string;
+  focusText?: string;
+  includeAgenda?: boolean;
+  includeSummary?: boolean;
 }
 
 export async function synthesizeOutline(
@@ -95,29 +110,48 @@ export async function synthesizeOutline(
   detailLevel: string = 'balanced',
   options?: SynthesizeOutlineOptions
 ): Promise<PresentationOutline & { providerUsed?: string }> {
-  const targetCount = calculateSlideCount(transcript.charCount, detailLevel);
-  const cleanContext = transcript.sanitizedText.slice(0, 14000);
+  const rawTarget = options?.targetSlideCount || options?.slideCount;
+  const targetCount = rawTarget && rawTarget >= 3 && rawTarget <= 30
+    ? rawTarget
+    : calculateSlideCount(transcript.charCount, detailLevel);
 
-  const langInstruction =
-    options?.outputLanguage && options.outputLanguage.toLowerCase() !== 'same as video'
-      ? `\n\nOUTPUT LANGUAGE INSTRUCTION: The source content is in ${transcript.metadata?.detectedLanguage || transcript.metadata?.language || 'the original video language'}. Translate the presentation title, subtitle, pillars, and keyTopics strictly into "${options.outputLanguage}".`
-      : '';
+  // Full transcript chunking support across entire video
+  const chunks = chunkTranscriptText(transcript.sanitizedText, 6000, 300);
+  let contentContext = '';
+  if (chunks.length === 1) {
+    contentContext = chunks[0];
+  } else {
+    // Multi-chunk overview synthesizing beginning, middle, and end of video
+    contentContext = chunks.map((c, i) => `[SECTION ${i + 1}/${chunks.length}]:\n${c}`).join('\n\n');
+    if (contentContext.length > 25000) {
+      // Keep rich context while respecting model prompt budgets
+      contentContext = chunks.map((c, i) => `[SECTION ${i + 1}/${chunks.length}]:\n${c.slice(0, 4000)}`).join('\n\n');
+    }
+  }
 
-  const systemPrompt = 'You are an executive research analyst and domain strategist. Output strictly valid JSON matching the schema.';
-  const userPrompt = `Extract a comprehensive, factual research outline from the following content:${langInstruction}
+  const audienceStr = options?.audience ? `Target Audience: ${options.audience}\n` : '';
+  const toneStr = options?.tone ? `Presentation Tone: ${options.tone}\n` : '';
+  const focusStr = options?.focusText ? `Special Focus / Key Instructions: ${options.focusText}\n` : '';
+
+  const systemPrompt = 'You are an executive research analyst and presentation strategist. Output strictly valid JSON matching the schema. All content MUST BE IN ENGLISH.';
+  const userPrompt = `Extract a comprehensive, factual research outline from the following content:
+${audienceStr}${toneStr}${focusStr}
+OUTPUT LANGUAGE REQUIREMENT: Output all presentation titles, subtitles, pillars, and keyTopics STRICTLY IN ENGLISH. If the source material is in Hindi, Telugu, or another language, translate concepts accurately into clear English.
 
 SOURCE CONTENT (Topic / Title: "${transcript.title}"):
-"${cleanContext}"
+"${contentContext}"
+
+Target Slide Count: ${targetCount}
 
 Return strictly valid JSON matching:
 {
-  "title": "Clear Executive Title",
-  "subtitle": "Informative subtitle capturing the essence",
+  "title": "Clear Executive English Title",
+  "subtitle": "Informative subtitle capturing the essence in English",
   "pillars": [
-    { "name": "Pillar 1", "description": "Summary of pillar 1" },
-    { "name": "Pillar 2", "description": "Summary of pillar 2" },
-    { "name": "Pillar 3", "description": "Summary of pillar 3" },
-    { "name": "Pillar 4", "description": "Summary of pillar 4" }
+    { "name": "Pillar 1", "description": "Summary of pillar 1 in English" },
+    { "name": "Pillar 2", "description": "Summary of pillar 2 in English" },
+    { "name": "Pillar 3", "description": "Summary of pillar 3 in English" },
+    { "name": "Pillar 4", "description": "Summary of pillar 4 in English" }
   ],
   "keyTopics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"]
 }`;
@@ -130,7 +164,6 @@ Return strictly valid JSON matching:
     const provider = client.getProvider(providerName);
     if (!provider) continue;
 
-    // Cloud fallback is opt-in: skip cloud providers when false
     if (!allowCloud && provider.isLocal === false) {
       continue;
     }
@@ -139,41 +172,56 @@ Return strictly valid JSON matching:
       if (await provider.isAvailable()) {
         console.log(`[SynthesisChain: Outline] Trying provider: ${providerName}...`);
 
-        let outline: any;
+        let outlineResult: any;
         if (providerName === 'ollama') {
           const releaseGpu = await gpuLock.acquire('Ollama-Outline');
           try {
-            outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+            outlineResult = await callProviderWithValidationRetry(
+              client,
+              providerName,
+              systemPrompt,
+              userPrompt
+            );
           } finally {
             releaseGpu();
           }
         } else {
-          outline = await callProviderWithValidationRetry(client, providerName, systemPrompt, userPrompt);
+          outlineResult = await callProviderWithValidationRetry(
+            client,
+            providerName,
+            systemPrompt,
+            userPrompt
+          );
         }
-        console.log(`✓ [SynthesisChain: Outline] Provider "${providerName}" succeeded with validated schema`);
-        return { ...outline, targetSlideCount: targetCount, providerUsed: providerName };
+
+        console.log(`✓ [SynthesisChain: Outline] Provider "${providerName}" succeeded with outline: "${outlineResult.title}"`);
+        return {
+          ...outlineResult,
+          targetSlideCount: targetCount,
+          providerUsed: providerName,
+        };
       }
     } catch (err: any) {
       console.warn(`[SynthesisChain: Outline] Provider "${providerName}" failed:`, err.message);
     }
   }
 
-  // Chain 3: Partial Result with clear message (Never fail whole request)
-  console.warn('⚠️ [SynthesisChain: Outline] Local provider unavailable/failed (and cloud fallback disabled). Returning deterministic outline.');
+  // Fallback outline
+  console.warn('⚠️ [SynthesisChain: Outline] Local provider unavailable/failed. Returning deterministic fallback outline.');
+  const fallbackPillars = [
+    { name: 'Core Foundations & Setting', description: 'Foundational context and primary observations.' },
+    { name: 'Strategic Insights', description: 'Key operational dynamics and drivers.' },
+    { name: 'Transformation & Impact', description: 'Key measurable domain outcomes.' },
+    { name: 'Action Roadmap', description: 'Actionable execution steps and milestones.' },
+  ];
+
   return {
-    ...validatePresentationOutline({
-      title: transcript.title,
-      subtitle: '[Partial Synthesis] Key strategic takeaways derived directly from transcript',
-      pillars: [
-        { name: 'Core Perspective', description: 'Primary thesis and background extracted from transcript' },
-        { name: 'Key Challenges', description: 'Identified friction points and strategic challenges' },
-        { name: 'Tactical Interventions', description: 'Actionable solutions, frameworks, and insights' },
-        { name: 'Long-term Impact', description: 'Expected trajectory, outcomes, and value' },
-      ],
-      keyTopics: ['Executive Overview', 'Direct Findings', 'Strategic Blueprint', 'Execution Plan'],
-      targetSlideCount: targetCount,
-      rawSynthesis: '[Partial Result: Model synthesis timed out or was offline. Built via deterministic fallback engine]',
-    }),
+    title: transcript.title || 'Executive Presentation',
+    subtitle: 'Strategic Overview and Key Takeaways',
+    pillars: fallbackPillars,
+    keyTopics: ['Executive Overview', 'Key Drivers', 'Deep Dive', 'Action Plan'],
+    targetSlideCount: targetCount,
+    rawSynthesis: '[Partial Result] Deterministic NLP Outline',
     providerUsed: 'deterministic-fallback',
   };
 }
