@@ -240,9 +240,11 @@ export async function handleGeneratePpt(c: Context) {
     );
 
     const providerUsed = slideDeck.providerUsed || outline.providerUsed || 'ollama';
+    slideDeck.title = transcriptData.title;
+    slideDeck.subtitle = outline.subtitle || 'Executive Intelligence Briefing & Strategic Synthesis';
 
     // Stage 3: Slide Compilation (.pptx)
-    console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
+    console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: "${slideDeck.title}", Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
     let pptxResult;
     try {
       pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);

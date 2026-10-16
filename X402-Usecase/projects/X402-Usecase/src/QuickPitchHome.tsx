@@ -815,7 +815,7 @@ export default function QuickPitchHome() {
                   </label>
                   <span className="text-xs font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-1 rounded-full flex items-center space-x-1.5 shadow-sm">
                     <span>⚡ ETA:</span>
-                    <span className="font-bold text-white">~{Math.round(12 + slideCount * 2.5)}s</span>
+                    <span className="font-bold text-white">{Math.round(25 + slideCount * 4.5)}s - {Math.round(32 + slideCount * 5.2)}s</span>
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">

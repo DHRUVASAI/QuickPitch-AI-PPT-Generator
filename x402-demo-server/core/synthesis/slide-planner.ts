@@ -248,20 +248,79 @@ export async function planSlideStructure(
     ? 'The LAST content slide MUST be a SUMMARY / TAKEAWAYS slide (category: "SUMMARY", layout_type: "split_cards") summarizing key takeaways and next steps.'
     : '';
 
-  // Chunked transcript overview
-  const chunks = chunkTranscriptText(transcript.sanitizedText, 6000, 300);
-  let contextText = '';
-  if (chunks.length === 1) {
-    contextText = chunks[0];
-  } else {
-    contextText = chunks.map((c, i) => `[SECTION ${i + 1}/${chunks.length}]:\n${c.slice(0, 3500)}`).join('\n\n');
+  // 1. Precise chunking by timestamps or text partitions
+  interface TranscriptChunk {
+    index: number;
+    startSec: number;
+    endSec: number;
+    timestamps: string;
+    text: string;
   }
+
+  const rawSegments = (transcript.metadata as any)?.segments as Array<{ start: number; end: number; text: string }> | undefined;
+  const slideChunks: TranscriptChunk[] = [];
+
+  const formatTs = (sec: number) => {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  if (Array.isArray(rawSegments) && rawSegments.length > 0) {
+    const segsPerChunk = Math.ceil(rawSegments.length / contentSlidesCount);
+    for (let cIdx = 0; cIdx < contentSlidesCount; cIdx++) {
+      const slice = rawSegments.slice(cIdx * segsPerChunk, Math.min(rawSegments.length, (cIdx + 1) * segsPerChunk));
+      if (slice.length > 0) {
+        const startSec = slice[0].start;
+        const endSec = slice[slice.length - 1].end;
+        slideChunks.push({
+          index: cIdx + 1,
+          startSec,
+          endSec,
+          timestamps: `${formatTs(startSec)} - ${formatTs(endSec)}`,
+          text: slice.map(s => s.text).join(' '),
+        });
+      }
+    }
+  }
+
+  if (slideChunks.length === 0) {
+    const totalChars = transcript.sanitizedText.length;
+    const charsPerChunk = Math.ceil(totalChars / contentSlidesCount);
+    const estTotalDuration = (transcript.metadata as any)?.duration || 300;
+    for (let cIdx = 0; cIdx < contentSlidesCount; cIdx++) {
+      const startChar = cIdx * charsPerChunk;
+      const endChar = Math.min(totalChars, (cIdx + 1) * charsPerChunk);
+      const text = transcript.sanitizedText.slice(startChar, endChar);
+      const startSec = Math.round((startChar / (totalChars || 1)) * estTotalDuration);
+      const endSec = Math.round((endChar / (totalChars || 1)) * estTotalDuration);
+      slideChunks.push({
+        index: cIdx + 1,
+        startSec,
+        endSec,
+        timestamps: `${formatTs(startSec)} - ${formatTs(endSec)}`,
+        text,
+      });
+    }
+  }
+
+  const chunkPromptBlock = slideChunks
+    .map(c => `[CHUNK ${c.index} | TIMESTAMPS: ${c.timestamps} (${c.startSec.toFixed(1)}s to ${c.endSec.toFixed(1)}s)]:\n"${c.text.slice(0, 4000)}"`)
+    .join('\n\n');
 
   const systemPrompt = `You are a world-class presentation structuring engine. Output strictly valid JSON with a "slides" array.
 ALL SLIDE TITLES, SUBTITLES, CATEGORY BADGES, CARD TITLES, BULLET POINTS, AND SPEAKER NOTES MUST BE IN ENGLISH.
-If the source context is in Hindi, Telugu, or another language, translate all facts accurately into English.`;
+If the source context is in Hindi, Telugu, or another language, translate all facts accurately into English.
 
-  const userPrompt = `Generate EXACTLY ${contentSlidesCount} content slides based on this research outline and source context:
+CRITICAL GROUNDING INSTRUCTION:
+Each slide MUST be generated strictly and exclusively from its matching CHUNK.
+- Slide 1 comes ONLY from CHUNK 1
+- Slide 2 comes ONLY from CHUNK 2
+...
+- Slide N comes ONLY from CHUNK N
+Do NOT use outside knowledge. Do NOT invent numbers, names, or product terms.`;
+
+  const userPrompt = `Generate EXACTLY ${contentSlidesCount} content slides based on these ${contentSlidesCount} distinct source chunks from the video:
 
 OUTLINE:
 Title: ${outline.title}
@@ -280,16 +339,19 @@ CONTENT SPECIFICATIONS:
 - ${notesInstruction}
 ${agendaInstruction ? `- ${agendaInstruction}\n` : ''}${summaryInstruction ? `- ${summaryInstruction}\n` : ''}
 
-SOURCE CONTEXT (Topic: "${transcript.title}"):
-"${contextText.slice(0, 22000)}"
+SOURCE CHUNKS (Topic: "${transcript.title}"):
+${chunkPromptBlock}
 
 Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesCount} objects matching:
 {
   "slides": [
     {
-      "title": "Clear English Slide Title",
+      "title": "Clear English Slide Title from Chunk",
       "subtitle": "Informative subtitle in English",
       "category": "CATEGORY BADGE",
+      "source_timestamps": "00:00 - 01:15",
+      "source_start": 0.0,
+      "source_end": 75.0,
       "layout_type": "split_cards | three_columns | four_columns | hero_quote | stats_spotlight | comparison_split | roadmap_timeline | diagram_flow | data_table | quadrant_grid | outro_slide",
       "speaker_notes": "Key speaker notes for the presenter in English",
       "cards": [
@@ -346,6 +408,9 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
           );
         }
 
+        // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source chunk
+        verifyAndAttachSourceReferences(genResult.deck.slides, slideChunks);
+
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" produced ${genResult.deck.slides.length} slides`);
         return {
           ...genResult.deck,
@@ -368,6 +433,8 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
+  verifyAndAttachSourceReferences(fallbackSlides, slideChunks);
+
   return {
     ...validateSlideDeck({
       theme,
@@ -377,4 +444,57 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     providerUsed: 'deterministic-fallback',
     adjustmentNotice: `Compiled fallback deck with ${fallbackSlides.length} content slides.`,
   };
+}
+
+function verifyAndAttachSourceReferences(
+  slides: SlideItem[],
+  chunks: Array<{ index: number; startSec: number; endSec: number; timestamps: string; text: string }>
+): void {
+  for (let i = 0; i < slides.length; i++) {
+    const slide = slides[i];
+    const chunk = chunks[i] || chunks[chunks.length - 1];
+    if (!chunk) continue;
+
+    slide.source_start = slide.source_start ?? chunk.startSec;
+    slide.source_end = slide.source_end ?? chunk.endSec;
+    slide.source_timestamps = slide.source_timestamps || chunk.timestamps;
+
+    const unverified: string[] = [];
+    const chunkTextLower = chunk.text.toLowerCase();
+
+    const bullets = slide.cards.flatMap((c) => c.points);
+    for (const bullet of bullets) {
+      // 1. Numbers verification
+      const numbers = bullet.match(/\b\d+(?:\.\d+)?%?\b/g) || [];
+      for (const num of numbers) {
+        if (!chunk.text.includes(num)) {
+          unverified.push(`Number "${num}" in "${bullet}"`);
+        }
+      }
+
+      // 2. Names & Product terms verification
+      const entities = bullet.match(/\b[A-Z][a-zA-Z0-9-]+\b/g) || [];
+      const stopwords = new Set([
+        'The', 'This', 'These', 'That', 'With', 'From', 'For', 'And', 'Key', 'Core', 'Action',
+        'Impact', 'Strategic', 'Overview', 'Pillar', 'Section', 'High', 'Low', 'Each', 'Our',
+        'All', 'Slide', 'Features', 'Benefits', 'Role', 'System', 'Systems', 'Using', 'Used',
+        'Their', 'There', 'When', 'What', 'Where', 'Which', 'Why', 'How'
+      ]);
+
+      for (const entity of entities) {
+        if (stopwords.has(entity) || entity.length <= 2) continue;
+        const entityLower = entity.toLowerCase();
+        if (!chunkTextLower.includes(entityLower)) {
+          unverified.push(`Term/Entity "${entity}" in "${bullet}"`);
+        }
+      }
+    }
+
+    if (unverified.length > 0) {
+      slide.unverified_terms = unverified;
+      console.warn(`[VerificationPass] Slide ${i + 1} ("${slide.title}") flagged ${unverified.length} unverified items:`, unverified);
+    } else {
+      console.log(`[VerificationPass] Slide ${i + 1} ("${slide.title}") verified: all numbers and terms grounded in chunk.`);
+    }
+  }
 }

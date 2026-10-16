@@ -67,15 +67,15 @@ export async function compilePptx(
     fontSize: 8.5, bold: true, color: ACC, align: 'center', fontFace: FT
   });
 
-  // Main Cover Title
-  const coverTitle = cleanTextForPptx(slidesData[0]?.title || 'Executive Presentation', 65);
+  // Main Cover Title (Real Video Title)
+  const coverTitle = cleanTextForPptx(deck.title || slidesData[0]?.title || 'Executive Presentation', 90);
   cover.addText(coverTitle, {
-    x: 0.85, y: 1.35, w: 8.3, h: 1.7,
-    fontSize: 34, bold: true, color: TXT, fontFace: FT, lineSpacingMultiple: 1.08
+    x: 0.85, y: 1.25, w: 8.3, h: 1.8,
+    fontSize: coverTitle.length > 50 ? 26 : 32, bold: true, color: TXT, fontFace: FT, lineSpacingMultiple: 1.08
   });
 
   // Subtitle
-  const coverSub = cleanTextForPptx(slidesData[0]?.subtitle || 'AI-Powered Presentation Deck · Strategic Briefing & Synthesis', 110);
+  const coverSub = cleanTextForPptx(deck.subtitle || slidesData[0]?.subtitle || 'Comprehensive Strategic Analysis & Executive Summary', 120);
   cover.addText(coverSub, {
     x: 0.85, y: 3.1, w: 8.3, h: 0.65,
     fontSize: 14, color: MUT, fontFace: FB, lineSpacingMultiple: 1.15
@@ -86,11 +86,11 @@ export async function compilePptx(
     x: 0.85, y: 3.9, w: 8.3, h: 0.02, fill: { color: BDR }
   });
 
-  // Metadata cards at bottom of cover
+  // Metadata cards at bottom of cover (No Theme name or slide count text)
   const metaCards = [
-    { label: 'TOTAL SLIDES', val: `${totalSlides} Slides`, color: TXT },
-    { label: 'VISUAL THEME', val: activeTheme.name, color: ACC },
-    { label: 'PREPARED BY', val: 'QuickPitch AI v2.5', color: ACC2 },
+    { label: 'DOCUMENT TYPE', val: 'Executive Intelligence Briefing', color: TXT },
+    { label: 'CONTENT SOURCE', val: 'Verified Video Transcript', color: ACC },
+    { label: 'SYNTHESIS ENGINE', val: 'QuickPitch AI Studio', color: ACC2 },
   ];
 
   metaCards.forEach((mc, idx) => {
@@ -109,7 +109,7 @@ export async function compilePptx(
     });
     cover.addText(mc.val, {
       x: mx + 0.2, y: 4.47, w: 2.2, h: 0.38,
-      fontSize: 11, bold: true, color: mc.color, fontFace: FT
+      fontSize: 10.5, bold: true, color: mc.color, fontFace: FT
     });
   });
 
@@ -153,6 +153,18 @@ export async function compilePptx(
       x: 7.95, y: 0.55, w: 1.7, h: 0.32,
       fontSize: 8, color: MUT, align: 'center', fontFace: FT, bold: true
     });
+
+    // Source Timestamp Grounding Badge
+    if (slideItem.source_timestamps) {
+      slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+        x: 5.45, y: 0.55, w: 2.35, h: 0.32,
+        fill: { color: CARD }, line: { color: BDR, width: 1 }, rectRadius: 0.08
+      });
+      slide.addText(`REF: ${slideItem.source_timestamps}`, {
+        x: 5.45, y: 0.55, w: 2.35, h: 0.32,
+        fontSize: 7.5, color: ACC2, align: 'center', fontFace: FT, bold: true
+      });
+    }
 
     // Slide Title
     slide.addText(cleanTextForPptx(slideItem.title, 60), {

@@ -24,6 +24,10 @@ export interface SlideItem {
   subtitle?: string;
   category?: string;
   layout_type?: SlideLayoutType;
+  source_start?: number;
+  source_end?: number;
+  source_timestamps?: string;
+  unverified_terms?: string[];
   quote?: string;
   quote_author?: string;
   table_headers?: string[];
@@ -147,6 +151,8 @@ export const THEMES: Record<string, PresentationTheme> = {
 };
 
 export interface SlideDeck {
+  title?: string;
+  subtitle?: string;
   theme: string;
   detailLevel: 'concise' | 'balanced' | 'detailed';
   slides: SlideItem[];
@@ -208,6 +214,10 @@ export function validateSlideDeck(input: unknown): SlideDeck {
       subtitle,
       category,
       layout_type: s.layout_type,
+      source_start: typeof s.source_start === 'number' ? s.source_start : undefined,
+      source_end: typeof s.source_end === 'number' ? s.source_end : undefined,
+      source_timestamps: typeof s.source_timestamps === 'string' ? s.source_timestamps.trim() : undefined,
+      unverified_terms: Array.isArray(s.unverified_terms) ? s.unverified_terms : undefined,
       quote: typeof s.quote === 'string' ? s.quote.trim() : undefined,
       quote_author: typeof s.quote_author === 'string' ? s.quote_author.trim() : undefined,
       table_headers: Array.isArray(s.table_headers) ? s.table_headers : undefined,
@@ -220,6 +230,8 @@ export function validateSlideDeck(input: unknown): SlideDeck {
   });
 
   return {
+    title: typeof candidate.title === 'string' ? candidate.title.trim() : undefined,
+    subtitle: typeof candidate.subtitle === 'string' ? candidate.subtitle.trim() : undefined,
     theme,
     detailLevel,
     slides: validatedSlides,

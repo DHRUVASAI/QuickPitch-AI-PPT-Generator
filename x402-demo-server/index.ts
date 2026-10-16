@@ -125,17 +125,51 @@ app.post('/youtube/chat', handleYouTubeChat);
 
 // Privacy: Transcript Cache Management (Delete single or all cached transcripts)
 import { deleteCachedTranscript, clearTranscriptCache } from './core/transcript/transcript-cache.js';
+import { getConnInfo } from '@hono/node-server/conninfo';
+
+function isRequestFromLocalhost(c: any): boolean {
+  try {
+    const info = getConnInfo(c);
+    const remoteAddr = info.remote?.address;
+    if (remoteAddr) {
+      const isLoopback = remoteAddr === '127.0.0.1' || 
+                         remoteAddr === '::1' || 
+                         remoteAddr === '::ffff:127.0.0.1';
+      if (!isLoopback) return false;
+    }
+  } catch {
+    const socketAddr = (c.env as any)?.incoming?.socket?.remoteAddress;
+    if (socketAddr && socketAddr !== '127.0.0.1' && socketAddr !== '::1' && socketAddr !== '::ffff:127.0.0.1') {
+      return false;
+    }
+  }
+  const host = c.req.header('host') || '';
+  return host.startsWith('localhost') || host.startsWith('127.0.0.1') || host.startsWith('[::1]');
+}
+
 app.delete('/cache/transcript', (c) => {
+  if (!isRequestFromLocalhost(c)) {
+    return c.json({
+      error: 'Forbidden. Cache management is restricted exclusively to localhost requests.',
+    }, 403);
+  }
+
   const url = c.req.query('url');
   const key = c.req.query('key');
   const clearAll = c.req.query('all') === 'true';
 
-  if (clearAll || (!url && !key)) {
+  if (clearAll) {
     clearTranscriptCache();
     return c.json({
       status: 'ok',
       message: 'Transcript cache cleared completely.',
     });
+  }
+
+  if (!url && !key) {
+    return c.json({
+      error: 'Bad Request. Parameter all=true is required to purge entire cache, or specify ?url=... or ?key=... to delete a single transcript.',
+    }, 400);
   }
 
   const target = url || key || '';

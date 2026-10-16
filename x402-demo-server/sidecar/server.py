@@ -204,9 +204,10 @@ async def transcribe_audio(
     task: str = Form("transcribe"),
     initial_prompt: Optional[str] = Form(None),
     vad_filter: bool = Form(True),
+    beam_size: int = Form(5),
     unload_after: bool = Form(False),
 ):
-    logger.info(f"[SIDECAR RECEIVED PARAMS] model={model}, language={language}, task={task}, vad_filter={vad_filter}, initial_prompt={initial_prompt}")
+    logger.info(f"[SIDECAR RECEIVED PARAMS] model={model}, language={language}, task={task}, vad_filter={vad_filter}, beam_size={beam_size}, initial_prompt={initial_prompt}")
     suffix = os.path.splitext(file.filename or "audio.mp3")[1] or ".mp3"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
         tmp_path = tmp.name
@@ -218,7 +219,7 @@ async def transcribe_audio(
         whisper_model = get_model(model)
 
         resolved_lang = language if (language and language.lower() not in ["auto", "same as video", ""]) else None
-        logger.info(f"[FASTER-WHISPER TRANSCRIBE CALL] model={current_model_name}, device={current_device}, compute={current_compute_type}, task={task}, language={resolved_lang}")
+        logger.info(f"[FASTER-WHISPER TRANSCRIBE CALL] model={current_model_name}, device={current_device}, compute={current_compute_type}, task={task}, language={resolved_lang}, beam_size={beam_size}")
 
         segments_gen, info = whisper_model.transcribe(
             audio,
@@ -227,7 +228,7 @@ async def transcribe_audio(
             initial_prompt=initial_prompt,
             vad_filter=vad_filter,
             vad_parameters=dict(min_silence_duration_ms=500),
-            beam_size=5,
+            beam_size=beam_size,
         )
 
         segments: List[SegmentItem] = []

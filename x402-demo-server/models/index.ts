@@ -24,10 +24,9 @@ export function getModelClient(): UnifiedModelClient {
   if (!defaultModelClient) {
     const ollama = new OllamaProvider();
     const groq = new GroqProvider();
-    const gemini = new GeminiProvider();
-
-    // Default: try local Ollama first for private local GPU, then cloud Groq, then Gemini
-    defaultModelClient = new UnifiedModelClient([ollama, groq, gemini]);
+    // Default: try local Ollama first for private local GPU, then cloud Groq.
+    // Gemini is explicitly removed from the chain because GEMINI_API_KEY is not configured.
+    defaultModelClient = new UnifiedModelClient([ollama, groq]);
   }
   return defaultModelClient;
 }
