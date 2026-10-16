@@ -123,6 +123,33 @@ app.post('/transcribe-audio', handleTranscribeAudio);
 app.post('/youtube/load-transcript', handleLoadYouTubeTranscript);
 app.post('/youtube/chat', handleYouTubeChat);
 
+// Privacy: Transcript Cache Management (Delete single or all cached transcripts)
+import { deleteCachedTranscript, clearTranscriptCache } from './core/transcript/transcript-cache.js';
+app.delete('/cache/transcript', (c) => {
+  const url = c.req.query('url');
+  const key = c.req.query('key');
+  const clearAll = c.req.query('all') === 'true';
+
+  if (clearAll || (!url && !key)) {
+    clearTranscriptCache();
+    return c.json({
+      status: 'ok',
+      message: 'Transcript cache cleared completely.',
+    });
+  }
+
+  const target = url || key || '';
+  const deleted = deleteCachedTranscript(target);
+  return c.json({
+    status: 'ok',
+    target,
+    deleted,
+    message: deleted
+      ? `Transcript cache for "${target}" was deleted.`
+      : `No matching transcript cache found for "${target}".`,
+  });
+});
+
 // ════════════════════════════════════════════════════════════════════
 // PUBLIC ENDPOINTS
 // ════════════════════════════════════════════════════════════════════

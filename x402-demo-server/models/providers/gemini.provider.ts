@@ -11,7 +11,7 @@ export class GeminiProvider implements ILLMProvider {
 
   constructor(options?: { apiKey?: string; defaultModel?: string }) {
     this.apiKey = options?.apiKey || process.env.GEMINI_API_KEY;
-    this.defaultModel = options?.defaultModel || 'gemini-1.5-flash';
+    this.defaultModel = options?.defaultModel || 'gemini-2.0-flash';
     if (this.apiKey) {
       this.client = new GoogleGenerativeAI(this.apiKey);
     }

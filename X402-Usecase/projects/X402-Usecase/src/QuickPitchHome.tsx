@@ -114,16 +114,28 @@ export default function QuickPitchHome() {
   const [audioFileName, setAudioFileName] = useState('')
   const [audioFile, setAudioFile] = useState<File | null>(null)
   
-  // Customization States
+  // Customization States (Round 3 Item 1)
   const [selectedTheme, setSelectedTheme] = useState('cyber-blue')
   const [selectedDetailLevel, setSelectedDetailLevel] = useState<'concise' | 'balanced' | 'detailed'>('balanced')
   const [selectedTone, setSelectedTone] = useState('Executive Investor Pitch')
+  const [slideCount, setSlideCount] = useState(6)
+  const [bulletsPerSlide, setBulletsPerSlide] = useState(3)
+  const [wordsPerBullet, setWordsPerBullet] = useState(14)
+  const [audience, setAudience] = useState('Executive Leadership')
+  const [tone, setTone] = useState('Strategic & Visionary')
+  const [speakerNotes, setSpeakerNotes] = useState(true)
+  const [includeAgenda, setIncludeAgenda] = useState(true)
+  const [includeSummary, setIncludeSummary] = useState(true)
+  const [focusText, setFocusText] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
+  const [doNotCache, setDoNotCache] = useState(false)
+  const [slideAdjustmentNotice, setSlideAdjustmentNotice] = useState<string | null>(null)
 
   // UI States
   const [loading, setLoading] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [allowCloudFallback, setAllowCloudFallback] = useState(false)
-  const [outputLanguage, setOutputLanguage] = useState('same as video')
   const [spokenLanguage, setSpokenLanguage] = useState<string | undefined>(undefined)
   const [partialNotice, setPartialNotice] = useState<string | null>(null)
   const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
@@ -221,14 +233,25 @@ export default function QuickPitchHome() {
     return null
   }
 
-  const getPayload = (transcribedText?: string, confirmedSpokenLang?: string, overrideOutputLang?: string) => {
+  const getPayload = (transcribedText?: string, confirmedSpokenLang?: string) => {
     const activeSpoken = confirmedSpokenLang || spokenLanguage;
     const base = {
       theme: selectedTheme,
       detail_level: selectedDetailLevel,
-      tone: selectedTone,
+      slide_count: slideCount,
+      bullets_per_slide: bulletsPerSlide,
+      words_per_bullet: wordsPerBullet,
+      audience,
+      tone,
+      speaker_notes: speakerNotes,
+      agenda: includeAgenda,
+      summary: includeSummary,
+      focus_text: focusText || undefined,
+      start_time: startTime || undefined,
+      end_time: endTime || undefined,
+      do_not_cache: doNotCache,
       allow_cloud_fallback: allowCloudFallback,
-      output_language: overrideOutputLang || outputLanguage,
+      output_language: 'en',
       spoken_language: activeSpoken,
       user_confirmed_spoken_language: Boolean(activeSpoken),
       user_confirmed_language: Boolean(activeSpoken),
@@ -360,7 +383,7 @@ export default function QuickPitchHome() {
                   detectedLanguage: errJson.detected_language || 'unknown',
                   confidence: errJson.language_confidence || 0,
                   message: errJson.message || 'Low language confidence detected in spoken audio. Please confirm spoken language.',
-                  outputLanguage: errJson.current_output_language || outputLanguage,
+                  outputLanguage: errJson.current_output_language || 'en',
                   transcribedText,
                 });
                 return;
@@ -382,6 +405,10 @@ export default function QuickPitchHome() {
           }
           if (qpProvider && qpProvider !== 'ollama' && qpProvider !== 'deterministic-fallback') {
             setCloudProviderNotice(`Cloud provider fallback was used: ${qpProvider}`);
+          }
+          const qpAdjustment = response.headers.get('X-QuickPitch-Slide-Adjustment');
+          if (qpAdjustment) {
+            setSlideAdjustmentNotice(qpAdjustment);
           }
 
           setStatus(`✅ Presentation compiled & downloaded!`);
@@ -780,22 +807,65 @@ export default function QuickPitchHome() {
               </div>
 
               {/* Detail Level Selector */}
+              {/* SLIDE COUNT (3 - 30) & ESTIMATED TIME BADGE */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-semibold text-slate-300">
+                    SLIDE COUNT: <span className="text-brand-400 font-bold text-sm">{slideCount} Slides</span> (Range: 3 - 30)
+                  </label>
+                  <span className="text-xs font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-1 rounded-full flex items-center space-x-1.5 shadow-sm">
+                    <span>⚡ ETA:</span>
+                    <span className="font-bold text-white">~{Math.round(12 + slideCount * 2.5)}s</span>
+                  </span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="range"
+                    min={3}
+                    max={30}
+                    value={slideCount}
+                    onChange={(e) => setSlideCount(parseInt(e.target.value, 10))}
+                    className="flex-1 accent-brand-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                  />
+                  <input
+                    type="number"
+                    min={3}
+                    max={30}
+                    value={slideCount}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      if (!isNaN(val)) setSlideCount(Math.max(3, Math.min(30, val)));
+                    }}
+                    className="w-16 bg-[#0a0f1d] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white text-center font-mono focus:outline-none focus:border-brand-500"
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] font-mono text-slate-500 px-1">
+                  <span>3 (Brief)</span>
+                  <span>6 (Standard)</span>
+                  <span>10 (Deck)</span>
+                  <span>15 (Deep Dive)</span>
+                  <span>30 (Full Series)</span>
+                </div>
+              </div>
+
+              {/* DETAIL LEVEL */}
               <div>
-                <label className="block text-xs font-mono font-semibold text-slate-300 mb-3">
-                  SLIDE COUNT & DETAIL LEVEL
+                <label className="block text-xs font-mono font-semibold text-slate-300 mb-2">
+                  CONTENT DETAIL LEVEL
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: 'concise', label: 'Concise', sub: '6-7 Slides', desc: 'Fast executive brief' },
-                    { id: 'balanced', label: 'Balanced', sub: '8-10 Slides', desc: 'Standard business deck' },
-                    { id: 'detailed', label: 'Detailed', sub: '12-15 Slides', desc: 'Deep-dive analysis' },
+                    { id: 'concise', label: 'Concise', sub: 'High impact points', desc: 'Fast executive brief' },
+                    { id: 'balanced', label: 'Balanced', sub: 'Context & evidence', desc: 'Standard business deck' },
+                    { id: 'detailed', label: 'Comprehensive', sub: 'Deep technical rigor', desc: 'In-depth analysis' },
                   ].map((level) => (
                     <button
                       key={level.id}
+                      type="button"
                       onClick={() => setSelectedDetailLevel(level.id as any)}
-                      className={`p-3.5 rounded-xl border text-left transition-all ${
+                      className={`p-3 rounded-xl border text-left transition-all ${
                         selectedDetailLevel === level.id
-                          ? 'bg-white/[0.08] border-brand-500 text-white shadow-lg shadow-brand-500/10'
+                          ? 'bg-white/[0.08] border-brand-500 text-white shadow-md shadow-brand-500/10'
                           : 'bg-white/[0.02] border-white/10 text-slate-400 hover:border-white/20'
                       }`}
                     >
@@ -807,37 +877,197 @@ export default function QuickPitchHome() {
                 </div>
               </div>
 
-              {/* Output Language Selector */}
-              <div>
-                <label className="block text-xs font-mono font-semibold text-slate-300 mb-3">
-                  OUTPUT SLIDE DECK LANGUAGE
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { id: 'same as video', label: '🌐 Same as Video', sub: 'Native Source' },
-                    { id: 'English', label: '🇺🇸 English', sub: 'Standard EN' },
-                    { id: 'Hindi', label: '🇮🇳 Hindi', sub: 'हिंदी' },
-                    { id: 'Telugu', label: '🇮🇳 Telugu', sub: 'తెలుగు' },
-                    { id: 'Spanish', label: '🇪🇸 Spanish', sub: 'Español' },
-                    { id: 'French', label: '🇫🇷 French', sub: 'Français' },
-                    { id: 'German', label: '🇩🇪 German', sub: 'Deutsch' },
-                    { id: 'Japanese', label: '🇯🇵 Japanese', sub: '日本語' },
-                  ].map((lang) => (
-                    <button
-                      key={lang.id}
-                      type="button"
-                      onClick={() => setOutputLanguage(lang.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
-                        outputLanguage === lang.id
-                          ? 'bg-white/[0.08] border-brand-500 text-white shadow-sm shadow-brand-500/20 font-semibold'
-                          : 'bg-white/[0.02] border-white/10 text-slate-400 hover:border-white/20'
-                      }`}
-                    >
-                      <div className="text-xs font-bold font-heading truncate">{lang.label}</div>
-                      <div className="text-[10px] font-mono text-slate-400">{lang.sub}</div>
-                    </button>
-                  ))}
+              {/* BULLETS PER SLIDE & WORDS PER BULLET */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="font-semibold text-slate-300">BULLETS PER SLIDE</span>
+                    <span className="text-brand-400 font-bold">{bulletsPerSlide} / card</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="range"
+                      min={1}
+                      max={8}
+                      value={bulletsPerSlide}
+                      onChange={(e) => setBulletsPerSlide(parseInt(e.target.value, 10))}
+                      className="flex-1 accent-brand-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                    />
+                    <span className="w-8 text-center text-xs font-mono text-white bg-[#0a0f1d] border border-white/10 rounded py-1">
+                      {bulletsPerSlide}
+                    </span>
+                  </div>
                 </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="font-semibold text-slate-300">WORDS PER BULLET</span>
+                    <span className="text-brand-400 font-bold">~{wordsPerBullet} words</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="range"
+                      min={3}
+                      max={35}
+                      value={wordsPerBullet}
+                      onChange={(e) => setWordsPerBullet(parseInt(e.target.value, 10))}
+                      className="flex-1 accent-brand-500 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                    />
+                    <span className="w-8 text-center text-xs font-mono text-white bg-[#0a0f1d] border border-white/10 rounded py-1">
+                      {wordsPerBullet}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* AUDIENCE & TONE */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono font-semibold text-slate-300">
+                    TARGET AUDIENCE
+                  </label>
+                  <input
+                    type="text"
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value)}
+                    placeholder="e.g. Executive Board, Investors, Engineers"
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500 font-mono"
+                  />
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {['Board & Execs', 'Investors & VCs', 'Technical Teams', 'Customers'].map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setAudience(a)}
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition ${
+                          audience === a ? 'bg-brand-500/20 text-brand-300 border-brand-500/40' : 'bg-white/[0.02] text-slate-400 border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono font-semibold text-slate-300">
+                    PRESENTATION TONE
+                  </label>
+                  <input
+                    type="text"
+                    value={tone}
+                    onChange={(e) => setTone(e.target.value)}
+                    placeholder="e.g. Strategic, Analytical, Inspiring"
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500 font-mono"
+                  />
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {['Strategic & Visionary', 'Direct & Analytical', 'Persuasive Pitch', 'Educational'].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setTone(t)}
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition ${
+                          tone === t ? 'bg-brand-500/20 text-brand-300 border-brand-500/40' : 'bg-white/[0.02] text-slate-400 border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* FOCUS TEXT & TIME WINDOW */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2 space-y-1.5">
+                  <label className="block text-xs font-mono font-semibold text-slate-300">
+                    CUSTOM FOCUS / TOPICS TO EMPHASIZE (OPTIONAL)
+                  </label>
+                  <input
+                    type="text"
+                    value={focusText}
+                    onChange={(e) => setFocusText(e.target.value)}
+                    placeholder="e.g. Highlight Q3 financials, architecture moats, competitive analysis"
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-mono font-semibold text-slate-300">
+                    CLIP WINDOW (START / END)
+                  </label>
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      placeholder="Start (0:00)"
+                      className="w-1/2 bg-[#0a0f1d] border border-white/10 rounded-xl px-2.5 py-2 text-xs text-white text-center focus:outline-none focus:border-brand-500 font-mono"
+                    />
+                    <input
+                      type="text"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      placeholder="End (5:30)"
+                      className="w-1/2 bg-[#0a0f1d] border border-white/10 rounded-xl px-2.5 py-2 text-xs text-white text-center focus:outline-none focus:border-brand-500 font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* TOGGLES: SPEAKER NOTES, AGENDA, SUMMARY, DO NOT CACHE, ENGLISH BADGE */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={speakerNotes}
+                    onChange={(e) => setSpeakerNotes(e.target.checked)}
+                    className="accent-brand-500 w-4 h-4 rounded"
+                  />
+                  <div className="text-xs font-mono text-slate-200">Speaker Notes</div>
+                </label>
+
+                <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeAgenda}
+                    onChange={(e) => setIncludeAgenda(e.target.checked)}
+                    className="accent-brand-500 w-4 h-4 rounded"
+                  />
+                  <div className="text-xs font-mono text-slate-200">Include Agenda</div>
+                </label>
+
+                <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeSummary}
+                    onChange={(e) => setIncludeSummary(e.target.checked)}
+                    className="accent-brand-500 w-4 h-4 rounded"
+                  />
+                  <div className="text-xs font-mono text-slate-200">Include Summary</div>
+                </label>
+
+                <label className="flex items-center space-x-2.5 p-3 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={doNotCache}
+                    onChange={(e) => setDoNotCache(e.target.checked)}
+                    className="accent-brand-500 w-4 h-4 rounded"
+                  />
+                  <div className="text-xs font-mono text-slate-200">Do Not Cache</div>
+                </label>
+              </div>
+
+              {/* Language Notice (English Output Enforced) */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.08] text-xs font-mono text-slate-400">
+                <div className="flex items-center space-x-2">
+                  <span className="text-base">🇺🇸</span>
+                  <span className="font-semibold text-slate-200">Output Language: English</span>
+                  <span className="text-slate-500 hidden sm:inline">(All non-English sources auto-translated)</span>
+                </div>
+                <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
+                  Enforced
+                </span>
               </div>
 
               {/* Cloud Fallback Toggle */}
@@ -927,6 +1157,20 @@ export default function QuickPitchHome() {
                   </div>
                 </div>
                 <button onClick={() => setCloudProviderNotice(null)} className="text-blue-400 hover:text-white text-sm font-bold">✕</button>
+              </div>
+            )}
+
+            {/* SLIDE COUNT ADJUSTMENT NOTICE (Round 3 Item 2) */}
+            {slideAdjustmentNotice && (
+              <div className="mt-6 p-4 rounded-xl bg-purple-950/40 border border-purple-500/60 text-purple-200 text-xs font-mono flex items-start justify-between space-x-3">
+                <div className="flex items-start space-x-2">
+                  <span className="text-base leading-none">📐</span>
+                  <div>
+                    <strong className="text-purple-100 font-bold">Slide Count Enforcement:</strong>
+                    <p className="mt-0.5 text-purple-300/90">{slideAdjustmentNotice}</p>
+                  </div>
+                </div>
+                <button onClick={() => setSlideAdjustmentNotice(null)} className="text-purple-400 hover:text-white text-sm font-bold">✕</button>
               </div>
             )}
 

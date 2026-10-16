@@ -2,8 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { TranscriptData } from '../schemas/transcript.schema.js';
 
-const memoryCache = new Map<string, { data: TranscriptData; cachedAt: number }>();
+const DEFAULT_TTL_MS = parseInt(process.env.TRANSCRIPT_CACHE_TTL_MS || '', 10) || 24 * 60 * 60 * 1000; // 24 hours default
 
+interface CacheRecord {
+  data: TranscriptData;
+  cachedAt: number;
+}
+
+const memoryCache = new Map<string, CacheRecord>();
 const CACHE_DIR = path.join(process.cwd(), '.cache', 'transcripts');
 
 function ensureCacheDir() {
@@ -28,10 +34,17 @@ export function buildCacheKey(urlOrId: string, spokenLanguage?: string, forceAud
   return `${vid}_${lang}_${mode}`;
 }
 
-export function getCachedTranscript(key: string): TranscriptData | null {
+export function getCachedTranscript(key: string, ttlMs: number = DEFAULT_TTL_MS): TranscriptData | null {
+  const now = Date.now();
+
   // 1. Check in-memory cache
   const mem = memoryCache.get(key);
   if (mem) {
+    if (now - mem.cachedAt > ttlMs) {
+      memoryCache.delete(key);
+      deleteCachedTranscript(key);
+      return null;
+    }
     return mem.data;
   }
 
@@ -41,9 +54,24 @@ export function getCachedTranscript(key: string): TranscriptData | null {
   if (fs.existsSync(filePath)) {
     try {
       const raw = fs.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(raw) as TranscriptData;
-      memoryCache.set(key, { data, cachedAt: Date.now() });
-      return data;
+      const parsed = JSON.parse(raw);
+
+      let record: CacheRecord;
+      if (parsed && typeof parsed.cachedAt === 'number' && parsed.data) {
+        record = parsed as CacheRecord;
+      } else {
+        const stats = fs.statSync(filePath);
+        record = { data: parsed as TranscriptData, cachedAt: stats.mtimeMs };
+      }
+
+      if (now - record.cachedAt > ttlMs) {
+        fs.unlinkSync(filePath);
+        memoryCache.delete(key);
+        return null;
+      }
+
+      memoryCache.set(key, record);
+      return record.data;
     } catch {
       return null;
     }
@@ -58,15 +86,43 @@ export function setCachedTranscript(key: string, data: TranscriptData): void {
     return;
   }
 
-  memoryCache.set(key, { data, cachedAt: Date.now() });
+  const record: CacheRecord = { data, cachedAt: Date.now() };
+  memoryCache.set(key, record);
 
   ensureCacheDir();
   const filePath = path.join(CACHE_DIR, `${key}.json`);
   try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    fs.writeFileSync(filePath, JSON.stringify(record, null, 2), 'utf-8');
   } catch (err: any) {
     console.warn(`[TranscriptCache] Warning: Failed to persist cache to disk: ${err.message}`);
   }
+}
+
+export function deleteCachedTranscript(keyOrUrl: string): boolean {
+  const vid = extractVideoId(keyOrUrl);
+  let removed = false;
+
+  // Evict from memory
+  for (const k of Array.from(memoryCache.keys())) {
+    if (k === keyOrUrl || k.startsWith(vid)) {
+      memoryCache.delete(k);
+      removed = true;
+    }
+  }
+
+  // Evict from disk
+  ensureCacheDir();
+  try {
+    const files = fs.readdirSync(CACHE_DIR);
+    for (const f of files) {
+      if (f === `${keyOrUrl}.json` || f.startsWith(vid)) {
+        fs.unlinkSync(path.join(CACHE_DIR, f));
+        removed = true;
+      }
+    }
+  } catch {}
+
+  return removed;
 }
 
 export function clearTranscriptCache(): void {

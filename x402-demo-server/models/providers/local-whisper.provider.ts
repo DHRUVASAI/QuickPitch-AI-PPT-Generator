@@ -18,6 +18,40 @@ export interface LocalWhisperResult {
   segments?: Array<{ start: number; end: number; text: string }>;
 }
 
+async function unloadOllama(): Promise<void> {
+  const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  const model = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+  try {
+    console.log(`[LocalWhisperProvider: VRAM] Unloading Ollama model ${model} (keep_alive: 0)...`);
+    await fetch(`${ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, keep_alive: 0 }),
+      signal: AbortSignal.timeout(4000),
+    });
+    console.log(`[LocalWhisperProvider: VRAM] Successfully unloaded ${model} to maximize GPU VRAM.`);
+  } catch (err: any) {
+    console.warn(`[LocalWhisperProvider: VRAM] Warning: Ollama unload call failed: ${err.message}`);
+  }
+}
+
+async function reloadOllama(): Promise<void> {
+  const ollamaUrl = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  const model = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+  try {
+    console.log(`[LocalWhisperProvider: VRAM] Reloading Ollama model ${model}...`);
+    await fetch(`${ollamaUrl}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, prompt: '', stream: false }),
+      signal: AbortSignal.timeout(10000),
+    });
+    console.log(`[LocalWhisperProvider: VRAM] Successfully reloaded ${model}.`);
+  } catch (err: any) {
+    console.warn(`[LocalWhisperProvider: VRAM] Warning: Ollama reload call failed: ${err.message}`);
+  }
+}
+
 export class LocalWhisperProvider implements ITranscriptionProvider {
   public readonly name = 'local-whisper';
   public readonly isLocal = true;
@@ -86,8 +120,14 @@ export class LocalWhisperProvider implements ITranscriptionProvider {
     contentType: string = 'audio/mpeg',
     options?: LocalWhisperTranscribeOptions
   ): Promise<LocalWhisperResult> {
-    return withRetryAndTimeout(
-      async (signal) => {
+    const isHeavyModel = options?.model === 'medium' || options?.model === 'large-v3' || (options?.model && options.model.includes('large'));
+    if (isHeavyModel) {
+      await unloadOllama();
+    }
+
+    try {
+      return await withRetryAndTimeout(
+        async (signal) => {
         const formData = new FormData();
         formData.append('file', new Blob([new Uint8Array(audioBuffer)], { type: contentType }), fileName);
 
@@ -131,7 +171,12 @@ export class LocalWhisperProvider implements ITranscriptionProvider {
       },
       { name: 'Local Whisper Transcribe', timeoutMs: 300000, retries: 1, initialDelayMs: 500 }
     );
+  } finally {
+    if (isHeavyModel) {
+      await reloadOllama();
+    }
   }
+}
 
   async unload(): Promise<boolean> {
     try {

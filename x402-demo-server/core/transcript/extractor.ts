@@ -174,6 +174,7 @@ export interface ExtractTranscriptOptions {
   whisperTask?: 'transcribe' | 'translate';
   forceAudio?: boolean;
   accuracyMode?: boolean;
+  doNotCache?: boolean;
 }
 
 /**
@@ -188,13 +189,16 @@ export async function extractTranscript(
 
   const targetSpokenLang = options?.spokenLanguage || options?.forcedSpokenLanguage;
   const isForceAudio = options?.forceAudio === true;
+  const doNotCache = options?.doNotCache === true;
   let cacheKey = buildCacheKey(url || text || fileName || 'source', targetSpokenLang, isForceAudio);
 
-  // Requirement 3: Check transcript cache (memory + disk by video ID and language)
-  const cachedTranscript = getCachedTranscript(cacheKey);
-  if (cachedTranscript) {
-    console.log(`[TranscriptCache] Cache HIT for key "${cacheKey}". Returning cached transcript.`);
-    return cachedTranscript;
+  // Requirement 3 & 9: Check transcript cache unless doNotCache is requested
+  if (!doNotCache) {
+    const cachedTranscript = getCachedTranscript(cacheKey);
+    if (cachedTranscript) {
+      console.log(`[TranscriptCache] Cache HIT for key "${cacheKey}". Returning cached transcript.`);
+      return cachedTranscript;
+    }
   }
 
   let title = topicHint || 'Executive Presentation';
@@ -229,23 +233,10 @@ export async function extractTranscript(
       }) : null;
 
       if (gateResult && gateResult.isUsable) {
-        // Fix Round Item 3: Accuracy mode OFF by default for non-English. Keep it as a setting.
-        // Only default it ON for a language after a benchmark shows Whisper beats that language's captions.
+        // Round 3 Item 4: Accuracy mode default OFF for all languages, including English.
+        // Keep the option via explicit options.accuracyMode or ACCURACY_MODE=true env var.
         const isAuto = !gateResult.isManual;
-        const lang = (gateResult.language || 'auto').toLowerCase();
-        const isEnglish = lang === 'en' || lang.startsWith('en-');
-        // Currently bench-verified languages where Whisper beats captions:
-        const BENCHMARKED_WHISPER_BEATS_CAPTIONS = new Set<string>(['en']);
-
-        let accuracyModeActive: boolean;
-        if (options?.accuracyMode !== undefined) {
-          accuracyModeActive = options.accuracyMode;
-        } else if (process.env.ACCURACY_MODE !== undefined) {
-          accuracyModeActive = process.env.ACCURACY_MODE === 'true';
-        } else {
-          // Default ON only if language is English or specifically benchmarked
-          accuracyModeActive = isEnglish || BENCHMARKED_WHISPER_BEATS_CAPTIONS.has(lang);
-        }
+        const accuracyModeActive = options?.accuracyMode === true || process.env.ACCURACY_MODE === 'true';
 
         if (isAuto && accuracyModeActive) {
           console.log(`[TranscriptChain: AccuracyMode] Only auto-generated captions exist (${gateResult.language || 'auto'}). Accuracy mode is ON; routing to Faster-Whisper audio path...`);
@@ -448,8 +439,10 @@ export async function extractTranscript(
     },
   });
 
-  // Persist to memory + disk cache
-  setCachedTranscript(cacheKey, validated);
+  // Persist to memory + disk cache unless doNotCache was requested
+  if (!doNotCache) {
+    setCachedTranscript(cacheKey, validated);
+  }
 
   return validated;
 }

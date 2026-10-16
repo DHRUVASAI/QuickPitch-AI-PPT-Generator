@@ -13,6 +13,17 @@ This is a Hono-based resource server that implements the **x402 protocol** for H
 - ✅ GoPlausible facilitator integration
 - ✅ CORS support for browser-based clients
 - ✅ Multiple resource endpoints (easily extensible)
+- ✅ Privacy-first Transcript Cache with 24h TTL, `do_not_cache` flag, and `DELETE /cache/transcript` endpoint
+
+## Privacy & Transcript Cache Policy
+
+QuickPitch provides explicit privacy controls for video transcripts and speech-to-text outputs:
+- **Default TTL (Time-To-Live)**: 24 hours (`DEFAULT_TTL_MS = 24 * 60 * 60 * 1000`). Cached transcripts older than 24h are automatically evicted on read. Configurable via `TRANSCRIPT_CACHE_TTL_MS`.
+- **"Do Not Cache" Option**: Clients can specify `"do_not_cache": true` in `POST /generate-ppt` body to completely bypass cache lookups and ensure no transcript text is stored to memory or disk.
+- **Cache Deletion Endpoint (`DELETE /cache/transcript`)**:
+  - `DELETE /cache/transcript?url=<video_url>`: Deletes transcript cache for a specific video.
+  - `DELETE /cache/transcript?key=<cache_key>`: Deletes transcript cache for a specific cache key.
+  - `DELETE /cache/transcript?all=true`: Permanently purges all cached transcripts from both disk and memory.
 
 ## Quick Start
 
