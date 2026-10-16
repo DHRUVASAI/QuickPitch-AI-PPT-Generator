@@ -166,8 +166,9 @@ export async function handleGeneratePpt(c: Context) {
       const e = endSec ?? Infinity;
       console.log(`[QuickPitch Stage 1] Time window filtering active (${s}s to ${e === Infinity ? 'end' : e + 's'})...`);
       // If segment timestamps are present in metadata
-      if (Array.isArray(transcriptData.metadata?.segments) && transcriptData.metadata.segments.length > 0) {
-        const filtered = transcriptData.metadata.segments.filter((seg: any) => seg.start >= s && seg.end <= e);
+      const metaAny = transcriptData.metadata as any;
+      if (Array.isArray(metaAny?.segments) && metaAny.segments.length > 0) {
+        const filtered = metaAny.segments.filter((seg: any) => seg.start >= s && seg.end <= e);
         if (filtered.length > 0) {
           transcriptData.sanitizedText = filtered.map((seg: any) => seg.text).join(' ');
           transcriptData.charCount = transcriptData.sanitizedText.length;
@@ -281,7 +282,7 @@ export async function handleGeneratePpt(c: Context) {
         'X-QuickPitch-Detected-Language': detectedLang,
         'X-QuickPitch-Slide-Count': String(slideDeck.slides?.length || 0),
         'X-QuickPitch-Slide-Target': String(finalSlideCount),
-        ...(slideDeck.slideAdjustmentNotice ? { 'X-QuickPitch-Slide-Adjustment': slideDeck.slideAdjustmentNotice } : {}),
+        ...(((slideDeck as any).slideAdjustmentNotice || (slideDeck as any).adjustmentNotice) ? { 'X-QuickPitch-Slide-Adjustment': (slideDeck as any).slideAdjustmentNotice || (slideDeck as any).adjustmentNotice } : {}),
         ...(isPartial ? { 'X-QuickPitch-Notice': partialNotice } : {}),
       },
     });

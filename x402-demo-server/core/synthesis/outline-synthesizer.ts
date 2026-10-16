@@ -217,7 +217,7 @@ Return strictly valid JSON matching:
 
   return {
     title: transcript.title || 'Executive Presentation',
-    subtitle: 'Strategic Overview and Key Takeaways',
+    subtitle: '[Partial Result] Strategic Overview and Key Takeaways',
     pillars: fallbackPillars,
     keyTopics: ['Executive Overview', 'Key Drivers', 'Deep Dive', 'Action Plan'],
     targetSlideCount: targetCount,
