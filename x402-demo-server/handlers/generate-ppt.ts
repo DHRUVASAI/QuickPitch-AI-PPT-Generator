@@ -8,6 +8,20 @@ import {
   validateSlideDeck,
 } from '../core/index.js';
 
+export interface JobProgress {
+  stage: 'ingest' | 'transcribe' | 'translate' | 'synthesize' | 'compile' | 'complete' | 'error';
+  percent: number;
+  message: string;
+  timestamp: number;
+}
+
+export const jobStages = new Map<string, JobProgress>();
+
+export function setJobStage(jobId: string | undefined, stage: JobProgress['stage'], percent: number, message: string) {
+  if (!jobId) return;
+  jobStages.set(jobId, { stage, percent, message, timestamp: Date.now() });
+}
+
 export async function handleGeneratePpt(c: Context) {
   try {
     console.log('\n[QuickPitch] Presentation generation requested...');
@@ -54,7 +68,11 @@ export async function handleGeneratePpt(c: Context) {
       user_confirmed_language = false,
       force_audio = false,
       accuracy_mode,
+      job_id,
     } = body;
+
+    const jobId = job_id || c.req.query('job_id') || `job_${Date.now()}`;
+    setJobStage(jobId, 'ingest', 15, 'Ingesting source & verifying duration limits...');
 
     // Server-side validation for User Options (Round 3 Item 1)
     const finalSlideCount = parseInt(String(slide_count || target_slide_count || 6), 10);
@@ -127,6 +145,9 @@ export async function handleGeneratePpt(c: Context) {
 
     // Stage 1: Transcript Ingestion & Sanitization
     console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback}, outputLang: ${output_language}, spokenLang: ${spoken_language || 'auto'})...`);
+    if (source_type === 'audio' || (source_type === 'youtube' && force_audio)) {
+      setJobStage(jobId, 'transcribe', 35, 'Transcribing audio with Batched GPU Whisper...');
+    }
     let transcriptData;
     try {
       transcriptData = await extractTranscript({
@@ -205,6 +226,7 @@ export async function handleGeneratePpt(c: Context) {
 
     // Stage 2: Synthesis & Outline Planning (with schema validation & chunking)
     console.log(`[QuickPitch Stage 2] Synthesizing outline (Target slides: ${finalSlideCount}, outputLanguage: "en")...`);
+    setJobStage(jobId, 'synthesize', 75, 'Structuring executive slides & source-language verification...');
     const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, {
       allowCloudFallback,
       outputLanguage: 'en',
@@ -245,6 +267,7 @@ export async function handleGeneratePpt(c: Context) {
 
     // Stage 3: Slide Compilation (.pptx)
     console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: "${slideDeck.title}", Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
+    setJobStage(jobId, 'compile', 95, 'Compiling PowerPoint .pptx deck...');
     let pptxResult;
     try {
       pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);
@@ -272,6 +295,7 @@ export async function handleGeneratePpt(c: Context) {
     }
 
     console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'} (Provider: ${providerUsed})`);
+    setJobStage(jobId, 'complete', 100, 'Deck compiled successfully!');
 
     return new Response(pptxResult.buffer as any, {
       status: 200,
@@ -291,6 +315,11 @@ export async function handleGeneratePpt(c: Context) {
   } catch (error: any) {
     // Ultimate safety: return a clear JSON message with partial details rather than a blank 500 crash
     console.error('[QuickPitch] Generate PPT Error:', error);
+    try {
+      const body = c.get('parsedBody') || {};
+      const jobId = body.job_id || c.req.query('job_id');
+      setJobStage(jobId, 'error', 0, error.message || 'Generation failed');
+    } catch {}
     return c.json({
       status: 'partial_error',
       message: 'Presentation request encountered an issue but was caught safely by our resilience layer.',

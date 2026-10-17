@@ -13,7 +13,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 
 // Import handler functions
-import { handleGeneratePpt } from './handlers/generate-ppt';
+import { handleGeneratePpt, jobStages } from './handlers/generate-ppt';
 import { handleTranscribeAudio } from './handlers/transcribe-audio';
 import { handleLoadYouTubeTranscript, handleYouTubeChat } from './handlers/youtube-chat';
 
@@ -115,6 +115,16 @@ app.post('/generate-ppt', handleGeneratePpt);
 
 // QuickPitch - Demo mode endpoint (also FREE, kept for compatibility)
 app.post('/generate-ppt-demo', handleGeneratePpt);
+
+// QuickPitch - Real server stage status polling endpoint
+app.get('/generate-ppt/status/:jobId', (c) => {
+  const jobId = c.req.param('jobId');
+  const stage = jobStages.get(jobId);
+  if (!stage) {
+    return c.json({ status: 'unknown', stage: 'ingest', percent: 15, message: 'Processing presentation...' }, 200);
+  }
+  return c.json({ status: 'ok', ...stage }, 200);
+});
 
 // AWS Transcribe Audio - Real speech-to-text via AWS Transcribe + S3
 app.post('/transcribe-audio', handleTranscribeAudio);

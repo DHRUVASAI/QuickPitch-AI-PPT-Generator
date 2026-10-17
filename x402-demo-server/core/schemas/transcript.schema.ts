@@ -16,6 +16,8 @@ export interface TranscriptMetadata {
   isManualCaptions?: boolean;
   fetchedAt?: number;
   partial?: boolean;
+  translatedChunks?: any[];
+  englishTranscript?: string;
 }
 
 export interface TranscriptData {

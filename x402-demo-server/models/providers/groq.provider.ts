@@ -11,7 +11,7 @@ export class GroqProvider implements ILLMProvider {
 
   constructor(options?: { apiKey?: string; defaultModel?: string }) {
     this.apiKey = options?.apiKey || process.env.GROQ_API_KEY;
-    this.defaultModel = options?.defaultModel || 'openai/gpt-oss-20b';
+    this.defaultModel = options?.defaultModel || process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
     if (this.apiKey) {
       this.client = new OpenAI({
         apiKey: this.apiKey,
@@ -31,7 +31,6 @@ export class GroqProvider implements ILLMProvider {
 
     const fallbackModels = [
       options?.model || this.defaultModel,
-      'openai/gpt-oss-20b',
       'openai/gpt-oss-120b',
       'qwen/qwen3.8-27b',
     ];
@@ -41,11 +40,15 @@ export class GroqProvider implements ILLMProvider {
       try {
         return await withRetryAndTimeout(
           async (signal) => {
+            const maxTokens = modelName.includes('qwen')
+              ? Math.min(options?.maxTokens ?? 950, 950)
+              : (options?.maxTokens ?? 2000);
+
             const reqBody: any = {
               model: modelName,
               messages,
               temperature: options?.temperature ?? 0.3,
-              max_tokens: options?.maxTokens ?? 2000,
+              max_tokens: maxTokens,
               ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
             };
 
@@ -69,10 +72,11 @@ export class GroqProvider implements ILLMProvider {
           },
           {
             name: `Groq (${modelName})`,
-            timeoutMs: 25000,
+            timeoutMs: 60000,
             retries: 2,
             initialDelayMs: 300,
             backoffFactor: 2,
+            shouldRetry: (err) => !err.message?.includes('tokens per day') && !err.message?.includes('TPD') && !err.message?.includes('Rate limit reached'),
           }
         );
       } catch (err: any) {

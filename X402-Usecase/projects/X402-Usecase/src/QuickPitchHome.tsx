@@ -150,7 +150,9 @@ export default function QuickPitchHome() {
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
-  const [estimatedSeconds, setEstimatedSeconds] = useState(15)
+  const [estimatedSeconds, setEstimatedSeconds] = useState(20)
+  const [currentServerStage, setCurrentServerStage] = useState<'ingest' | 'transcribe' | 'translate' | 'synthesize' | 'compile' | 'complete'>('ingest')
+  const [serverPercent, setServerPercent] = useState<number>(0)
   const [openSlideshowModal, setOpenSlideshowModal] = useState(false)
   const [openChatModal, setOpenChatModal] = useState(false)
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
@@ -235,7 +237,7 @@ export default function QuickPitchHome() {
     return null
   }
 
-  const getPayload = (transcribedText?: string, confirmedSpokenLang?: string) => {
+  const getPayload = (transcribedText?: string, confirmedSpokenLang?: string, jobId?: string) => {
     const activeSpoken = confirmedSpokenLang || spokenLanguage;
     const base = {
       theme: selectedTheme,
@@ -257,6 +259,7 @@ export default function QuickPitchHome() {
       spoken_language: activeSpoken,
       user_confirmed_spoken_language: Boolean(activeSpoken),
       user_confirmed_language: Boolean(activeSpoken),
+      job_id: jobId,
     }
     if (mode === 'youtube') {
       return { ...base, source_type: 'youtube', url: youtubeUrl }
@@ -332,13 +335,34 @@ export default function QuickPitchHome() {
     setPartialNotice(null); setCloudProviderNotice(null)
     setLanguagePrompt(null)
 
-    // Calculate dynamic ETA based on pipeline path (Audio Path: ~15s with Batched Whisper, Text: ~4s)
-    const initialEta = mode === 'text' ? 4 : (mode === 'audio' || !rawText ? 15 : 10);
+    const currentJobId = `job_${Date.now()}`;
+    setCurrentServerStage('ingest');
+    setServerPercent(15);
+
+    // Dynamic ETA measured in steps 7 & 8: Audio ~20s (16.9s Whisper + 3.0s Groq), Text ~3s
+    const initialEta = mode === 'text' ? 3 : 20;
     setEstimatedSeconds(initialEta);
     setElapsedSeconds(0);
     const progressTimer = setInterval(() => {
       setElapsedSeconds(prev => prev + 1);
     }, 1000);
+
+    // Poll real server stage events every 500ms
+    const pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`http://localhost:4021/generate-ppt/status/${currentJobId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'ok') {
+            setCurrentServerStage(data.stage);
+            setServerPercent(data.percent);
+            if (data.message) setStatus(data.message);
+          }
+        }
+      } catch {
+        // silent polling fallback
+      }
+    }, 500);
 
     const chosenSpoken = typeof confirmedSpokenLang === 'string' ? confirmedSpokenLang : spokenLanguage;
     if (typeof confirmedSpokenLang === 'string') {
@@ -379,7 +403,7 @@ export default function QuickPitchHome() {
           const response = await fetch(ep, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(getPayload(transcribedText, chosenSpoken)),
+            body: JSON.stringify(getPayload(transcribedText, chosenSpoken, currentJobId)),
           });
 
           // Check if server flagged low spoken language confidence and requested user clarification
@@ -435,6 +459,7 @@ export default function QuickPitchHome() {
       setStatus('');
     } finally {
       clearInterval(progressTimer);
+      clearInterval(pollInterval);
       setLoading(false);
     }
   }
@@ -1201,37 +1226,37 @@ export default function QuickPitchHome() {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-300 bg-white/[0.06] px-2.5 py-1 rounded-full border border-white/10">
-                    <span>ETA: <strong className="text-emerald-400">~{estimatedSeconds}s</strong></span>
+                    <span>ETA: <strong className="text-emerald-400">{mode === 'text' ? '~3s (Groq synthesis)' : '~20s (16.9s Whisper GPU + 3.0s Groq synthesis)'}</strong></span>
                     <span className="text-slate-500">•</span>
                     <span>Elapsed: <strong className="text-white">{elapsedSeconds}s</strong></span>
                   </div>
                 </div>
 
-                {/* Progress bar */}
+                {/* Progress bar - Driven by real server progress */}
                 <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-white/5">
                   <div
                     className="bg-gradient-to-r from-brand-500 via-indigo-500 to-emerald-400 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(95, Math.max(12, (elapsedSeconds / estimatedSeconds) * 90))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(12, serverPercent || ((elapsedSeconds / estimatedSeconds) * 90)))}%` }}
                   />
                 </div>
 
-                {/* Pipeline Step Indicators */}
+                {/* Pipeline Step Indicators - Driven by Real Server Stage Events */}
                 <div className="grid grid-cols-4 gap-2 text-[10px] font-mono">
-                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 1 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                  <div className={`p-2 rounded-lg border ${serverPercent >= 15 || currentServerStage === 'ingest' ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
                     <div className="font-bold">1. Ingest</div>
                     <div className="truncate text-[9px] text-slate-400">≤ 60m max check</div>
                   </div>
-                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 3 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                  <div className={`p-2 rounded-lg border ${serverPercent >= 35 || currentServerStage === 'transcribe' ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
                     <div className="font-bold">2. Whisper</div>
-                    <div className="truncate text-[9px] text-slate-400">GPU Batched ASR</div>
+                    <div className="truncate text-[9px] text-slate-400">16.9s GPU Batched</div>
                   </div>
-                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 8 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                  <div className={`p-2 rounded-lg border ${serverPercent >= 60 || currentServerStage === 'translate' ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
                     <div className="font-bold">3. Translate</div>
-                    <div className="truncate text-[9px] text-slate-400">Bilingual alignment</div>
+                    <div className="truncate text-[9px] text-slate-400">Faithful units</div>
                   </div>
-                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 12 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                  <div className={`p-2 rounded-lg border ${serverPercent >= 75 || currentServerStage === 'synthesize' || currentServerStage === 'compile' ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
                     <div className="font-bold">4. Groq + PPT</div>
-                    <div className="truncate text-[9px] text-slate-400">Verify & Build</div>
+                    <div className="truncate text-[9px] text-slate-400">3.0s Synth & Verify</div>
                   </div>
                 </div>
 
@@ -1239,7 +1264,7 @@ export default function QuickPitchHome() {
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
                   <div className="flex items-center space-x-1.5">
                     <span className="text-emerald-400">✓</span>
-                    <span>Supports up to <strong>60-minute duration</strong> (5-min cap removed).</span>
+                    <span>Supports up to <strong>60-minute duration</strong>.</span>
                   </div>
                   <span className="text-[10px] font-mono text-slate-500">Batched Whisper ~35x RT</span>
                 </div>

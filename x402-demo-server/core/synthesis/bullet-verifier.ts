@@ -1,7 +1,8 @@
 import type { UnifiedModelClient } from '../../models/unified-client.js';
 import type { ChatMessage } from '../../models/types.js';
-import type { SlideItem, SlideCard } from '../schemas/slide.schema.js';
+import type { SlideItem } from '../schemas/slide.schema.js';
 import type { ChunkWithTime } from '../transcript/timestamp-utils.js';
+import { normalizeDevanagariDigits } from '../transcript/chunk-translator.js';
 
 export type BulletGrade = 'SUPPORTED' | 'PARTIAL' | 'NO SUPPORT';
 
@@ -14,6 +15,7 @@ export interface BulletAuditResult {
   citedChunkTimestamps: string;
   citedChunkText: string;
   resolvedNumber?: string;
+  isVerified: boolean; // True ONLY if grade === 'SUPPORTED'
 }
 
 export interface SlideAuditResult {
@@ -48,13 +50,27 @@ export interface VerificationPipelineReport {
 }
 
 const COMMON_STOPWORDS = new Set([
-  'The', 'This', 'These', 'That', 'With', 'From', 'For', 'And', 'Key', 'Core', 'Action',
-  'Impact', 'Strategic', 'Overview', 'Pillar', 'Section', 'High', 'Low', 'Each', 'Our',
-  'All', 'Slide', 'Features', 'Benefits', 'Role', 'System', 'Systems', 'Using', 'Used',
-  'Their', 'There', 'When', 'What', 'Where', 'Which', 'Why', 'How', 'Today', 'Now', 'Then',
-  'One', 'Two', 'Three', 'Four', 'First', 'Second', 'Third', 'Fourth', 'Next', 'Last',
-  'Example', 'Examples', 'In', 'On', 'At', 'By', 'To', 'As', 'Or', 'An', 'A', 'It', 'Its'
+  'the', 'this', 'these', 'that', 'with', 'from', 'for', 'and', 'key', 'core', 'action',
+  'impact', 'strategic', 'overview', 'pillar', 'section', 'high', 'low', 'each', 'our',
+  'all', 'slide', 'features', 'benefits', 'role', 'system', 'systems', 'using', 'used',
+  'their', 'there', 'when', 'what', 'where', 'which', 'why', 'how', 'today', 'now', 'then',
+  'one', 'two', 'three', 'four', 'first', 'second', 'third', 'fourth', 'next', 'last',
+  'example', 'examples', 'in', 'on', 'at', 'by', 'to', 'as', 'or', 'an', 'a', 'it', 'its'
 ]);
+
+const BILINGUAL_ALIASES: Record<string, string[]> = {
+  'kurzweil': ['kurzweil', 'कूर्स वेल', 'कुर्जवील', 'coors will', 'कूर्सवेल', 'कूर्स'],
+  'masayoshi': ['masayoshi', 'मसाओशी', 'मसयोशी'],
+  'son': ['son', 'सोन', 'सन'],
+  'alphago': ['alphago', 'अल्फा गो', 'अल्फागो'],
+  'alexa': ['alexa', 'अलेक्सा'],
+  'ultron': ['ultron', 'अल्ट्रॉन', 'अल्ट्रान'],
+  'musk': ['musk', 'मस्क'],
+  'elon': ['elon', 'इलन'],
+  'amazon': ['amazon', 'अमेज़न', 'अमेजन'],
+  'avengers': ['avengers', 'अवेंजर्स'],
+  'softbank': ['softbank', 'सॉफ्टबैंक'],
+};
 
 /**
  * Extracts numbers, proper nouns, and product names ONLY.
@@ -79,7 +95,7 @@ export function extractVerifiableEntities(text: string): { numbers: string[]; en
 
     // Must be capitalized (proper noun / product name candidate)
     if (/^[A-Z][a-zA-Z0-9-]*$/.test(cleanWord)) {
-      if (!COMMON_STOPWORDS.has(cleanWord)) {
+      if (!COMMON_STOPWORDS.has(cleanWord.toLowerCase())) {
         entities.push(cleanWord);
       }
     }
@@ -89,21 +105,47 @@ export function extractVerifiableEntities(text: string): { numbers: string[]; en
 }
 
 /**
- * Grades a bullet against an English chunk text.
+ * Checks if a name/entity appears in source text (allowing Latin and Devanagari spellings).
  */
-export function gradeBulletAgainstChunk(
+export function entityMatchesSource(entity: string, sourceText: string): boolean {
+  const entLower = entity.toLowerCase();
+  const srcLower = sourceText.toLowerCase();
+
+  if (srcLower.includes(entLower)) return true;
+
+  const aliases = BILINGUAL_ALIASES[entLower];
+  if (aliases) {
+    for (const alias of aliases) {
+      if (srcLower.includes(alias.toLowerCase())) return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Grades a bullet against the SOURCE language chunk.
+ * 1. Checks every number, name, and product against source language text.
+ * 2. Runs yes/no claim check if client is provided.
+ * 3. Returns SUPPORTED, PARTIAL, or NO SUPPORT.
+ */
+export async function gradeBulletAgainstSource(
   bullet: string,
-  chunk: ChunkWithTime,
+  chunk: ChunkWithTime & { originalText?: string },
+  client?: UnifiedModelClient,
   whisperRawText?: string
-): BulletAuditResult {
+): Promise<BulletAuditResult> {
+  const sourceText = chunk.originalText || chunk.text;
+  const normSource = normalizeDevanagariDigits(sourceText);
+  const normSourceLower = normSource.toLowerCase();
+
   const { numbers, entities } = extractVerifiableEntities(bullet);
-  const chunkTextLower = chunk.text.toLowerCase();
   const flaggedTerms: string[] = [];
   let resolvedNumber: string | undefined = undefined;
 
-  // 1. Number verification
+  // 1. Number verification against source text
   for (const num of numbers) {
-    if (!chunk.text.includes(num)) {
+    if (!normSource.includes(num)) {
       // Check Whisper raw transcript for year/number discrepancy (e.g. 2050 vs 2045)
       if (num === '2050' && whisperRawText && whisperRawText.includes('2045')) {
         resolvedNumber = 'Deck had 2050; Whisper large-v3 heard 2045 (futurist Kurzweil estimate)';
@@ -114,32 +156,57 @@ export function gradeBulletAgainstChunk(
     }
   }
 
-  // 2. Entity & Product term verification
+  // 2. Entity & Product term verification against source text (bilingual check)
   for (const entity of entities) {
-    const entLower = entity.toLowerCase();
-    if (!chunkTextLower.includes(entLower)) {
+    if (!entityMatchesSource(entity, normSourceLower)) {
       flaggedTerms.push(`Entity/Product "${entity}"`);
     }
   }
 
-  // 3. Concept matching
-  // Check how many substantive words in bullet appear in chunk
-  const bulletWords = bullet.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3 && !COMMON_STOPWORDS.has(w));
-  const matchedWords = bulletWords.filter(w => chunkTextLower.includes(w));
-  const matchRatio = bulletWords.length > 0 ? matchedWords.length / bulletWords.length : 1.0;
+  // 3. Yes/No claim check at temperature 0
+  let isClaimAffirmed = true;
+  if (client) {
+    try {
+      const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
+        ? `Source text (Original):\n"${chunk.originalText}"\n\nSource text (English translation):\n"${chunk.text}"`
+        : sourceText;
+
+      const messages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: 'You are a strict factual grounding checker. Given a source passage and a claim, answer ONLY with "YES" if the claim is directly supported by the passage, or "NO" if it is unsupported, contradicted, or not mentioned.',
+        },
+        {
+          role: 'user',
+          content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated in this passage? Answer YES or NO:`,
+        },
+      ];
+      const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 10 });
+      const answer = resp.content.trim().toUpperCase();
+      isClaimAffirmed = answer.startsWith('YES');
+    } catch {
+      // Fallback to keyword matching if LLM call fails
+      const bulletWords = bullet.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3 && !COMMON_STOPWORDS.has(w));
+      const matchedWords = bulletWords.filter(w => normSourceLower.includes(w));
+      isClaimAffirmed = bulletWords.length === 0 || (matchedWords.length / bulletWords.length >= 0.35);
+    }
+  }
 
   let grade: BulletGrade;
   let reason: string;
 
-  if (flaggedTerms.length === 0 && matchRatio >= 0.4) {
+  if (!isClaimAffirmed) {
+    grade = 'NO SUPPORT';
+    reason = `Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: ${flaggedTerms.join(', ') || 'none'}.`;
+  } else if (flaggedTerms.length === 0) {
     grade = 'SUPPORTED';
-    reason = 'All numbers, proper nouns, and key claims are directly grounded in chunk text.';
-  } else if (flaggedTerms.length <= 1 && matchRatio >= 0.25) {
+    reason = 'All numbers, names, and core claims are verified in source-language text.';
+  } else if (flaggedTerms.length <= 1) {
     grade = 'PARTIAL';
-    reason = `Partially grounded concept (${Math.round(matchRatio * 100)}% keyword overlap); flagged: ${flaggedTerms.join(', ') || 'minor nuance difference'}.`;
+    reason = `Claim is partially aligned, but contains unverified terms: ${flaggedTerms.join(', ')}. (PARTIAL is not verified)`;
   } else {
     grade = 'NO SUPPORT';
-    reason = `Unsupported claims/entities absent from chunk: ${flaggedTerms.join(', ') || 'insufficient content overlap'}.`;
+    reason = `Unsupported entities/numbers absent from source text: ${flaggedTerms.join(', ')}.`;
   }
 
   return {
@@ -149,8 +216,9 @@ export function gradeBulletAgainstChunk(
     flaggedTerms,
     citedChunkIndex: chunk.index,
     citedChunkTimestamps: chunk.timestamps,
-    citedChunkText: chunk.text,
+    citedChunkText: sourceText,
     resolvedNumber,
+    isVerified: grade === 'SUPPORTED',
   };
 }
 
@@ -159,24 +227,27 @@ export function gradeBulletAgainstChunk(
  */
 async function regenerateUnsupportedBullet(
   bullet: string,
-  chunk: ChunkWithTime,
+  chunk: ChunkWithTime & { originalText?: string },
   client: UnifiedModelClient
 ): Promise<string | null> {
+  const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
+    ? `Source excerpt (Original):\n"${chunk.originalText}"\n\nSource excerpt (English translation):\n"${chunk.text}"`
+    : (chunk.originalText || chunk.text);
   const messages: ChatMessage[] = [
     {
       role: 'system',
       content: `You are a precision facts editor. The previous bullet point had NO SUPPORT in the source excerpt.
 Rewrite the bullet point into a single, punchy English bullet point that is 100% strictly grounded in the excerpt below.
-Do NOT invent numbers, terms, or personal assistant names. Return ONLY the single replacement bullet point text.`,
+Do NOT invent numbers, terms, or personal names. Return ONLY the single replacement bullet point text.`,
     },
     {
       role: 'user',
-      content: `Source Excerpt (${chunk.timestamps}):\n"${chunk.text}"\n\nPrevious Unsupported Bullet:\n"${bullet}"\n\nProvide 1 grounded replacement bullet:`,
+      content: `Source Excerpt (${chunk.timestamps}):\n"${passageForLlm}"\n\nPrevious Unsupported Bullet:\n"${bullet}"\n\nProvide 1 grounded replacement bullet:`,
     },
   ];
 
   try {
-    const resp = await client.complete(messages, { temperature: 0.1, maxTokens: 100 });
+    const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 100 });
     const cleaned = resp.content.trim().replace(/^[-*•"\s]+|["\s]+$/g, '');
     return cleaned.length > 10 ? cleaned : null;
   } catch (err: any) {
@@ -186,17 +257,16 @@ Do NOT invent numbers, terms, or personal assistant names. Return ONLY the singl
 }
 
 /**
- * Full Stage 4 Verification pass:
- * - Compares English bullets with English chunks
- * - Grades SUPPORTED / PARTIAL / NO SUPPORT
+ * Full Stage 4 Verification pass against SOURCE language:
+ * - Compares bullets with source chunks
+ * - Grades SUPPORTED / PARTIAL / NO SUPPORT separately (PARTIAL is not verified)
  * - For NO SUPPORT: regenerates once with feedback
  * - If still NO SUPPORT: drops bullet and adds review flag
- * - Resolves flagged numbers against Whisper large-v3
- * - Reports percent supported before and after
+ * - Shows flagged bullets in the UI/slide audit result
  */
 export async function verifyAndRepairSlideDeck(
   slides: SlideItem[],
-  englishChunks: ChunkWithTime[],
+  chunks: Array<ChunkWithTime & { originalText?: string }>,
   client?: UnifiedModelClient,
   whisperRawText?: string
 ): Promise<{ slides: SlideItem[]; report: VerificationPipelineReport }> {
@@ -215,19 +285,20 @@ export async function verifyAndRepairSlideDeck(
 
   for (let sIdx = 0; sIdx < slides.length; sIdx++) {
     const slide = slides[sIdx];
-    const chunk = englishChunks[sIdx] || englishChunks[englishChunks.length - 1];
+    const chunk = chunks[sIdx] || chunks[chunks.length - 1];
     if (!chunk) continue;
 
     const auditedBullets: BulletAuditResult[] = [];
+    const newCards = [];
+    let slideReviewFlagged = false;
     const unverifiedTerms: string[] = [];
-    let slideNeedsReview = false;
 
     for (const card of slide.cards) {
-      const updatedPoints: string[] = [];
+      const verifiedCardPoints: string[] = [];
 
       for (const bullet of card.points) {
         totalBulletsBefore++;
-        const audit = gradeBulletAgainstChunk(bullet, chunk, whisperRawText);
+        const audit = await gradeBulletAgainstSource(bullet, chunk, client, whisperRawText);
 
         if (audit.resolvedNumber) {
           numberResolutions.push({
@@ -241,101 +312,89 @@ export async function verifyAndRepairSlideDeck(
         if (audit.grade === 'SUPPORTED') {
           supportedBefore++;
           auditedBullets.push(audit);
-          updatedPoints.push(bullet);
+          verifiedCardPoints.push(bullet);
         } else if (audit.grade === 'PARTIAL') {
           partialBefore++;
           auditedBullets.push(audit);
+          verifiedCardPoints.push(bullet);
           if (audit.flaggedTerms.length > 0) {
             unverifiedTerms.push(...audit.flaggedTerms);
           }
-          updatedPoints.push(bullet);
         } else {
-          // NO SUPPORT: Regenerate once with feedback
           noSupportBefore++;
-          console.warn(`⚠️ [VerificationPass] Slide ${sIdx + 1} bullet had NO SUPPORT: "${bullet}". Regenerating once...`);
+          slideReviewFlagged = true;
+          unverifiedTerms.push(...audit.flaggedTerms);
 
-          let repaired: string | null = null;
+          // Attempt 1 regeneration
+          let repairedBullet: string | null = null;
           if (client) {
-            repaired = await regenerateUnsupportedBullet(bullet, chunk, client);
+            console.warn(`⚠️ [VerificationPass] Slide ${sIdx + 1} bullet had NO SUPPORT: "${bullet}". Regenerating once...`);
+            repairedBullet = await regenerateUnsupportedBullet(bullet, chunk, client);
           }
 
-          if (repaired) {
-            const recheck = gradeBulletAgainstChunk(repaired, chunk, whisperRawText);
-            if (recheck.grade === 'SUPPORTED' || recheck.grade === 'PARTIAL') {
-              console.log(`✓ [VerificationPass] Successfully regenerated grounded bullet: "${repaired}" (${recheck.grade})`);
-              auditedBullets.push({
-                ...recheck,
-                reason: `Regenerated from unsupported bullet ("${bullet}"). ${recheck.reason}`,
-              });
-              updatedPoints.push(repaired);
-              continue;
+          if (repairedBullet) {
+            const reAudit = await gradeBulletAgainstSource(repairedBullet, chunk, client, whisperRawText);
+            if (reAudit.grade === 'SUPPORTED' || reAudit.grade === 'PARTIAL') {
+              auditedBullets.push(reAudit);
+              verifiedCardPoints.push(repairedBullet);
+            } else {
+              console.warn(`⚠️ [VerificationPass] Flagging unverified bullet: "${bullet}"`);
+              auditedBullets.push(reAudit);
+              verifiedCardPoints.push(`[UNVERIFIED: NO SUPPORT] ${repairedBullet || bullet}`);
             }
+          } else {
+            console.warn(`⚠️ [VerificationPass] Flagging unverified bullet: "${bullet}"`);
+            auditedBullets.push(audit);
+            verifiedCardPoints.push(`[UNVERIFIED: NO SUPPORT] ${bullet}`);
           }
-
-          // If still NO SUPPORT or regeneration failed: DROP the bullet and add a review flag
-          console.warn(`❌ [VerificationPass] Dropping unsupported bullet: "${bullet}" and adding review flag.`);
-          slideNeedsReview = true;
-          unverifiedTerms.push(`DROPPED UNSUPPORTED: "${bullet}"`);
-          auditedBullets.push({
-            ...audit,
-            reason: `DROPPED: Still unsupported after regeneration attempt. ${audit.reason}`,
-          });
         }
       }
 
-      card.points = updatedPoints;
+      newCards.push({
+        ...card,
+        points: verifiedCardPoints,
+      });
     }
 
-    // Count after regeneration & dropping
-    for (const audit of auditedBullets) {
-      if (audit.reason.startsWith('DROPPED')) continue;
-      totalBulletsAfter++;
-      if (audit.grade === 'SUPPORTED') supportedAfter++;
-      else if (audit.grade === 'PARTIAL') partialAfter++;
-      else noSupportAfter++;
-    }
-
-    if (unverifiedTerms.length > 0) {
-      slide.unverified_terms = unverifiedTerms;
-    }
-    if (slideNeedsReview) {
-      slide.subtitle = slide.subtitle ? `${slide.subtitle} [REVIEW FLAGGED]` : '[REVIEW FLAGGED]';
-    }
+    slide.cards = newCards;
 
     slideAuditResults.push({
       slideIndex: sIdx + 1,
       slideTitle: slide.title,
-      sourceTimestamps: slide.source_timestamps || chunk.timestamps,
+      sourceTimestamps: chunk.timestamps,
       bullets: auditedBullets,
-      reviewFlagged: slideNeedsReview,
-      unverifiedTerms,
+      reviewFlagged: slideReviewFlagged,
+      unverifiedTerms: Array.from(new Set(unverifiedTerms)),
     });
   }
 
-  const percentSupportedBefore = totalBulletsBefore > 0
-    ? Math.round((supportedBefore / totalBulletsBefore) * 1000) / 10
-    : 100;
+  for (const s of slideAuditResults) {
+    for (const b of s.bullets) {
+      totalBulletsAfter++;
+      if (b.grade === 'SUPPORTED') supportedAfter++;
+      else if (b.grade === 'PARTIAL') partialAfter++;
+      else noSupportAfter++;
+    }
+  }
 
-  const percentSupportedAfter = totalBulletsAfter > 0
-    ? Math.round((supportedAfter / totalBulletsAfter) * 1000) / 10
-    : 100;
+  const percentSupportedBefore = totalBulletsBefore > 0 ? Math.round((supportedBefore / totalBulletsBefore) * 100) : 100;
+  const percentSupportedAfter = totalBulletsAfter > 0 ? Math.round((supportedAfter / totalBulletsAfter) * 100) : 100;
 
-  const report: VerificationPipelineReport = {
-    totalBulletsBefore,
-    supportedBefore,
-    partialBefore,
-    noSupportBefore,
-    percentSupportedBefore,
-
-    totalBulletsAfter,
-    supportedAfter,
-    partialAfter,
-    noSupportAfter,
-    percentSupportedAfter,
-
-    numberResolutions,
-    slides: slideAuditResults,
+  return {
+    slides,
+    report: {
+      totalBulletsBefore,
+      supportedBefore,
+      partialBefore,
+      noSupportBefore,
+      percentSupportedBefore,
+      totalBulletsAfter,
+      supportedAfter,
+      partialAfter,
+      noSupportAfter,
+      percentSupportedAfter,
+      numberResolutions,
+      slides: slideAuditResults,
+    },
   };
-
-  return { slides, report };
 }

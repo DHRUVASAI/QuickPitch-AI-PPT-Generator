@@ -327,8 +327,8 @@ Do NOT use outside knowledge. Do NOT invent numbers, names, or product terms.`;
 OUTLINE:
 Title: ${outline.title}
 Subtitle: ${outline.subtitle}
-Pillars: ${JSON.stringify(outline.pillars)}
-Key Topics: ${outline.keyTopics.join(', ')}
+Pillars: ${outline.pillars ? JSON.stringify(outline.pillars) : '[]'}
+Key Topics: ${(outline.keyTopics || []).join(', ')}
 
 AUDIENCE & TONE:
 Target Audience: ${audience}
@@ -411,7 +411,7 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
         }
 
         // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source English chunk
-        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText);
+        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification);
 
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" produced ${genResult.deck.slides.length} slides`);
         return {
@@ -435,7 +435,7 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
-  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText);
+  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification);
 
   return {
     ...validateSlideDeck({
@@ -453,7 +453,8 @@ async function verifyAndAttachSourceReferences(
   chunks: ChunkWithTime[],
   videoDuration: number,
   client?: UnifiedModelClient,
-  whisperRawText?: string
+  whisperRawText?: string,
+  skipRepair: boolean = false
 ): Promise<void> {
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
@@ -466,6 +467,8 @@ async function verifyAndAttachSourceReferences(
     slide.source_timestamps = range.source_timestamps;
   }
 
-  await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText);
+  if (!skipRepair) {
+    await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText);
+  }
 }
 

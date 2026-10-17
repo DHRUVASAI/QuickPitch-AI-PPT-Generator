@@ -216,20 +216,46 @@ async def transcribe_audio(
 
     try:
         audio = decode_audio_ffmpeg(tmp_path)
-        whisper_model = get_model(model)
-
         resolved_lang = language if (language and language.lower() not in ["auto", "same as video", ""]) else None
-        logger.info(f"[FASTER-WHISPER TRANSCRIBE CALL] model={current_model_name}, device={current_device}, compute={current_compute_type}, task={task}, language={resolved_lang}, beam_size={beam_size}")
+        is_non_english = bool(resolved_lang and resolved_lang.lower() not in ["en", "english"])
 
-        segments_gen, info = whisper_model.transcribe(
-            audio,
-            task=task,
-            language=resolved_lang,
-            initial_prompt=initial_prompt,
-            vad_filter=vad_filter,
-            vad_parameters=dict(min_silence_duration_ms=500),
-            beam_size=beam_size,
-        )
+        # Default to large-v3-turbo for non-English audio paths if model not explicitly specified
+        target_model = model or ("large-v3-turbo" if is_non_english else os.getenv("WHISPER_MODEL", DEFAULT_MODEL))
+        whisper_model = get_model(target_model)
+
+        logger.info(f"[FASTER-WHISPER TRANSCRIBE CALL] model={current_model_name}, device={current_device}, compute={current_compute_type}, task={task}, language={resolved_lang}, beam_size={beam_size}, non_english={is_non_english}")
+
+        segments_gen = None
+        info = None
+
+        # Wire large-v3-turbo with BatchedInferencePipeline (batch_size 8) as default for non-English
+        if is_non_english and current_device == "cuda":
+            try:
+                from faster_whisper import BatchedInferencePipeline
+                logger.info(f"[BATCHED INFERENCE] Running BatchedInferencePipeline (batch_size=8) on CUDA for non-English language '{resolved_lang}'...")
+                batched_pipeline = BatchedInferencePipeline(model=whisper_model)
+                segments_gen, info = batched_pipeline.transcribe(
+                    audio,
+                    batch_size=8,
+                    language=resolved_lang,
+                    task=task,
+                    vad_filter=vad_filter,
+                )
+            except Exception as batch_err:
+                logger.warning(f"[BATCHED INFERENCE FAILED] {batch_err}. Falling back to standard pipeline...")
+                segments_gen = None
+
+        # Fallback to standard sequential pipeline
+        if segments_gen is None:
+            segments_gen, info = whisper_model.transcribe(
+                audio,
+                task=task,
+                language=resolved_lang,
+                initial_prompt=initial_prompt,
+                vad_filter=vad_filter,
+                vad_parameters=dict(min_silence_duration_ms=500),
+                beam_size=beam_size,
+            )
 
         segments: List[SegmentItem] = []
         full_text_chunks: List[str] = []
