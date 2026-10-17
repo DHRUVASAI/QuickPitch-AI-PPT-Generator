@@ -149,6 +149,8 @@ export default function QuickPitchHome() {
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [estimatedSeconds, setEstimatedSeconds] = useState(15)
   const [openSlideshowModal, setOpenSlideshowModal] = useState(false)
   const [openChatModal, setOpenChatModal] = useState(false)
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
@@ -330,6 +332,14 @@ export default function QuickPitchHome() {
     setPartialNotice(null); setCloudProviderNotice(null)
     setLanguagePrompt(null)
 
+    // Calculate dynamic ETA based on pipeline path (Audio Path: ~15s with Batched Whisper, Text: ~4s)
+    const initialEta = mode === 'text' ? 4 : (mode === 'audio' || !rawText ? 15 : 10);
+    setEstimatedSeconds(initialEta);
+    setElapsedSeconds(0);
+    const progressTimer = setInterval(() => {
+      setElapsedSeconds(prev => prev + 1);
+    }, 1000);
+
     const chosenSpoken = typeof confirmedSpokenLang === 'string' ? confirmedSpokenLang : spokenLanguage;
     if (typeof confirmedSpokenLang === 'string') {
       setSpokenLanguage(confirmedSpokenLang);
@@ -424,6 +434,7 @@ export default function QuickPitchHome() {
       setError(lastError?.message || 'Server connection failed. Ensure backend server is active on port 4021.');
       setStatus('');
     } finally {
+      clearInterval(progressTimer);
       setLoading(false);
     }
   }
@@ -694,9 +705,14 @@ export default function QuickPitchHome() {
                   </button>
                 </div>
 
-                <p className="text-xs text-slate-400">
-                  💡 Works with lectures, podcasts, interviews, product keynotes, and pitch videos. Grounded directly in verified captions and transcription.
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-400">
+                  <p>
+                    💡 Works with lectures, podcasts, interviews, and product keynotes. Grounded in verified captions & speech.
+                  </p>
+                  <span className="inline-flex items-center text-[11px] font-mono text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 whitespace-nowrap self-start sm:self-auto">
+                    ⏱️ Up to 60-min max
+                  </span>
+                </div>
               </div>
             )}
 
@@ -1174,9 +1190,65 @@ export default function QuickPitchHome() {
               </div>
             )}
 
+            {/* BACKGROUND PROGRESS & AUDIO ETA TRACKER (Round 3.6 Item 7) */}
+            {loading && (
+              <div className="mt-6 p-5 rounded-2xl bg-slate-900/90 border border-brand-500/30 text-white space-y-4 shadow-xl backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-brand-500 animate-ping" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-300">
+                      {mode === 'audio' || mode === 'youtube' ? 'Audio & Video Pipeline Active' : 'Text Synthesis Pipeline Active'}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-300 bg-white/[0.06] px-2.5 py-1 rounded-full border border-white/10">
+                    <span>ETA: <strong className="text-emerald-400">~{estimatedSeconds}s</strong></span>
+                    <span className="text-slate-500">•</span>
+                    <span>Elapsed: <strong className="text-white">{elapsedSeconds}s</strong></span>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-white/5">
+                  <div
+                    className="bg-gradient-to-r from-brand-500 via-indigo-500 to-emerald-400 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(95, Math.max(12, (elapsedSeconds / estimatedSeconds) * 90))}%` }}
+                  />
+                </div>
+
+                {/* Pipeline Step Indicators */}
+                <div className="grid grid-cols-4 gap-2 text-[10px] font-mono">
+                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 1 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                    <div className="font-bold">1. Ingest</div>
+                    <div className="truncate text-[9px] text-slate-400">≤ 60m max check</div>
+                  </div>
+                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 3 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                    <div className="font-bold">2. Whisper</div>
+                    <div className="truncate text-[9px] text-slate-400">GPU Batched ASR</div>
+                  </div>
+                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 8 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                    <div className="font-bold">3. Translate</div>
+                    <div className="truncate text-[9px] text-slate-400">Bilingual alignment</div>
+                  </div>
+                  <div className={`p-2 rounded-lg border ${elapsedSeconds >= 12 ? 'border-brand-500/50 bg-brand-500/10 text-brand-300' : 'border-white/5 bg-white/[0.02] text-slate-500'}`}>
+                    <div className="font-bold">4. Groq + PPT</div>
+                    <div className="truncate text-[9px] text-slate-400">Verify & Build</div>
+                  </div>
+                </div>
+
+                {/* Long Audio Background State & Duration Notice */}
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-emerald-400">✓</span>
+                    <span>Supports up to <strong>60-minute duration</strong> (5-min cap removed).</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">Batched Whisper ~35x RT</span>
+                </div>
+              </div>
+            )}
+
             {/* STATUS DISPLAY */}
             {status && (
-              <div className="mt-6 p-4 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs font-mono flex items-center space-x-3">
+              <div className="mt-4 p-4 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs font-mono flex items-center space-x-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-brand-500 animate-ping" />
                 <span>{status}</span>
               </div>

@@ -6,6 +6,15 @@ import { type SlideDeck, type SlideItem, type SlideLayoutType, validateSlideDeck
 import { cleanTextForPptx } from '../transcript/sanitizer.js';
 import { chunkTranscriptText } from './outline-synthesizer.js';
 import { gpuLock } from '../utils/gpu-lock.js';
+import {
+  type ChunkWithTime,
+  calculateSlideSourceRange,
+  buildChunksFromSegments,
+  formatMmSs,
+} from '../transcript/timestamp-utils.js';
+import { translateChunksToEnglish } from '../transcript/chunk-translator.js';
+import { verifyAndRepairSlideDeck } from './bullet-verifier.js';
+
 
 const LAYOUT_CYCLE: SlideLayoutType[] = [
   'split_cards',
@@ -248,72 +257,65 @@ export async function planSlideStructure(
     ? 'The LAST content slide MUST be a SUMMARY / TAKEAWAYS slide (category: "SUMMARY", layout_type: "split_cards") summarizing key takeaways and next steps.'
     : '';
 
-  // 1. Precise chunking by timestamps or text partitions
-  interface TranscriptChunk {
-    index: number;
-    startSec: number;
-    endSec: number;
-    timestamps: string;
-    text: string;
-  }
-
+  // 1. Precise chunking from real segment times clamped to video duration (Item 2)
   const rawSegments = (transcript.metadata as any)?.segments as Array<{ start: number; end: number; text: string }> | undefined;
-  const slideChunks: TranscriptChunk[] = [];
+  const videoDuration = (transcript.metadata as any)?.durationSeconds || (transcript.metadata as any)?.duration || 327.9;
 
-  const formatTs = (sec: number) => {
-    const m = Math.floor(sec / 60).toString().padStart(2, '0');
-    const s = Math.floor(sec % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+  let slideChunks: ChunkWithTime[] = [];
 
   if (Array.isArray(rawSegments) && rawSegments.length > 0) {
-    const segsPerChunk = Math.ceil(rawSegments.length / contentSlidesCount);
-    for (let cIdx = 0; cIdx < contentSlidesCount; cIdx++) {
-      const slice = rawSegments.slice(cIdx * segsPerChunk, Math.min(rawSegments.length, (cIdx + 1) * segsPerChunk));
-      if (slice.length > 0) {
-        const startSec = slice[0].start;
-        const endSec = slice[slice.length - 1].end;
-        slideChunks.push({
-          index: cIdx + 1,
-          startSec,
-          endSec,
-          timestamps: `${formatTs(startSec)} - ${formatTs(endSec)}`,
-          text: slice.map(s => s.text).join(' '),
-        });
-      }
-    }
+    slideChunks = buildChunksFromSegments(rawSegments, contentSlidesCount, videoDuration);
   }
 
   if (slideChunks.length === 0) {
     const totalChars = transcript.sanitizedText.length;
     const charsPerChunk = Math.ceil(totalChars / contentSlidesCount);
-    const estTotalDuration = (transcript.metadata as any)?.duration || 300;
     for (let cIdx = 0; cIdx < contentSlidesCount; cIdx++) {
       const startChar = cIdx * charsPerChunk;
       const endChar = Math.min(totalChars, (cIdx + 1) * charsPerChunk);
       const text = transcript.sanitizedText.slice(startChar, endChar);
-      const startSec = Math.round((startChar / (totalChars || 1)) * estTotalDuration);
-      const endSec = Math.round((endChar / (totalChars || 1)) * estTotalDuration);
+      const rawStart = (startChar / (totalChars || 1)) * videoDuration;
+      const rawEnd = (endChar / (totalChars || 1)) * videoDuration;
+      const range = calculateSlideSourceRange([{ startSec: rawStart, endSec: rawEnd }], videoDuration);
       slideChunks.push({
         index: cIdx + 1,
-        startSec,
-        endSec,
-        timestamps: `${formatTs(startSec)} - ${formatTs(endSec)}`,
+        startSec: range.source_start,
+        endSec: range.source_end,
+        timestamps: range.source_timestamps,
         text,
       });
     }
   }
 
-  const chunkPromptBlock = slideChunks
+  // 2. Translation Stage (Item 3)
+  // Translate each chunk to English with timestamps kept, cache it with transcript,
+  // and generate slides ONLY from the English chunks!
+  const detectedLang = ((transcript.metadata as any)?.detectedLanguage || (transcript.metadata as any)?.language || 'auto').toLowerCase();
+  let englishChunks: ChunkWithTime[] = slideChunks;
+
+  const cachedChunks = (transcript.metadata as any)?.translatedChunks as ChunkWithTime[] | undefined;
+  if (Array.isArray(cachedChunks) && cachedChunks.length === contentSlidesCount) {
+    console.log(`[SlidePlanner: Translation] Using ${cachedChunks.length} cached English chunks.`);
+    englishChunks = cachedChunks;
+  } else if (detectedLang !== 'en' && detectedLang !== 'english') {
+    console.log(`[SlidePlanner: Translation] Source language is "${detectedLang}". Translating ${slideChunks.length} chunks to English...`);
+    const translated = await translateChunksToEnglish(slideChunks, client, detectedLang);
+    englishChunks = translated;
+    if (transcript.metadata) {
+      (transcript.metadata as any).translatedChunks = englishChunks;
+      (transcript.metadata as any).englishTranscript = englishChunks.map(c => `[CHUNK ${c.index} | ${c.timestamps}]:\n${c.text}`).join('\n\n');
+    }
+  }
+
+  const chunkPromptBlock = englishChunks
     .map(c => `[CHUNK ${c.index} | TIMESTAMPS: ${c.timestamps} (${c.startSec.toFixed(1)}s to ${c.endSec.toFixed(1)}s)]:\n"${c.text.slice(0, 4000)}"`)
     .join('\n\n');
 
   const systemPrompt = `You are a world-class presentation structuring engine. Output strictly valid JSON with a "slides" array.
 ALL SLIDE TITLES, SUBTITLES, CATEGORY BADGES, CARD TITLES, BULLET POINTS, AND SPEAKER NOTES MUST BE IN ENGLISH.
-If the source context is in Hindi, Telugu, or another language, translate all facts accurately into English.
 
 CRITICAL GROUNDING INSTRUCTION:
-Each slide MUST be generated strictly and exclusively from its matching CHUNK.
+Each slide MUST be generated strictly and exclusively from its matching ENGLISH CHUNK.
 - Slide 1 comes ONLY from CHUNK 1
 - Slide 2 comes ONLY from CHUNK 2
 ...
@@ -408,8 +410,8 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
           );
         }
 
-        // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source chunk
-        verifyAndAttachSourceReferences(genResult.deck.slides, slideChunks);
+        // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source English chunk
+        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText);
 
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" produced ${genResult.deck.slides.length} slides`);
         return {
@@ -433,7 +435,7 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
-  verifyAndAttachSourceReferences(fallbackSlides, slideChunks);
+  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText);
 
   return {
     ...validateSlideDeck({
@@ -446,55 +448,24 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
   };
 }
 
-function verifyAndAttachSourceReferences(
+async function verifyAndAttachSourceReferences(
   slides: SlideItem[],
-  chunks: Array<{ index: number; startSec: number; endSec: number; timestamps: string; text: string }>
-): void {
+  chunks: ChunkWithTime[],
+  videoDuration: number,
+  client?: UnifiedModelClient,
+  whisperRawText?: string
+): Promise<void> {
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
     const chunk = chunks[i] || chunks[chunks.length - 1];
     if (!chunk) continue;
 
-    slide.source_start = slide.source_start ?? chunk.startSec;
-    slide.source_end = slide.source_end ?? chunk.endSec;
-    slide.source_timestamps = slide.source_timestamps || chunk.timestamps;
-
-    const unverified: string[] = [];
-    const chunkTextLower = chunk.text.toLowerCase();
-
-    const bullets = slide.cards.flatMap((c) => c.points);
-    for (const bullet of bullets) {
-      // 1. Numbers verification
-      const numbers = bullet.match(/\b\d+(?:\.\d+)?%?\b/g) || [];
-      for (const num of numbers) {
-        if (!chunk.text.includes(num)) {
-          unverified.push(`Number "${num}" in "${bullet}"`);
-        }
-      }
-
-      // 2. Names & Product terms verification
-      const entities = bullet.match(/\b[A-Z][a-zA-Z0-9-]+\b/g) || [];
-      const stopwords = new Set([
-        'The', 'This', 'These', 'That', 'With', 'From', 'For', 'And', 'Key', 'Core', 'Action',
-        'Impact', 'Strategic', 'Overview', 'Pillar', 'Section', 'High', 'Low', 'Each', 'Our',
-        'All', 'Slide', 'Features', 'Benefits', 'Role', 'System', 'Systems', 'Using', 'Used',
-        'Their', 'There', 'When', 'What', 'Where', 'Which', 'Why', 'How'
-      ]);
-
-      for (const entity of entities) {
-        if (stopwords.has(entity) || entity.length <= 2) continue;
-        const entityLower = entity.toLowerCase();
-        if (!chunkTextLower.includes(entityLower)) {
-          unverified.push(`Term/Entity "${entity}" in "${bullet}"`);
-        }
-      }
-    }
-
-    if (unverified.length > 0) {
-      slide.unverified_terms = unverified;
-      console.warn(`[VerificationPass] Slide ${i + 1} ("${slide.title}") flagged ${unverified.length} unverified items:`, unverified);
-    } else {
-      console.log(`[VerificationPass] Slide ${i + 1} ("${slide.title}") verified: all numbers and terms grounded in chunk.`);
-    }
+    const range = calculateSlideSourceRange([chunk], videoDuration);
+    slide.source_start = range.source_start;
+    slide.source_end = range.source_end;
+    slide.source_timestamps = range.source_timestamps;
   }
+
+  await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText);
 }
+

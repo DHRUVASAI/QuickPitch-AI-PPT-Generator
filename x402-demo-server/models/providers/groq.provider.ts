@@ -11,7 +11,7 @@ export class GroqProvider implements ILLMProvider {
 
   constructor(options?: { apiKey?: string; defaultModel?: string }) {
     this.apiKey = options?.apiKey || process.env.GROQ_API_KEY;
-    this.defaultModel = options?.defaultModel || 'qwen/qwen3.8-27b';
+    this.defaultModel = options?.defaultModel || 'openai/gpt-oss-20b';
     if (this.apiKey) {
       this.client = new OpenAI({
         apiKey: this.apiKey,
@@ -31,9 +31,9 @@ export class GroqProvider implements ILLMProvider {
 
     const fallbackModels = [
       options?.model || this.defaultModel,
-      'qwen/qwen3.8-27b',
       'openai/gpt-oss-20b',
       'openai/gpt-oss-120b',
+      'qwen/qwen3.8-27b',
     ];
 
     let lastError: Error | null = null;
@@ -41,16 +41,19 @@ export class GroqProvider implements ILLMProvider {
       try {
         return await withRetryAndTimeout(
           async (signal) => {
-            const response = await this.client!.chat.completions.create(
-              {
-                model: modelName,
-                messages,
-                temperature: options?.temperature ?? 0.3,
-                max_tokens: options?.maxTokens ?? 2000,
-                ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
-              },
-              { signal }
-            );
+            const reqBody: any = {
+              model: modelName,
+              messages,
+              temperature: options?.temperature ?? 0.3,
+              max_tokens: options?.maxTokens ?? 2000,
+              ...(options?.jsonMode ? { response_format: { type: 'json_object' } } : {}),
+            };
+
+            if (modelName.startsWith('openai/')) {
+              reqBody.reasoning_effort = 'low';
+            }
+
+            const response = await this.client!.chat.completions.create(reqBody, { signal });
 
             const content = response.choices[0]?.message?.content || '';
             return {
@@ -66,7 +69,7 @@ export class GroqProvider implements ILLMProvider {
           },
           {
             name: `Groq (${modelName})`,
-            timeoutMs: 10000,
+            timeoutMs: 25000,
             retries: 2,
             initialDelayMs: 300,
             backoffFactor: 2,

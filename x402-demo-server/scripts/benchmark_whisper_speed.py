@@ -10,18 +10,6 @@ from datetime import datetime
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-def get_battery_info():
-    cmd = [
-        'powershell', '-Command',
-        'Add-Type -AssemblyName System.Windows.Forms; '
-        '$p = [System.Windows.Forms.SystemInformation]::PowerStatus; '
-        '@{ PowerLine = $p.PowerLineStatus.ToString(); BatteryPercent = $p.BatteryLifePercent; Charge = $p.BatteryChargeStatus.ToString() } | ConvertTo-Json -Compress'
-    ]
-    try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return json.loads(res.stdout.strip())
-    except Exception as e:
-        return {'PowerLine': 'Unknown', 'BatteryPercent': 0, 'Error': str(e)}
 
 def get_ffmpeg_bin():
     which_ffmpeg = shutil.which("ffmpeg")
@@ -113,10 +101,6 @@ def run_whisper_benchmark():
     print("✓ Model loaded successfully.\n")
 
     for cfg in configs:
-        print(f"--- Running {cfg['name']} ---")
-        batt = get_battery_info()
-        print(f"Battery/Power Status: {batt.get('PowerLine')} ({batt.get('BatteryPercent')*100:.0f}% charge)")
-
         # 1. Decode audio
         print(f"Decoding {cfg['audio']} with ffmpeg...")
         audio, decode_time, audio_dur = decode_audio_ffmpeg(cfg['audio'])
@@ -174,8 +158,6 @@ def run_whisper_benchmark():
             "segments_count": len(segments),
             "word_count": word_count,
             "char_count": char_count,
-            "battery_powerline": batt.get('PowerLine'),
-            "battery_percent": batt.get('BatteryPercent'),
             "gpu_graphics_mhz": int(gpu_q[0].strip()) if len(gpu_q) > 0 else 0,
             "gpu_mem_mhz": int(gpu_q[1].strip()) if len(gpu_q) > 1 else 0,
             "gpu_power_w": float(gpu_q[2].strip()) if len(gpu_q) > 2 else 0.0,
