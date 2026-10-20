@@ -137,18 +137,25 @@ export async function gradeBulletAgainstSource(
   client?: UnifiedModelClient,
   whisperRawText?: string
 ): Promise<BulletAuditResult> {
-  const sourceText = chunk.originalText || chunk.text;
-  const normSource = normalizeDevanagariDigits(sourceText);
+  // Fix for English-vs-Hindi verification:
+  // Compare against English translation PLUS Hindi source (and Whisper transcript if available)
+  const hindiSource = chunk.originalText || '';
+  const englishTranslation = chunk.text && chunk.text !== chunk.originalText ? chunk.text : '';
+  const combinedSource = englishTranslation ? `${englishTranslation}\n${hindiSource || chunk.text}` : (chunk.text || hindiSource);
+  const sourceText = combinedSource;
+  const normSource = normalizeDevanagariDigits(combinedSource);
   const normSourceLower = normSource.toLowerCase();
 
   const { numbers, entities } = extractVerifiableEntities(bullet);
   const flaggedTerms: string[] = [];
   let resolvedNumber: string | undefined = undefined;
 
-  // 1. Number verification against source text
+  // 1. Number verification against combined source and Whisper text
   for (const num of numbers) {
-    if (!normSource.includes(num)) {
-      // Check Whisper raw transcript for year/number discrepancy (e.g. 2050 vs 2045)
+    const foundInSource = normSource.includes(num);
+    const foundInWhisper = whisperRawText ? whisperRawText.includes(num) : false;
+
+    if (!foundInSource && !foundInWhisper) {
       if (num === '2050' && whisperRawText && whisperRawText.includes('2045')) {
         resolvedNumber = 'Deck had 2050; Whisper large-v3 heard 2045 (futurist Kurzweil estimate)';
         flaggedTerms.push(`Number "${num}" (Resolved to 2045 via Whisper large-v3)`);
@@ -158,9 +165,11 @@ export async function gradeBulletAgainstSource(
     }
   }
 
-  // 2. Entity & Product term verification against source text (bilingual check)
+  // 2. Entity & Product term verification against combined source text & Whisper
   for (const entity of entities) {
-    if (!entityMatchesSource(entity, normSourceLower)) {
+    const foundInSource = entityMatchesSource(entity, normSourceLower);
+    const foundInWhisper = whisperRawText ? entityMatchesSource(entity, whisperRawText.toLowerCase()) : false;
+    if (!foundInSource && !foundInWhisper) {
       flaggedTerms.push(`Entity/Product "${entity}"`);
     }
   }

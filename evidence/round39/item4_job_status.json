@@ -1,0 +1,272 @@
+{
+  "evidenceName": "item4_job_status",
+  "timestamp": "2026-10-20T05:07:13.364Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "index.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\index.ts",
+      "exists": true,
+      "sha256": "19dba288571065bb341546122091445b06d906e727fb442662ef2930f9abf66f",
+      "mtime": "2026-10-17T05:37:26.258Z"
+    },
+    {
+      "path": "handlers/generate-ppt.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\handlers\\generate-ppt.ts",
+      "exists": true,
+      "sha256": "379a81d75c445ebb4887da4000e30b0b02816626a651512d216c3b268e446400",
+      "mtime": "2026-10-17T05:36:56.297Z"
+    }
+  ],
+  "data": {
+    "item": "Part 1 Item 4: Job-Status Route Handler and Live Trace",
+    "route": "/generate-ppt/status/:jobId",
+    "filePath": "index.ts",
+    "framework": "Hono (@hono/node-server)",
+    "handlerCode": "// QuickPitch - Real server stage status polling endpoint\napp.get('/generate-ppt/status/:jobId', (c) => {\n  const jobId = c.req.param('jobId');\n  const stage = jobStages.get(jobId);\n  if (!stage) {\n    return c.json({ status: 'unknown', stage: 'ingest', percent: 15, message: 'Processing presentation...' }, 200);\n  }\n  return c.json({ status: 'ok', ...stage }, 200);\n});",
+    "helperFile": "handlers/generate-ppt.ts",
+    "testJobId": "live_audit_1792472764244",
+    "liveTrace": [
+      {
+        "timestamp": "2026-10-20T05:06:04.253Z",
+        "elapsedMs": 48,
+        "httpStatus": 200,
+        "body": {
+          "status": "unknown",
+          "stage": "ingest",
+          "percent": 15,
+          "message": "Processing presentation..."
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:05.312Z",
+        "elapsedMs": 1076,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:06.334Z",
+        "elapsedMs": 2084,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:07.350Z",
+        "elapsedMs": 3114,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:08.377Z",
+        "elapsedMs": 4143,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:09.412Z",
+        "elapsedMs": 5162,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:10.415Z",
+        "elapsedMs": 6180,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:11.446Z",
+        "elapsedMs": 7211,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:12.474Z",
+        "elapsedMs": 8240,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:13.493Z",
+        "elapsedMs": 9259,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:14.515Z",
+        "elapsedMs": 10279,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:15.535Z",
+        "elapsedMs": 11297,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:16.555Z",
+        "elapsedMs": 12319,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:17.584Z",
+        "elapsedMs": 13348,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:18.613Z",
+        "elapsedMs": 14377,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:19.631Z",
+        "elapsedMs": 15395,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:20.653Z",
+        "elapsedMs": 16416,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:21.683Z",
+        "elapsedMs": 17446,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:22.711Z",
+        "elapsedMs": 18475,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      },
+      {
+        "timestamp": "2026-10-20T05:06:23.744Z",
+        "elapsedMs": 19508,
+        "httpStatus": 200,
+        "body": {
+          "status": "ok",
+          "stage": "synthesize",
+          "percent": 75,
+          "message": "Structuring executive slides & source-language verification...",
+          "timestamp": 1792472764294
+        }
+      }
+    ],
+    "finalDeckSizeBytes": 107593
+  }
+}

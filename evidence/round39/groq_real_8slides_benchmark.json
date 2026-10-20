@@ -1,0 +1,37 @@
+{
+  "evidenceName": "groq_real_8slides_benchmark.json",
+  "timestamp": "2026-10-20T05:30:52.768Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "core/synthesis/slide-planner.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\slide-planner.ts",
+      "exists": true,
+      "sha256": "110dd869e1cb2b245dcebc1a72b25bd3c02876e54cf1090cfff86a3953c07c9c",
+      "mtime": "2026-10-20T05:05:55.755Z"
+    }
+  ],
+  "data": {
+    "description": "Groq benchmark using the real 8-slide prompt and real video chunks from qzAHXO-cN5Q.",
+    "model": "openai/gpt-oss-20b",
+    "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+    "httpStatus": 200,
+    "durationSeconds": 3.183,
+    "usage": {
+      "promptTokens": 1524,
+      "completionTokens": 1859,
+      "totalTokens": 3383
+    },
+    "isValidJson": true,
+    "parsedSlidesCount": 7,
+    "chunksUsed": 7,
+    "sampleResponseSnippet": "{\"slides\":[{\"title\":\"AI in Everyday Life\",\"subtitle\":\"From Wardrobe to Coffee\",\"category\":\"Everyday AI\",\"source_timestamps\":\"00:00 - 00:48\",\"cards\":[{\"card_title\":\"AI Applications\",\"points\":[{\"text\":\"AI is used in smartphones, cars, social media feeds, video games, and banking services to simplify daily tasks\",\"chunk_id\":1,\"quote\":\"AI used in smartphones, cars, social media feeds, video games, banking services\"}]}]},{\"title\":\"Robotic Generalization\",\"subtitle\":\"Learning to Navigate Uncertain Env"
+  }
+}

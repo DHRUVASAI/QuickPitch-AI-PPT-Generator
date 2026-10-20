@@ -11,7 +11,7 @@ export class GroqProvider implements ILLMProvider {
 
   constructor(options?: { apiKey?: string; defaultModel?: string }) {
     this.apiKey = options?.apiKey || process.env.GROQ_API_KEY;
-    this.defaultModel = options?.defaultModel || process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+    this.defaultModel = options?.defaultModel || process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
     if (this.apiKey) {
       this.client = new OpenAI({
         apiKey: this.apiKey,
@@ -31,7 +31,7 @@ export class GroqProvider implements ILLMProvider {
 
     const fallbackModels = [
       options?.model || this.defaultModel,
-      'openai/gpt-oss-120b',
+      'openai/gpt-oss-20b',
       'qwen/qwen3.8-27b',
     ];
 

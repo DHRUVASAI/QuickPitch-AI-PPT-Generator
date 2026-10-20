@@ -11,6 +11,8 @@ dist/
 !package.json
 !package-lock.json
 !tsconfig.json
+!evidence/**
+!**/evidence/**
 *.log
 temp/
 *.tmp

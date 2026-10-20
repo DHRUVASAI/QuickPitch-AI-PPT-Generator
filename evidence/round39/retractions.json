@@ -1,0 +1,102 @@
+{
+  "evidenceName": "retractions.json",
+  "timestamp": "2026-10-20T05:24:59.930Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    },
+    {
+      "path": "core/synthesis/slide-planner.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\slide-planner.ts",
+      "exists": true,
+      "sha256": "110dd869e1cb2b245dcebc1a72b25bd3c02876e54cf1090cfff86a3953c07c9c",
+      "mtime": "2026-10-20T05:05:55.755Z"
+    },
+    {
+      "path": "scripts/benchmark_item8_e2e.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scripts\\benchmark_item8_e2e.ts",
+      "exists": true,
+      "sha256": "751b1b3825a3139a72731037d352c851f0f0afb8cf0f9f03171eeb715fbd62ef",
+      "mtime": "2026-10-20T05:07:49.920Z"
+    }
+  ],
+  "data": {
+    "description": "Complete list of invalid Round 3.8 claims, root causes, and replacement evidence files.",
+    "retractionsCount": 9,
+    "retractions": [
+      {
+        "claimName": "Hindi grounding table and quoted chunks",
+        "round38Claim": "Claimed 8 slides with 24 bullets grounded in Hindi chunks with quotes containing Latin \"AI\", danda \"।\", and historical/future entities: John McCarthy, 1956 Dartmouth, Lee Sedol, Siri, 2029 AGI.",
+        "reasonInvalid": "Real files audit (qzAHXO_parsed_vtt.json and qzAHXO_large_v3_translate.json) has 0 matches for McCarthy, Sedol, 1956, 2029, and Siri. Danda \"।\" and Latin \"AI\" were synthetic LLM fabrications; YouTube ASR emits unpunctuated Devanagari text. Grounding audit yielded 0 SUPPORTED, 0 PARTIAL, 24 NO SUPPORT.",
+        "replacementEvidenceFile": "evidence/round39/item2_hindi_video.json"
+      },
+      {
+        "claimName": "Translation similarity table",
+        "round38Claim": "Presented similarity scores between 14 translated chunks and Whisper large-v3 translate, claiming high lexical and semantic alignment.",
+        "reasonInvalid": "The chunks compared were ungrounded and did not align to real caption line windows; translations contained hallucinated entities not in the source.",
+        "replacementEvidenceFile": "evidence/round39/item2_hindi_video.json"
+      },
+      {
+        "claimName": "Entity timeline",
+        "round38Claim": "Timeline claimed video covers John McCarthy (1956), Deep Blue (1997), Siri (2011), AlphaGo vs Lee Sedol (2016), Kurzweil (2029/2045).",
+        "reasonInvalid": "The real video only discusses home automation robots, lab robot crossing a river with a plank, Go vs Chess, Alexa playing Despacito, Ultron in Avengers, Kurzweil (misheard as Coors Will in ASR) 2045, and Elon Musk cyborg implants. McCarthy, 1956, Sedol, Siri, and 2029 never appear.",
+        "replacementEvidenceFile": "evidence/round39/item2_hindi_video.json"
+      },
+      {
+        "claimName": "Polling trace",
+        "round38Claim": "Reported a polling trace with synthetic progress percentages and mock timestamps.",
+        "reasonInvalid": "Trace was staged rather than captured from real HTTP curl requests against a running server.",
+        "replacementEvidenceFile": "evidence/round39/item4_job_status.json"
+      },
+      {
+        "claimName": "Job-status route snippet",
+        "round38Claim": "Reported an unverified handler snippet for job status.",
+        "reasonInvalid": "Snippet did not reflect actual Hono framework implementation at index.ts:120-127.",
+        "replacementEvidenceFile": "evidence/round39/item4_job_status.json"
+      },
+      {
+        "claimName": "Stage timing table",
+        "round38Claim": "Reported hardcoded stage breakdown in benchmark_item8_e2e.ts with reused Whisper timings.",
+        "reasonInvalid": "Stages were hardcoded constants rather than measured server log stage durations. Whisper time was carried over from another benchmark without live GPU recording.",
+        "replacementEvidenceFile": "evidence/round39/item5_e2e_measurement.json"
+      },
+      {
+        "claimName": "Groq llama-3.3 benchmark",
+        "round38Claim": "Reported benchmark performance using llama-3.3-70b-versatile on Groq API.",
+        "reasonInvalid": "Querying live Groq API endpoint https://api.groq.com/openai/v1/models showed that llama-3.3-70b-versatile does not exist on the user's API key.",
+        "replacementEvidenceFile": "evidence/round39/item6_groq_benchmark.json"
+      },
+      {
+        "claimName": "Slide 8 and unit duration overrun to 06:17",
+        "round38Claim": "Reported units and slide 8 extending to 06:17 on a 5:28 (327.9s) video.",
+        "reasonInvalid": "Synthetic 14-chunk generator failed to clamp end timestamps to the true video duration (327.889s), allowing timestamps to drift past the end of the video.",
+        "replacementEvidenceFile": "evidence/round39/item3_timestamps.json"
+      },
+      {
+        "claimName": "Reused Whisper VRAM and timing proof",
+        "round38Claim": "Reused Whisper large-v3 VRAM usage and execution time numbers across benchmarks as proof of active execution.",
+        "reasonInvalid": "No live GPU session was attached during that specific benchmark run; carried-over timings cannot substitute for active measurement and are marked unverified.",
+        "replacementEvidenceFile": "evidence/round39/item5_e2e_measurement.json"
+      }
+    ]
+  }
+}

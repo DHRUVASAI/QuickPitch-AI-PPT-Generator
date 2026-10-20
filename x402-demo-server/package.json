@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsx index.ts",
     "dev": "tsx watch index.ts",
-    "test": "tsx --test tests/**/*.test.ts"
+    "test": "tsx --test --test-concurrency=1 tests/**/*.test.ts"
   },
   "keywords": [],
   "author": "",

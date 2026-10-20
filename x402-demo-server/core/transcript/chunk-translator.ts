@@ -142,7 +142,8 @@ export function buildSmallTranslationUnits(
  */
 export function validateTranslationResult(
   sourceText: string,
-  translatedText: string
+  translatedText: string,
+  whisperWindowText?: string
 ): { valid: boolean; reason?: string; ratio: number; sourceWords: number; translatedWords: number } {
   const normSource = normalizeDevanagariDigits(sourceText).toLowerCase();
   const sourceWords = normSource.split(/\s+/).filter(Boolean).length;
@@ -169,17 +170,50 @@ export function validateTranslationResult(
     };
   }
 
-  // Number check: any digit sequence in translation must be present in source
+  // Number check: any digit sequence in translation must be present in source or Whisper window
   const transNumbers = translatedText.match(/\b\d+\b/g) || [];
   for (const num of transNumbers) {
-    if (!normSource.includes(num)) {
+    const inSource = normSource.includes(num);
+    const inWhisper = whisperWindowText ? whisperWindowText.includes(num) : false;
+    if (!inSource && !inWhisper) {
       return {
         valid: false,
-        reason: `Number "${num}" in translation does not exist in source text`,
+        reason: `Number "${num}" in translation does not exist in source text or Whisper window`,
         ratio,
         sourceWords,
         translatedWords,
       };
+    }
+  }
+
+  // Proper noun / name check: any non-sentence-initial capitalized word must appear in source or Whisper window
+  const words = translatedText.split(/\s+/);
+  const commonStop = new Set([
+    'the', 'this', 'these', 'that', 'with', 'from', 'for', 'and', 'not', 'what', 'why', 'how', 'when',
+    'one', 'two', 'three', 'four', 'first', 'second', 'then', 'now', 'today', 'also', 'because', 'their',
+    'here', 'there', 'some', 'many', 'all', 'any', 'each', 'both', 'our', 'your', 'his', 'her', 'its'
+  ]);
+
+  for (let i = 0; i < words.length; i++) {
+    const rawWord = words[i];
+    const cleanWord = rawWord.replace(/^[^\w]+|[^\w]+$/g, '');
+    if (!cleanWord || cleanWord.length <= 1) continue;
+    const isSentenceInitial = (i === 0) || (i > 0 && /[.?!:]$/.test(words[i - 1]));
+    if (isSentenceInitial) continue;
+
+    if (/^[A-Z][a-zA-Z0-9-]*$/.test(cleanWord) && !commonStop.has(cleanWord.toLowerCase())) {
+      const lowerWord = cleanWord.toLowerCase();
+      const inSource = normSource.includes(lowerWord);
+      const inWhisper = whisperWindowText ? whisperWindowText.toLowerCase().includes(lowerWord) : false;
+      if (!inSource && !inWhisper) {
+        return {
+          valid: false,
+          reason: `Proper name/entity "${cleanWord}" in translation does not exist in source text or Whisper window`,
+          ratio,
+          sourceWords,
+          translatedWords,
+        };
+      }
     }
   }
 

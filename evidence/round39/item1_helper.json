@@ -1,0 +1,25 @@
+{
+  "evidenceName": "item1_helper",
+  "timestamp": "2026-10-20T04:59:57.437Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "./scripts/evidence-helper.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scripts\\evidence-helper.ts",
+      "exists": true,
+      "sha256": "7d0876d93c921ae30204a2d52452bb54398d9a5a69d4001362b4917bdd4c7d14",
+      "mtime": "2026-10-20T04:55:11.901Z"
+    },
+    {
+      "path": "../.gitignore",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\.gitignore",
+      "exists": true,
+      "sha256": "5a2e583fad7e821fb665c10f2a12cfa8c514af638fa6f57ee7d5ac28c733905f",
+      "mtime": "2026-10-20T04:54:50.879Z"
+    }
+  ],
+  "data": {
+    "status": "done",
+    "message": "Evidence helper created and verified"
+  }
+}

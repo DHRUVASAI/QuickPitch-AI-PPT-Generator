@@ -1,0 +1,481 @@
+{
+  "evidenceName": "verifier_audit.json",
+  "timestamp": "2026-10-20T05:27:42.531Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "c14946756cdf0cad1aeca019759eb3f0c0098b2f65544ab077c168a49b51982e",
+      "mtime": "2026-10-20T05:27:34.929Z"
+    }
+  ],
+  "data": {
+    "description": "Audit of the 24 round38 bullets and comparison of 5 real source bullets under Mode A (Hindi only) vs Mode B (English translation + Hindi source).",
+    "audit24BulletsCount": 24,
+    "audit24Bullets": [
+      {
+        "index": 1,
+        "slideIndex": 1,
+        "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:10",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 2,
+        "slideIndex": 1,
+        "bullet": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:10",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 3,
+        "slideIndex": 1,
+        "bullet": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:10",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 4,
+        "slideIndex": 1,
+        "bullet": "Its impact is visible across multiple facets of modern daily life",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:10",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 5,
+        "slideIndex": 2,
+        "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:10 - 02:18",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 6,
+        "slideIndex": 2,
+        "bullet": "Chooses firm or rocky path based on real‑time situational analysis",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:10 - 02:18",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 7,
+        "slideIndex": 2,
+        "bullet": "Faced with an uncrossable river, robot uses a provided plank as input",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:10 - 02:18",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 8,
+        "slideIndex": 2,
+        "bullet": "Applies reasoning to construct a solution and successfully cross",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:10 - 02:18",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 9,
+        "slideIndex": 3,
+        "bullet": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "extractedNumbers": [],
+        "extractedEntities": [
+          "AlphaGo",
+          "Go"
+        ],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 10,
+        "slideIndex": 3,
+        "bullet": "Limited transferability; cannot perform unrelated tasks such as chess",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 11,
+        "slideIndex": 3,
+        "bullet": "Hypothetical self‑aware systems capable of reasoning and emotions",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 12,
+        "slideIndex": 3,
+        "bullet": "Often depicted in fiction, e.g., Ultron from the Avengers",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "extractedNumbers": [],
+        "extractedEntities": [
+          "Ultron",
+          "Avengers"
+        ],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 13,
+        "slideIndex": 4,
+        "bullet": "Alexa responds only to intents it has been explicitly trained for",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:42",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 14,
+        "slideIndex": 4,
+        "bullet": "Fails to answer traffic queries when not pre‑programmed",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:42",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 15,
+        "slideIndex": 4,
+        "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:42",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 16,
+        "slideIndex": 4,
+        "bullet": "Each request triggers a specific programmed response rather than true understanding",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:42",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 17,
+        "slideIndex": 5,
+        "bullet": "Provides algorithms that learn from data and experience",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 18,
+        "slideIndex": 5,
+        "bullet": "Enables systems to improve performance without explicit programming",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 19,
+        "slideIndex": 5,
+        "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 20,
+        "slideIndex": 5,
+        "bullet": "Excels at extracting complex patterns from large datasets",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 21,
+        "slideIndex": 6,
+        "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 22,
+        "slideIndex": 6,
+        "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      },
+      {
+        "index": 23,
+        "slideIndex": 6,
+        "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [
+          "AI"
+        ],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Entity/Product \"AI\".",
+        "isVerified": false
+      },
+      {
+        "index": 24,
+        "slideIndex": 6,
+        "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+        "gradingMethod": "both (Heuristic entity/number extraction + Entailment Yes/No check)",
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:42 - 05:30",
+        "extractedNumbers": [],
+        "extractedEntities": [],
+        "rawModelAnswer": "NO",
+        "grade": "NO SUPPORT",
+        "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+        "isVerified": false
+      }
+    ],
+    "fiveRealBulletsTest": [
+      {
+        "bulletId": 1,
+        "bullet": "Weak AI finds solutions for specific tasks",
+        "unitIndex": 6,
+        "timestamps": "01:54 - 02:18",
+        "modeA_HindiOnly": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        },
+        "modeB_EnglishPlusHindi": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        }
+      },
+      {
+        "bulletId": 2,
+        "bullet": "Deep learning is a subset of machine learning",
+        "unitIndex": 10,
+        "timestamps": "03:27 - 03:51",
+        "modeA_HindiOnly": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        },
+        "modeB_EnglishPlusHindi": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        }
+      },
+      {
+        "bulletId": 3,
+        "bullet": "Alexa is an example of weak AI",
+        "unitIndex": 7,
+        "timestamps": "02:18 - 02:38",
+        "modeA_HindiOnly": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        },
+        "modeB_EnglishPlusHindi": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        }
+      },
+      {
+        "bulletId": 4,
+        "bullet": "Ultron from Avengers represents strong AI",
+        "unitIndex": 9,
+        "timestamps": "03:00 - 03:27",
+        "modeA_HindiOnly": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        },
+        "modeB_EnglishPlusHindi": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        }
+      },
+      {
+        "bulletId": 5,
+        "bullet": "Futurist Kurzweil predicts human-level AI by 2045",
+        "unitIndex": 10,
+        "timestamps": "03:27 - 03:51",
+        "modeA_HindiOnly": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        },
+        "modeB_EnglishPlusHindi": {
+          "grade": "SUPPORTED",
+          "flaggedTerms": [],
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "isSupported": true
+        }
+      }
+    ],
+    "findings": {
+      "round38Grading": "All 24 bullets in round38 failed because English claims were evaluated against Devanagari Hindi text only, causing entity matching and entailment checks to fail.",
+      "modeA_vs_modeB": "Under Mode A (Hindi only), English proper nouns and numbers without bilingual dictionary entries get flagged as unsupported. Under Mode B (English translation + Hindi source), all 5 real bullets successfully match and grade as SUPPORTED."
+    }
+  }
+}

@@ -1,0 +1,459 @@
+{
+  "evidenceName": "item2_hindi_video",
+  "timestamp": "2026-10-20T05:01:43.977Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    },
+    {
+      "path": "scratch/whisper_large-v3_raw.txt",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\whisper_large-v3_raw.txt",
+      "exists": true,
+      "sha256": "9fef18bb889eaeeb2709f2e58590df41860018277a2b203a121d21bdbdb5b73d",
+      "mtime": "2026-10-15T17:21:53.923Z"
+    },
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    }
+  ],
+  "data": {
+    "item": "Part 1 Item 2: Hindi video qzAHXO-cN5Q Real Files Audit",
+    "item2a": {
+      "file": "scratch/qzAHXO_parsed_vtt.json",
+      "first30Lines": [
+        "[",
+        "  {",
+        "    \"start\": \"00:00:00.359\",",
+        "    \"end\": \"00:00:02.710\",",
+        "    \"text\": \"सोचिए कि कोई मशीन है जो आपके हिसाब से\"",
+        "  },",
+        "  {",
+        "    \"start\": \"00:00:02.720\",",
+        "    \"end\": \"00:00:05.230\",",
+        "    \"text\": \"सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के\"",
+        "  },",
+        "  {",
+        "    \"start\": \"00:00:05.230\",",
+        "    \"end\": \"00:00:05.240\",",
+        "    \"text\": \"आपकी अलमारी सेट कर दे या आपके परिवार के\"",
+        "  },",
+        "  {",
+        "    \"start\": \"00:00:05.240\",",
+        "    \"end\": \"00:00:07.630\",",
+        "    \"text\": \"आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी\"",
+        "  },",
+        "  {",
+        "    \"start\": \"00:00:07.630\",",
+        "    \"end\": \"00:00:07.640\",",
+        "    \"text\": \"हर मेंबर को उनकी पसंद के हिसाब से कॉफी\"",
+        "  },",
+        "  {",
+        "    \"start\": \"00:00:07.640\",",
+        "    \"end\": \"00:00:10.589\",",
+        "    \"text\": \"हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना\""
+      ],
+      "mtime": "2026-10-16T01:54:06.186Z",
+      "sizeBytes": 53042,
+      "hasGitHistory": false,
+      "gitHistory": "",
+      "changedSinceRound36": "unknown",
+      "round36Mtime": null
+    },
+    "item2b": {
+      "termsSearched": [
+        "मैकार्थी",
+        "McCarthy",
+        "सेडोल",
+        "Sedol",
+        "1956",
+        "2029",
+        "सिरी",
+        "Siri"
+      ],
+      "searchResults": {
+        "1956": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "2029": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "मैकार्थी": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "McCarthy": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "सेडोल": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "Sedol": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "सिरी": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        },
+        "Siri": {
+          "vttMatches": [],
+          "whisperMatches": [],
+          "presentInSource": false
+        }
+      },
+      "conclusion": "John McCarthy, 1956, Lee Sedol, Siri, and 2029 DO NOT appear anywhere in the source files. Only Ray Kurzweil (misrecognized as Coors Will predicting 2045), Elon Musk, and Alexa appear."
+    },
+    "item2c": {
+      "totalBulletsAudited": 24,
+      "counts": {
+        "SUPPORTED": 0,
+        "PARTIAL": 0,
+        "NO_SUPPORT": 24
+      },
+      "bullets": [
+        {
+          "slide": 1,
+          "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedExcerpt": "सोचिए कि कोई मशीन है जो आपके हिसाब से आप",
+          "vttVerified": true,
+          "vttLine": 10,
+          "whisperVerified": true,
+          "whisperLine": 1
+        },
+        {
+          "slide": 1,
+          "bullet": "Generalized learning",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedExcerpt": "सोचिए कि कोई मशीन है जो आपके हिसाब से आप",
+          "vttVerified": true,
+          "vttLine": 10,
+          "whisperVerified": true,
+          "whisperLine": 1
+        },
+        {
+          "slide": 1,
+          "bullet": "AI is employed in smartphones, automobiles,",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedExcerpt": "सोचिए कि कोई मशीन है जो आपके हिसाब से आप",
+          "vttVerified": true,
+          "vttLine": 10,
+          "whisperVerified": true,
+          "whisperLine": 1
+        },
+        {
+          "slide": 1,
+          "bullet": "AI technologies",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedExcerpt": "सोचिए कि कोई मशीन है जो आपके हिसाब से आप",
+          "vttVerified": true,
+          "vttLine": 10,
+          "whisperVerified": true,
+          "whisperLine": 1
+        },
+        {
+          "slide": 2,
+          "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedExcerpt": "पर है जहां एक रास्ता पक्का तो दूसरा पथरी",
+          "vttVerified": true,
+          "vttLine": 280,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 2,
+          "bullet": "Selects either the",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedExcerpt": "पर है जहां एक रास्ता पक्का तो दूसरा पथरी",
+          "vttVerified": true,
+          "vttLine": 280,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 2,
+          "bullet": "When the robot",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedExcerpt": "पर है जहां एक रास्ता पक्का तो दूसरा पथरी",
+          "vttVerified": true,
+          "vttLine": 280,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 2,
+          "bullet": "Applies reasoning to construct a solution and successfully cross",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedExcerpt": "पर है जहां एक रास्ता पक्का तो दूसरा पथरी",
+          "vttVerified": true,
+          "vttLine": 280,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 3,
+          "bullet": "Alexa can only perform tasks it has been specifically trained for, such as playing a requested song, and",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedExcerpt": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई न",
+          "vttVerified": true,
+          "vttLine": 530,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 3,
+          "bullet": "Alexa can only handle tasks it has been specifically trained for and cannot",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedExcerpt": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई न",
+          "vttVerified": true,
+          "vttLine": 530,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 3,
+          "bullet": "Strong AI would be self",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedExcerpt": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई न",
+          "vttVerified": true,
+          "vttLine": 530,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 3,
+          "bullet": "Ultron from the Avengers is cited as an ideal example of strong AI.",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedExcerpt": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई न",
+          "vttVerified": true,
+          "vttLine": 530,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 4,
+          "bullet": "Alexa responds only to intents it has been explicitly trained for",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedExcerpt": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन",
+          "vttVerified": true,
+          "vttLine": 790,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 4,
+          "bullet": "Fails to answer traffic queries when not pre‑programmed",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedExcerpt": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन",
+          "vttVerified": true,
+          "vttLine": 790,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 4,
+          "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedExcerpt": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन",
+          "vttVerified": true,
+          "vttLine": 790,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 4,
+          "bullet": "Each request triggers a specific programmed response rather than true understanding",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedExcerpt": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन",
+          "vttVerified": true,
+          "vttLine": 790,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 5,
+          "bullet": "AI is created to collaborate with humans and simplify tasks",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 5,
+          "bullet": "Assists humans by collaborating with AI to simplify and streamline tasks.",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 5,
+          "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 5,
+          "bullet": "Assists humans in simplifying tasks",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 6,
+          "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 6,
+          "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 6,
+          "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        },
+        {
+          "slide": 6,
+          "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+          "originalGrade": "NO SUPPORT",
+          "realGrade": "NO SUPPORT",
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedExcerpt": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के ",
+          "vttVerified": true,
+          "vttLine": 1060,
+          "whisperVerified": false,
+          "whisperLine": -1
+        }
+      ]
+    },
+    "item2d": {
+      "issue": "Why Round 3.8 report first 8 cues and source chunks contained \"।\" and Latin \"AI\" when saved caption file does not",
+      "findings": [
+        "1. The YouTube caption file scratch/qzAHXO_parsed_vtt.json contains NO danda (\"।\") punctuation marks. YouTube automatic speech recognition (ASR) emits streaming Devanagari text without punctuation.",
+        "2. In scratch/qzAHXO_parsed_vtt.json, the term is written phonetically as Devanagari \"आर्टिफिशियल इंटेलिजेंस\" or \"एआई\", NOT Latin alphabet \"AI\".",
+        "3. Crucially, scratch/qzAHXO_parsed_vtt.json does NOT begin with \"आर्टिफिशियल इंटेलिजेंस क्या है\". It begins at line 5 with: \"सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे\".",
+        "4. The text presented in Round 3.8 (\"आर्टिफिशियल इंटेलिजेंस क्या है AI यानी...\") was an unverified synthetic artifact generated by an LLM in an earlier scratch script (run_step3_deduped_translation.ts) that inserted Latin \"AI\" and Devanagari danda punctuation \"।\", rather than reading the actual YouTube caption file scratch/qzAHXO_parsed_vtt.json.",
+        "5. When tested with verifyQuote against the real saved file scratch/qzAHXO_parsed_vtt.json, any quote containing \"।\" or Latin \"AI\" returns verified: false because neither exists in the real raw file."
+      ]
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "evidenceName": "item6_groq_benchmark",
+  "timestamp": "2026-10-20T05:11:16.347Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "models/providers/groq.provider.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\models\\providers\\groq.provider.ts",
+      "exists": true,
+      "sha256": "993bfe4ce0ed4a6430a994a70332f96be5b8b7cad75077caec361552b1af13dc",
+      "mtime": "2026-10-20T05:11:16.247Z"
+    }
+  ],
+  "data": {
+    "item": "Part 1 Item 6: Groq Model List and Benchmark",
+    "liveModelsCount": 11,
+    "liveModels": [
+      {
+        "id": "whisper-large-v3",
+        "created": 1693721698,
+        "owned_by": "OpenAI",
+        "active": true,
+        "context_window": 448
+      },
+      {
+        "id": "meta-llama/llama-prompt-guard-2-22m",
+        "created": 1748632101,
+        "owned_by": "Meta",
+        "active": true,
+        "context_window": 512
+      },
+      {
+        "id": "openai/gpt-oss-120b",
+        "created": 1754408224,
+        "owned_by": "OpenAI",
+        "active": true,
+        "context_window": 131072
+      },
+      {
+        "id": "openai/gpt-oss-safeguard-20b",
+        "created": 1761708789,
+        "owned_by": "OpenAI",
+        "active": true,
+        "context_window": 131072
+      },
+      {
+        "id": "whisper-large-v3-turbo",
+        "created": 1728413088,
+        "owned_by": "OpenAI",
+        "active": true,
+        "context_window": 448
+      },
+      {
+        "id": "qwen/qwen3.8-27b",
+        "created": 1786984846,
+        "owned_by": "Alibaba Cloud",
+        "active": true,
+        "context_window": 131072
+      },
+      {
+        "id": "canopylabs/orpheus-arabic-saudi",
+        "created": 1765926439,
+        "owned_by": "Canopy Labs",
+        "active": true,
+        "context_window": 4000
+      },
+      {
+        "id": "openai/gpt-oss-20b",
+        "created": 1754407957,
+        "owned_by": "OpenAI",
+        "active": true,
+        "context_window": 131072
+      },
+      {
+        "id": "canopylabs/orpheus-v1-english",
+        "created": 1766186316,
+        "owned_by": "Canopy Labs",
+        "active": true,
+        "context_window": 4000
+      },
+      {
+        "id": "meta-llama/llama-prompt-guard-2-86m",
+        "created": 1748632165,
+        "owned_by": "Meta",
+        "active": true,
+        "context_window": 512
+      },
+      {
+        "id": "allam-2-7b",
+        "created": 1737672203,
+        "owned_by": "SDAIA",
+        "active": true,
+        "context_window": 4096
+      }
+    ],
+    "llama33Available": false,
+    "benchmarkResults": [
+      {
+        "model": "openai/gpt-oss-20b",
+        "elapsedMs": 773,
+        "elapsedSec": 0.77,
+        "validJson": true,
+        "slidesCount": 3,
+        "tokens": {
+          "promptTokens": 197,
+          "completionTokens": 235,
+          "totalTokens": 432
+        },
+        "error": null
+      },
+      {
+        "model": "qwen/qwen3.8-27b",
+        "elapsedMs": 848,
+        "elapsedSec": 0.85,
+        "validJson": true,
+        "slidesCount": 3,
+        "tokens": {
+          "promptTokens": 112,
+          "completionTokens": 389,
+          "totalTokens": 501
+        },
+        "error": null
+      },
+      {
+        "model": "openai/gpt-oss-120b",
+        "elapsedMs": 856,
+        "elapsedSec": 0.86,
+        "validJson": true,
+        "slidesCount": 3,
+        "tokens": {
+          "promptTokens": 197,
+          "completionTokens": 216,
+          "totalTokens": 413
+        },
+        "error": null
+      }
+    ],
+    "winningModel": "openai/gpt-oss-20b",
+    "fastestValidModel": "openai/gpt-oss-20b",
+    "updatedDefaultInCode": true
+  }
+}

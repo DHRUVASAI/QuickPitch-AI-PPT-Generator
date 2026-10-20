@@ -259,7 +259,12 @@ export async function planSlideStructure(
 
   // 1. Precise chunking from real segment times clamped to video duration (Item 2)
   const rawSegments = (transcript.metadata as any)?.segments as Array<{ start: number; end: number; text: string }> | undefined;
-  const videoDuration = (transcript.metadata as any)?.durationSeconds || (transcript.metadata as any)?.duration || 327.9;
+  const isVideoOrAudio = transcript.sourceType === 'youtube' || transcript.sourceType === 'audio' || !transcript.sourceType;
+  const rawDuration = (transcript.metadata as any)?.durationSeconds ?? (transcript.metadata as any)?.duration;
+  if (isVideoOrAudio && (typeof rawDuration !== 'number' || isNaN(rawDuration) || rawDuration <= 0)) {
+    throw new Error(`[SlidePlanner] Unknown video duration: duration must be provided via yt-dlp or ffprobe metadata and cannot be inferred.`);
+  }
+  const videoDuration = typeof rawDuration === 'number' && !isNaN(rawDuration) ? rawDuration : 0;
 
   let slideChunks: ChunkWithTime[] = [];
 

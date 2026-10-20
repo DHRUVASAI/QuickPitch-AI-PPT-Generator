@@ -1,0 +1,180 @@
+{
+  "evidenceName": "item3_timestamps",
+  "timestamp": "2026-10-20T05:03:20.534Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "core/synthesis/slide-planner.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\slide-planner.ts",
+      "exists": true,
+      "sha256": "1ef4e8996b812abbcf7826c5d16d317ddaf848055d5e7a396846b04924bdda6f",
+      "mtime": "2026-10-20T05:01:58.132Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "scratch/kcc_KAhwpa0.en.vtt",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\kcc_KAhwpa0.en.vtt",
+      "exists": true,
+      "sha256": "f465a433de6f501c69aab3cfc45d3213716aa4ad215d1e3e762b21a54baf5c81",
+      "mtime": "2026-10-20T04:13:36.303Z"
+    }
+  ],
+  "data": {
+    "item": "Part 1 Item 3: Timestamps, Clamping, and Duration Verification",
+    "item3a": {
+      "hardcoded3279Removed": true,
+      "throwsOnUnknownDuration": true,
+      "file": "core/synthesis/slide-planner.ts"
+    },
+    "item3b": {
+      "file": "scratch/qzAHXO_large_v3_translate.json",
+      "totalDuration": 327.889,
+      "sampleUnroundedSegments": [
+        {
+          "start": 0,
+          "end": 4.24,
+          "unroundedStart": 0,
+          "unroundedEnd": 4.24,
+          "text": "Imagine that there is a machine that sets your wardrobe according to you"
+        },
+        {
+          "start": 4.24,
+          "end": 8.36,
+          "unroundedStart": 4.24,
+          "unroundedEnd": 8.36,
+          "text": "or serves coffee according to your family members' preferences."
+        },
+        {
+          "start": 8.36,
+          "end": 10.92,
+          "unroundedStart": 8.36,
+          "unroundedEnd": 10.92,
+          "text": "Basically, it makes your day easy."
+        },
+        {
+          "start": 10.92,
+          "end": 11.6,
+          "unroundedStart": 10.92,
+          "unroundedEnd": 11.6,
+          "text": "Isn't it?"
+        },
+        {
+          "start": 11.6,
+          "end": 14.28,
+          "unroundedStart": 11.6,
+          "unroundedEnd": 14.28,
+          "text": "These are the products of Artificial Intelligence."
+        }
+      ]
+    },
+    "item3c": {
+      "video1_qzAHXO": {
+        "duration": 327.889,
+        "durationFormatted": "05:27",
+        "slides": [
+          {
+            "slideIndex": 1,
+            "inputChunk": {
+              "startSec": 0,
+              "endSec": 45.24
+            },
+            "source_start": 0,
+            "source_end": 45.2,
+            "source_timestamps": "00:00 - 00:45",
+            "clampedToDuration": true
+          },
+          {
+            "slideIndex": 2,
+            "inputChunk": {
+              "startSec": 45.24,
+              "endSec": 120.5
+            },
+            "source_start": 45.2,
+            "source_end": 120.5,
+            "source_timestamps": "00:45 - 02:00",
+            "clampedToDuration": true
+          },
+          {
+            "slideIndex": 3,
+            "inputChunk": {
+              "startSec": 120.5,
+              "endSec": 250.75
+            },
+            "source_start": 120.5,
+            "source_end": 250.8,
+            "source_timestamps": "02:00 - 04:10",
+            "clampedToDuration": true
+          },
+          {
+            "slideIndex": 4,
+            "inputChunk": {
+              "startSec": 250.75,
+              "endSec": 350
+            },
+            "source_start": 250.8,
+            "source_end": 327.9,
+            "source_timestamps": "04:10 - 05:27",
+            "clampedToDuration": false
+          }
+        ]
+      },
+      "video2_kcc": {
+        "duration": 146.8,
+        "durationFormatted": "02:26",
+        "slides": [
+          {
+            "slideIndex": 1,
+            "inputChunk": {
+              "startSec": 0.32,
+              "endSec": 45.04
+            },
+            "source_start": 0.3,
+            "source_end": 45,
+            "source_timestamps": "00:00 - 00:45",
+            "clampedToDuration": true
+          },
+          {
+            "slideIndex": 2,
+            "inputChunk": {
+              "startSec": 45.04,
+              "endSec": 115.2
+            },
+            "source_start": 45,
+            "source_end": 115.2,
+            "source_timestamps": "00:45 - 01:55",
+            "clampedToDuration": true
+          },
+          {
+            "slideIndex": 3,
+            "inputChunk": {
+              "startSec": 115.2,
+              "endSec": 160
+            },
+            "source_start": 115.2,
+            "source_end": 146.8,
+            "source_timestamps": "01:55 - 02:26",
+            "clampedToDuration": true
+          }
+        ]
+      }
+    },
+    "item3d": {
+      "issue": "Why the Round 3.8 report claimed units and slide 8 ran to 06:17 on a 5:28 (327.9s) video",
+      "actualVideoDuration": "327.889s (05:27.9)",
+      "reportedEndTimestamp": "06:17 (377.0s)",
+      "durationDiscrepancySec": 49.111,
+      "rootCause": [
+        "1. The Round 3.8 audit script (run_step3_deduped_translation.ts) used an ungrounded synthetic translation file (qzAHXO_step3_deduped_translated.json) consisting of 14 chunks where chunk 14 was artificially extended to 377 seconds (06:17).",
+        "2. The real video qzAHXO-cN5Q is only 327.889 seconds long (05:28).",
+        "3. In Round 3.8, chunk end timestamps were not clamped to the yt-dlp/Whisper audio duration (327.889s), allowing the synthetic 377s time window to propagate into the slide 8 source range (05:32 - 06:17).",
+        "4. Now, calculateSlideSourceRange strictly clamps all chunk ranges to videoDuration, and slide-planner throws an explicit error if duration is missing, completely preventing timestamp overrun."
+      ]
+    }
+  }
+}

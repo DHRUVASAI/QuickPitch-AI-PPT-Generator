@@ -1,0 +1,92 @@
+{
+  "evidenceName": "translation_speed.json",
+  "timestamp": "2026-10-20T05:31:30.642Z",
+  "gitCommit": "9985e740d12883f8e9bb60e327cd7b95ba4e070d",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "core/transcript/chunk-translator.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\transcript\\chunk-translator.ts",
+      "exists": true,
+      "sha256": "e414037321366939c514097db0dea97b4324a2ea3f2ebfff92b99f6c0c571fd2",
+      "mtime": "2026-10-20T05:29:06.066Z"
+    },
+    {
+      "path": "models/providers/groq.provider.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\models\\providers\\groq.provider.ts",
+      "exists": true,
+      "sha256": "993bfe4ce0ed4a6430a994a70332f96be5b8b7cad75077caec361552b1af13dc",
+      "mtime": "2026-10-20T05:11:16.247Z"
+    }
+  ],
+  "data": {
+    "description": "Audit of the 194.8s translation stage: model attribution, batched execution speedup test, and user opt-in cloud fallback benchmark.",
+    "originalRun": {
+      "model": "qwen:latest (local Ollama LLM)",
+      "calls": 14,
+      "totalDurationSeconds": 194.8,
+      "averageDurationPerCallSeconds": 13.91,
+      "mode": "sequential 1-unit per HTTP call"
+    },
+    "batchedLocalEstimate": {
+      "model": "qwen:latest (local Ollama LLM)",
+      "batches": 4,
+      "estimatedDurationSeconds": 98.5,
+      "estimatedSpeedup": "1.98x faster due to reduced HTTP & prompt overhead"
+    },
+    "cloudOptInBenchmark": {
+      "model": "openai/gpt-oss-20b (Groq API)",
+      "batches": 4,
+      "unitsCount": 14,
+      "totalDurationSeconds": 8.359,
+      "averageBatchDurationSeconds": 2.09,
+      "tokenUsage": {
+        "promptTokens": 2616,
+        "completionTokens": 5762,
+        "totalTokens": 8378
+      },
+      "allBatchesSuccessful": false,
+      "batchDetails": [
+        {
+          "batchIndex": 1,
+          "unitsInBatch": 4,
+          "durationSec": 3.02,
+          "status": 200,
+          "success": true
+        },
+        {
+          "batchIndex": 2,
+          "unitsInBatch": 4,
+          "durationSec": 2.97,
+          "status": 200,
+          "success": true
+        },
+        {
+          "batchIndex": 3,
+          "unitsInBatch": 3,
+          "durationSec": 2.302,
+          "status": 200,
+          "success": true
+        },
+        {
+          "batchIndex": 4,
+          "unitsInBatch": 3,
+          "durationSec": 0.049,
+          "status": 429,
+          "success": false
+        }
+      ]
+    },
+    "configurationGuardrails": {
+      "ALLOW_CLOUD_FALLBACK_DEFAULT": false,
+      "activeEnvironmentDefault": false,
+      "rule": "Cloud fallback is strictly disabled unless explicitly enabled via allowCloudFallback: true in the request payload or ALLOW_CLOUD_FALLBACK=true in .env."
+    }
+  }
+}
