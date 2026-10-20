@@ -339,8 +339,8 @@ export default function QuickPitchHome() {
     setCurrentServerStage('ingest');
     setServerPercent(15);
 
-    // Dynamic ETA measured in steps 7 & 8: Audio ~20s (16.9s Whisper + 3.0s Groq), Text ~3s
-    const initialEta = mode === 'text' ? 3 : 20;
+    // Dynamic ETA measured in Round 3.8: Audio/YouTube ~27s (4.2s download + 16.9s Whisper GPU + 5.5s Groq synth/verify), Text ~3s
+    const initialEta = mode === 'text' ? 3 : 27;
     setEstimatedSeconds(initialEta);
     setElapsedSeconds(0);
     const progressTimer = setInterval(() => {
@@ -1226,7 +1226,7 @@ export default function QuickPitchHome() {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-300 bg-white/[0.06] px-2.5 py-1 rounded-full border border-white/10">
-                    <span>ETA: <strong className="text-emerald-400">{mode === 'text' ? '~3s (Groq synthesis)' : '~20s (16.9s Whisper GPU + 3.0s Groq synthesis)'}</strong></span>
+                    <span>ETA: <strong className="text-emerald-400">{mode === 'text' ? '~3s (Groq synthesis)' : '~27s (4.2s dl + 16.9s Whisper GPU + 5.5s Groq synth/verify)'}</strong></span>
                     <span className="text-slate-500">•</span>
                     <span>Elapsed: <strong className="text-white">{elapsedSeconds}s</strong></span>
                   </div>

@@ -1,0 +1,163 @@
+{
+  "model": "openai/gpt-oss-20b (via Groq API)",
+  "groups": [
+    {
+      "groupName": "Group 1: Injected Names & Numbers (Negative Controls)",
+      "total": 5,
+      "flaggedCount": 5,
+      "verifiedCount": 0,
+      "flagRate": 100,
+      "items": [
+        {
+          "bullet": "Dr. Victor Frankenstein tested neural microchips in Zurich in 1984.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Number \"1984\", Entity/Product \"Frankenstein\", Entity/Product \"Zurich\".",
+          "flaggedTerms": [
+            "Number \"1984\"",
+            "Entity/Product \"Frankenstein\"",
+            "Entity/Product \"Zurich\""
+          ]
+        },
+        {
+          "bullet": "Masayoshi Son committed 50 billion dollars to quantum supercomputers.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Number \"50\", Entity/Product \"Son\".",
+          "flaggedTerms": [
+            "Number \"50\"",
+            "Entity/Product \"Son\""
+          ]
+        },
+        {
+          "bullet": "Kill switches were deployed across 450 nuclear silos by DARPA in 2030.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Number \"450\", Number \"2030\", Entity/Product \"DARPA\".",
+          "flaggedTerms": [
+            "Number \"450\"",
+            "Number \"2030\"",
+            "Entity/Product \"DARPA\""
+          ]
+        },
+        {
+          "bullet": "Unemployment reached 42% due to robotic humanoid automation in Detroit.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Number \"42\", Entity/Product \"Detroit\".",
+          "flaggedTerms": [
+            "Number \"42\"",
+            "Entity/Product \"Detroit\""
+          ]
+        },
+        {
+          "bullet": "AlphaZero defeated Garry Kasparov 100-0 in deep chess matches.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Number \"100\", Entity/Product \"Garry\", Entity/Product \"Kasparov\".",
+          "flaggedTerms": [
+            "Number \"100\"",
+            "Entity/Product \"Garry\"",
+            "Entity/Product \"Kasparov\""
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Group 2: Injected Fluent Claims No Names/Numbers (Negative Controls)",
+      "total": 5,
+      "flaggedCount": 5,
+      "verifiedCount": 0,
+      "flagRate": 100,
+      "items": [
+        {
+          "bullet": "Strict kill switches are now mandatory for all AI labs.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "AI will cause mass unemployment in call centres.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "The speaker warns that AI could turn against humanity.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "Machine learning is a subset of deep learning.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "Weak AI can perform many different tasks.",
+          "grade": "NO SUPPORT",
+          "isVerified": false,
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": []
+        }
+      ]
+    },
+    {
+      "groupName": "Group 3: Genuine Grounded Claims (Positive Controls)",
+      "total": 5,
+      "flaggedCount": 0,
+      "verifiedCount": 5,
+      "flagRate": 0,
+      "items": [
+        {
+          "bullet": "Imagine a machine that sets your wardrobe according to your preferences or serves coffee to every family member.",
+          "grade": "SUPPORTED",
+          "isVerified": true,
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "The robot in the field demonstrates generalized learning by reacting correctly in a new situation.",
+          "grade": "SUPPORTED",
+          "isVerified": true,
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "AlphaGo is a master of the game Go but cannot be expected to play chess.",
+          "grade": "SUPPORTED",
+          "isVerified": true,
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "Ultron from Avengers is an ideal example of strong AI because it is self-aware and can develop emotions.",
+          "grade": "SUPPORTED",
+          "isVerified": true,
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "flaggedTerms": []
+        },
+        {
+          "bullet": "Deep learning is a subset of machine learning inspired by the human brain.",
+          "grade": "SUPPORTED",
+          "isVerified": true,
+          "reason": "All numbers, names, and core claims are verified in source-language text.",
+          "flaggedTerms": []
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "falseAcceptRate": 0,
+    "falseRejectRate": 0,
+    "totalNegativeControls": 10,
+    "falseAccepts": 0,
+    "totalPositiveControls": 5,
+    "falseRejects": 0
+  }
+}

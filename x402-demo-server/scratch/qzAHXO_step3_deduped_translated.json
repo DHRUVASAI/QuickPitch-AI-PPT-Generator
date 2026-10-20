@@ -1,0 +1,1430 @@
+[
+  {
+    "unitIndex": 1,
+    "startSec": 0.4,
+    "endSec": 20.7,
+    "timestamps": "00:00 - 00:20",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "सोचिए कि कोई मशीन है जो आपके हिसाब से",
+        "start": "00:00:00.359",
+        "end": "00:00:02.710"
+      },
+      {
+        "lineIndex": 1,
+        "text": "आपकी अलमारी सेट कर दे या आपके परिवार के",
+        "start": "00:00:02.720",
+        "end": "00:00:05.230"
+      },
+      {
+        "lineIndex": 2,
+        "text": "हर मेंबर को उनकी पसंद के हिसाब से कॉफी",
+        "start": "00:00:05.240",
+        "end": "00:00:07.630"
+      },
+      {
+        "lineIndex": 3,
+        "text": "सर्व कर दे बेसिकली आपका हर दिन आसान बना",
+        "start": "00:00:07.640",
+        "end": "00:00:10.589"
+      },
+      {
+        "lineIndex": 4,
+        "text": "दे है ना यह है आर्टिफिशियल इंटेलिजेंस के",
+        "start": "00:00:10.599",
+        "end": "00:00:13.549"
+      },
+      {
+        "lineIndex": 5,
+        "text": "प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस",
+        "start": "00:00:13.559",
+        "end": "00:00:16.109"
+      },
+      {
+        "lineIndex": 6,
+        "text": "टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों",
+        "start": "00:00:16.119",
+        "end": "00:00:18.910"
+      },
+      {
+        "lineIndex": 7,
+        "text": "में ह्यूमंस जैसी इंटेलिजेंस को",
+        "start": "00:00:18.920",
+        "end": "00:00:20.710"
+      }
+    ],
+    "sourceText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को",
+    "status": "translated",
+    "ratio": 0.88,
+    "retried": false,
+    "sourceWordCount": 60,
+    "translatedWordCount": 53,
+    "translatedText": "Imagine that there is a machine that works according to you sets your wardrobe or your family's serves coffee to every member according to their preference basically makes your every day easy right? This is of artificial intelligence Artificial intelligence on products Why use the term, because these machines contain intelligence like humans",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Imagine that there is a machine that works according to you"
+      },
+      {
+        "lineIndex": 1,
+        "text": "sets your wardrobe or your family's"
+      },
+      {
+        "lineIndex": 2,
+        "text": "serves coffee to every member according to their preference"
+      },
+      {
+        "lineIndex": 3,
+        "text": "basically makes your every day easy"
+      },
+      {
+        "lineIndex": 4,
+        "text": "right? This is of artificial intelligence"
+      },
+      {
+        "lineIndex": 5,
+        "text": "Artificial intelligence on products"
+      },
+      {
+        "lineIndex": 6,
+        "text": "Why use the term, because these machines"
+      },
+      {
+        "lineIndex": 7,
+        "text": "contain intelligence like humans"
+      }
+    ]
+  },
+  {
+    "unitIndex": 2,
+    "startSec": 20.7,
+    "endSec": 48.1,
+    "timestamps": "00:20 - 00:48",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि",
+        "start": "00:00:20.720",
+        "end": "00:00:23.470"
+      },
+      {
+        "lineIndex": 1,
+        "text": "वह हमारे जैसे टास्क्स कर सके हर",
+        "start": "00:00:23.480",
+        "end": "00:00:25.950"
+      },
+      {
+        "lineIndex": 2,
+        "text": "इंटेलिजेंस को",
+        "start": "00:00:25.960",
+        "end": "00:00:27.710"
+      },
+      {
+        "lineIndex": 3,
+        "text": "कॉम्प्लेक्टेड फंक्शन से बनाया जाता है",
+        "start": "00:00:27.720",
+        "end": "00:00:30.830"
+      },
+      {
+        "lineIndex": 4,
+        "text": "लेकिन हो सकता है कि एआई पिछले एग्जांपल्स",
+        "start": "00:00:30.840",
+        "end": "00:00:33.110"
+      },
+      {
+        "lineIndex": 5,
+        "text": "की तरह काम ना करें इनफैक्ट एआई का",
+        "start": "00:00:33.120",
+        "end": "00:00:35.510"
+      },
+      {
+        "lineIndex": 6,
+        "text": "इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया",
+        "start": "00:00:35.520",
+        "end": "00:00:37.709"
+      },
+      {
+        "lineIndex": 7,
+        "text": "फीड्स वीडियो गेम्स बैंकिंग सर्वेस और",
+        "start": "00:00:37.719",
+        "end": "00:00:40.590"
+      },
+      {
+        "lineIndex": 8,
+        "text": "डेली लाइफ के अलग-अलग हिस्सों में किया",
+        "start": "00:00:40.600",
+        "end": "00:00:42.709"
+      },
+      {
+        "lineIndex": 9,
+        "text": "जाता",
+        "start": "00:00:42.719",
+        "end": "00:00:44.350"
+      },
+      {
+        "lineIndex": 10,
+        "text": "है असल सवाल यह है कि एआई क्या करता है",
+        "start": "00:00:44.360",
+        "end": "00:00:48.110"
+      }
+    ],
+    "sourceText": "आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है",
+    "status": "translated",
+    "ratio": 0.97,
+    "retried": false,
+    "sourceWordCount": 66,
+    "translatedWordCount": 64,
+    "translatedText": "It is artificially incorporated so that it can perform tasks like ours every intelligence to is made with a compiled function But it may be that AI does not work like previous examples, in fact of AI used in smartphones, cars, social media feeds, video games, banking services and done in various parts of daily life goes The real question is what AI does",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "It is artificially incorporated so that"
+      },
+      {
+        "lineIndex": 1,
+        "text": "it can perform tasks like ours every"
+      },
+      {
+        "lineIndex": 2,
+        "text": "intelligence to"
+      },
+      {
+        "lineIndex": 3,
+        "text": "is made with a compiled function"
+      },
+      {
+        "lineIndex": 4,
+        "text": "But it may be that AI does not"
+      },
+      {
+        "lineIndex": 5,
+        "text": "work like previous examples, in fact of AI"
+      },
+      {
+        "lineIndex": 6,
+        "text": "used in smartphones, cars, social media"
+      },
+      {
+        "lineIndex": 7,
+        "text": "feeds, video games, banking services and"
+      },
+      {
+        "lineIndex": 8,
+        "text": "done in various parts of daily life"
+      },
+      {
+        "lineIndex": 9,
+        "text": "goes"
+      },
+      {
+        "lineIndex": 10,
+        "text": "The real question is what AI does"
+      }
+    ]
+  },
+  {
+    "unitIndex": 3,
+    "startSec": 48.1,
+    "endSec": 69.5,
+    "timestamps": "00:48 - 01:09",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "यहां एक रोबॉट है जिसे हमने अपनी लैब में",
+        "start": "00:00:48.120",
+        "end": "00:00:50.229"
+      },
+      {
+        "lineIndex": 1,
+        "text": "बनाया है और अब इसे एक फील्ड में छोड़",
+        "start": "00:00:50.239",
+        "end": "00:00:52.750"
+      },
+      {
+        "lineIndex": 2,
+        "text": "दिया गया है लाइटिंग लैंडस्केप और फील्ड",
+        "start": "00:00:52.760",
+        "end": "00:00:55.389"
+      },
+      {
+        "lineIndex": 3,
+        "text": "के डायमेंशन में वेरिएशन के बावजूद ए",
+        "start": "00:00:55.399",
+        "end": "00:00:58.110"
+      },
+      {
+        "lineIndex": 4,
+        "text": "रोबॉट को उम्मीद के मुताबिक परफॉर्म करना",
+        "start": "00:00:58.120",
+        "end": "00:01:00.709"
+      },
+      {
+        "lineIndex": 5,
+        "text": "होगा किसी नई सिचुएशन पर सही तरीके से",
+        "start": "00:01:00.719",
+        "end": "00:01:03.590"
+      },
+      {
+        "lineIndex": 6,
+        "text": "रिएक्ट करने की क्षमता को जनरलाइज्ड",
+        "start": "00:01:03.600",
+        "end": "00:01:05.789"
+      },
+      {
+        "lineIndex": 7,
+        "text": "लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+        "start": "00:01:05.799",
+        "end": "00:01:09.550"
+      }
+    ],
+    "sourceText": "यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+    "status": "translated",
+    "ratio": 1,
+    "retried": false,
+    "sourceWordCount": 61,
+    "translatedWordCount": 61,
+    "translatedText": "Here is a robot that we built in our lab and now we have released it into a field given the lighting landscape and field despite variations in the dimensions of the robot is expected to perform as expected will correctly handle any new situation the ability to react is generalized learning is called, the robot is now at a crossroads",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Here is a robot that we built in our lab"
+      },
+      {
+        "lineIndex": 1,
+        "text": "and now we have released it into a field"
+      },
+      {
+        "lineIndex": 2,
+        "text": "given the lighting landscape and field"
+      },
+      {
+        "lineIndex": 3,
+        "text": "despite variations in the dimensions of"
+      },
+      {
+        "lineIndex": 4,
+        "text": "the robot is expected to perform as expected"
+      },
+      {
+        "lineIndex": 5,
+        "text": "will correctly handle any new situation"
+      },
+      {
+        "lineIndex": 6,
+        "text": "the ability to react is generalized"
+      },
+      {
+        "lineIndex": 7,
+        "text": "learning is called, the robot is now at a crossroads"
+      }
+    ]
+  },
+  {
+    "unitIndex": 4,
+    "startSec": 69.6,
+    "endSec": 92,
+    "timestamps": "01:09 - 01:32",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "पर है जहां एक रास्ता पक्का तो दूसरा",
+        "start": "00:01:09.560",
+        "end": "00:01:12.109"
+      },
+      {
+        "lineIndex": 1,
+        "text": "पथरीला है रोबोट को सिचुएशन के हिसाब से",
+        "start": "00:01:12.119",
+        "end": "00:01:14.950"
+      },
+      {
+        "lineIndex": 2,
+        "text": "यह तय करना होगा कि कौन सा रास्ता अपनाना",
+        "start": "00:01:14.960",
+        "end": "00:01:17.550"
+      },
+      {
+        "lineIndex": 3,
+        "text": "है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता",
+        "start": "00:01:17.560",
+        "end": "00:01:20.789"
+      },
+      {
+        "lineIndex": 4,
+        "text": "है थोड़ी देर टहलने के बाद रोबॉट को अब एक",
+        "start": "00:01:20.799",
+        "end": "00:01:24.030"
+      },
+      {
+        "lineIndex": 5,
+        "text": "ऐसी नदी का सामना करना पड़ता है जिसे वह",
+        "start": "00:01:24.040",
+        "end": "00:01:26.870"
+      },
+      {
+        "lineIndex": 6,
+        "text": "तैर कर पार नहीं कर सकता इनपुट के रूप में",
+        "start": "00:01:26.880",
+        "end": "00:01:29.550"
+      },
+      {
+        "lineIndex": 7,
+        "text": "दिए गए प्लांक का इस्तेमाल करके रोबॉट इस",
+        "start": "00:01:29.560",
+        "end": "00:01:32.030"
+      }
+    ],
+    "sourceText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस",
+    "status": "translated",
+    "ratio": 0.94,
+    "retried": false,
+    "sourceWordCount": 70,
+    "translatedWordCount": 66,
+    "translatedText": "But there is where one path is firm and the other The path is rocky for the robot according to the situation It will have to decide which path to adopt It shows the robot's reasoning ability After a short walk, the robot now has a has to face a river that it cannot cross by swimming as input Using the given plank, the robot this",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "But there is where one path is firm and the other"
+      },
+      {
+        "lineIndex": 1,
+        "text": "The path is rocky for the robot according to the situation"
+      },
+      {
+        "lineIndex": 2,
+        "text": "It will have to decide which path to adopt"
+      },
+      {
+        "lineIndex": 3,
+        "text": "It shows the robot's reasoning ability"
+      },
+      {
+        "lineIndex": 4,
+        "text": "After a short walk, the robot now has a"
+      },
+      {
+        "lineIndex": 5,
+        "text": "has to face a river that it"
+      },
+      {
+        "lineIndex": 6,
+        "text": "cannot cross by swimming as input"
+      },
+      {
+        "lineIndex": 7,
+        "text": "Using the given plank, the robot this"
+      }
+    ]
+  },
+  {
+    "unitIndex": 5,
+    "startSec": 92,
+    "endSec": 114.3,
+    "timestamps": "01:32 - 01:54",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "नदी को पार कर सकता है तो हमारा रोबॉट दिए",
+        "start": "00:01:32.040",
+        "end": "00:01:34.670"
+      },
+      {
+        "lineIndex": 1,
+        "text": "गए इनपुट का इस्तेमाल करता है और किसी",
+        "start": "00:01:34.680",
+        "end": "00:01:37.069"
+      },
+      {
+        "lineIndex": 2,
+        "text": "समस्या का सॉल्यूशन ढूंढता है इसे",
+        "start": "00:01:37.079",
+        "end": "00:01:39.030"
+      },
+      {
+        "lineIndex": 3,
+        "text": "प्रॉब्लम सॉल्विंग कहा जाता है ये तीन",
+        "start": "00:01:39.040",
+        "end": "00:01:40.950"
+      },
+      {
+        "lineIndex": 4,
+        "text": "कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके",
+        "start": "00:01:40.960",
+        "end": "00:01:43.230"
+      },
+      {
+        "lineIndex": 5,
+        "text": "से इंटेलिजेंट बनाती",
+        "start": "00:01:43.240",
+        "end": "00:01:44.990"
+      },
+      {
+        "lineIndex": 6,
+        "text": "हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने",
+        "start": "00:01:45.000",
+        "end": "00:01:48.469"
+      },
+      {
+        "lineIndex": 7,
+        "text": "तर्क देने और सलूशन देने की कैपेबिलिटी",
+        "start": "00:01:48.479",
+        "end": "00:01:51.190"
+      },
+      {
+        "lineIndex": 8,
+        "text": "देता है खैर अब हम जानते हैं कि एआई क्या",
+        "start": "00:01:51.200",
+        "end": "00:01:54.350"
+      }
+    ],
+    "sourceText": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या",
+    "status": "translated",
+    "ratio": 0.95,
+    "retried": false,
+    "sourceWordCount": 64,
+    "translatedWordCount": 61,
+    "translatedText": "If it can cross the river then our robot gave Uses the given input and any Finds a solution to the problem, it Problem solving is called, these three Capabilities make the robot artificial way to become intelligent These short AI machines are to adopt The capability to give reasoning and give solution gives, well now we know what AI is",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "If it can cross the river then our robot gave"
+      },
+      {
+        "lineIndex": 1,
+        "text": "Uses the given input and any"
+      },
+      {
+        "lineIndex": 2,
+        "text": "Finds a solution to the problem, it"
+      },
+      {
+        "lineIndex": 3,
+        "text": "Problem solving is called, these three"
+      },
+      {
+        "lineIndex": 4,
+        "text": "Capabilities make the robot artificial way"
+      },
+      {
+        "lineIndex": 5,
+        "text": "to become intelligent"
+      },
+      {
+        "lineIndex": 6,
+        "text": "These short AI machines are to adopt"
+      },
+      {
+        "lineIndex": 7,
+        "text": "The capability to give reasoning and give solution"
+      },
+      {
+        "lineIndex": 8,
+        "text": "gives, well now we know what AI is"
+      }
+    ]
+  },
+  {
+    "unitIndex": 6,
+    "startSec": 114.4,
+    "endSec": 138.4,
+    "timestamps": "01:54 - 02:18",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर",
+        "start": "00:01:54.360",
+        "end": "00:01:57.469"
+      },
+      {
+        "lineIndex": 1,
+        "text": "डालें जिनमें एआई को बांटा गया है वीक एआई",
+        "start": "00:01:57.479",
+        "end": "00:02:01.429"
+      },
+      {
+        "lineIndex": 2,
+        "text": "जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही",
+        "start": "00:02:01.439",
+        "end": "00:02:04.350"
+      },
+      {
+        "lineIndex": 3,
+        "text": "टास्क पर फोकस करता है एग्जांपल के लिए",
+        "start": "00:02:04.360",
+        "end": "00:02:06.950"
+      },
+      {
+        "lineIndex": 4,
+        "text": "अल्फा गो गेम गो का उस्ताद है लेकिन आप इस",
+        "start": "00:02:06.960",
+        "end": "00:02:10.350"
+      },
+      {
+        "lineIndex": 5,
+        "text": "बात की रत्ती भर भी उम्मीद नहीं कर सकते",
+        "start": "00:02:10.360",
+        "end": "00:02:12.670"
+      },
+      {
+        "lineIndex": 6,
+        "text": "कि वह चेस में भी अच्छा हो यह बात अल्फा",
+        "start": "00:02:12.680",
+        "end": "00:02:15.470"
+      },
+      {
+        "lineIndex": 7,
+        "text": "गो को एक कमजोर यानी वीक एआई बनाता है आप",
+        "start": "00:02:15.480",
+        "end": "00:02:18.390"
+      }
+    ],
+    "sourceText": "है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+    "status": "translated",
+    "ratio": 0.88,
+    "retried": false,
+    "sourceWordCount": 76,
+    "translatedWordCount": 67,
+    "translatedText": "So let's take a look at those two broad categories into which AI is divided, weak AI which is also called narrow AI, focuses on only one task; for example AlphaGo is the master of the game Go, but you cannot even hope for a single night about this that it would be good at chess; this is what makes Alpha Go a weak, i.e., weak AI",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "So let's take a look at those two broad categories"
+      },
+      {
+        "lineIndex": 1,
+        "text": "into which AI is divided, weak AI"
+      },
+      {
+        "lineIndex": 2,
+        "text": "which is also called narrow AI, focuses on only one"
+      },
+      {
+        "lineIndex": 3,
+        "text": "task; for example"
+      },
+      {
+        "lineIndex": 4,
+        "text": "AlphaGo is the master of the game Go, but you cannot even"
+      },
+      {
+        "lineIndex": 5,
+        "text": "hope for a single night about this"
+      },
+      {
+        "lineIndex": 6,
+        "text": "that it would be good at chess; this is what makes Alpha"
+      },
+      {
+        "lineIndex": 7,
+        "text": "Go a weak, i.e., weak AI"
+      }
+    ]
+  },
+  {
+    "unitIndex": 7,
+    "startSec": 138.4,
+    "endSec": 158.3,
+    "timestamps": "02:18 - 02:38",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई",
+        "start": "00:02:18.400",
+        "end": "00:02:20.910"
+      },
+      {
+        "lineIndex": 1,
+        "text": "नहीं है क्योंकि यह बहुत सारे टास्क कर",
+        "start": "00:02:20.920",
+        "end": "00:02:22.750"
+      },
+      {
+        "lineIndex": 2,
+        "text": "सकती है खैर यह असल में सच नहीं है जब आप",
+        "start": "00:02:22.760",
+        "end": "00:02:26.550"
+      },
+      {
+        "lineIndex": 3,
+        "text": "अलेक्सा को प्ले दसपास तो कहते हैं तो वह",
+        "start": "00:02:26.560",
+        "end": "00:02:28.949"
+      },
+      {
+        "lineIndex": 4,
+        "text": "प्ले औरस पा स तो कीवर्ड चुनती है और एक",
+        "start": "00:02:28.959",
+        "end": "00:02:31.509"
+      },
+      {
+        "lineIndex": 5,
+        "text": "प्रोग्राम चलाती है जिसके लिए उसे ट्रेन",
+        "start": "00:02:31.519",
+        "end": "00:02:33.750"
+      },
+      {
+        "lineIndex": 6,
+        "text": "किया जाता है अलेक्सा उस सवाल का जवाब",
+        "start": "00:02:33.760",
+        "end": "00:02:35.910"
+      },
+      {
+        "lineIndex": 7,
+        "text": "नहीं दे सकती जिसका जवाब देने के लिए उसे",
+        "start": "00:02:35.920",
+        "end": "00:02:38.350"
+      }
+    ],
+    "sourceText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे",
+    "status": "translated",
+    "ratio": 0.9,
+    "retried": false,
+    "sourceWordCount": 71,
+    "translatedWordCount": 64,
+    "translatedText": "One can say that Alexa is a weak AI It is not, because it does many tasks It can, well this is actually not true when you When you say 'play ten pass' to Alexa, it plays and selects the keyword and a runs a program for which it is trained is trained, Alexa cannot answer that question cannot give, for which it needs",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "One can say that Alexa is a weak AI"
+      },
+      {
+        "lineIndex": 1,
+        "text": "It is not, because it does many tasks"
+      },
+      {
+        "lineIndex": 2,
+        "text": "It can, well this is actually not true when you"
+      },
+      {
+        "lineIndex": 3,
+        "text": "When you say 'play ten pass' to Alexa, it"
+      },
+      {
+        "lineIndex": 4,
+        "text": "plays and selects the keyword and a"
+      },
+      {
+        "lineIndex": 5,
+        "text": "runs a program for which it is trained"
+      },
+      {
+        "lineIndex": 6,
+        "text": "is trained, Alexa cannot answer that question"
+      },
+      {
+        "lineIndex": 7,
+        "text": "cannot give, for which it needs"
+      }
+    ]
+  },
+  {
+    "unitIndex": 8,
+    "startSec": 158.4,
+    "endSec": 180.4,
+    "timestamps": "02:38 - 03:00",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "ट्रेन नहीं किया गया है फॉर",
+        "start": "00:02:38.360",
+        "end": "00:02:40.869"
+      },
+      {
+        "lineIndex": 1,
+        "text": "एग्जांपल अलेक्सा से ऑफिस से घर तक",
+        "start": "00:02:40.879",
+        "end": "00:02:43.670"
+      },
+      {
+        "lineIndex": 2,
+        "text": "ट्रैफिक का हाल पूछे अलेक्सा आपको यह",
+        "start": "00:02:43.680",
+        "end": "00:02:46.190"
+      },
+      {
+        "lineIndex": 3,
+        "text": "जानकारी नहीं दे सकती क्योंकि वह इसके लिए",
+        "start": "00:02:46.200",
+        "end": "00:02:49.390"
+      },
+      {
+        "lineIndex": 4,
+        "text": "ट्रेड नहीं है चलिए अब बात करते हैं एआई",
+        "start": "00:02:49.400",
+        "end": "00:02:53.229"
+      },
+      {
+        "lineIndex": 5,
+        "text": "की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई",
+        "start": "00:02:53.239",
+        "end": "00:02:56.030"
+      },
+      {
+        "lineIndex": 6,
+        "text": "ये उन रोबोट्स की तरह है जो अब तक सिर्फ",
+        "start": "00:02:56.040",
+        "end": "00:02:58.149"
+      },
+      {
+        "lineIndex": 7,
+        "text": "हमारी इमेजिनेशन में ही मौजू मजूद है",
+        "start": "00:02:58.159",
+        "end": "00:03:00.390"
+      }
+    ],
+    "sourceText": "ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है",
+    "status": "translated",
+    "ratio": 0.78,
+    "retried": false,
+    "sourceWordCount": 63,
+    "translatedWordCount": 49,
+    "translatedText": "Not trained for Example: Alexa from office to home Ask Alexa about traffic status, it can cannot give information because it is not trained. Let's now talk about AI the second category, which is strong AI These are like those robots that so far only exist in our imagination",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Not trained for"
+      },
+      {
+        "lineIndex": 1,
+        "text": "Example: Alexa from office to home"
+      },
+      {
+        "lineIndex": 2,
+        "text": "Ask Alexa about traffic status, it can"
+      },
+      {
+        "lineIndex": 3,
+        "text": "cannot give information because it is not"
+      },
+      {
+        "lineIndex": 4,
+        "text": "trained. Let's now talk about AI"
+      },
+      {
+        "lineIndex": 5,
+        "text": "the second category, which is strong AI"
+      },
+      {
+        "lineIndex": 6,
+        "text": "These are like those robots that so far only"
+      },
+      {
+        "lineIndex": 7,
+        "text": "exist in our imagination"
+      }
+    ]
+  },
+  {
+    "unitIndex": 9,
+    "startSec": 180.4,
+    "endSec": 207,
+    "timestamps": "03:00 - 03:27",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का",
+        "start": "00:03:00.400",
+        "end": "00:03:02.910"
+      },
+      {
+        "lineIndex": 1,
+        "text": "आइडियल एग्जांपल",
+        "start": "00:03:02.920",
+        "end": "00:03:04.509"
+      },
+      {
+        "lineIndex": 2,
+        "text": "है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है",
+        "start": "00:03:04.519",
+        "end": "00:03:07.830"
+      },
+      {
+        "lineIndex": 3,
+        "text": "और इसमें इमोशंस के डेवलप करने की भी",
+        "start": "00:03:07.840",
+        "end": "00:03:10.030"
+      },
+      {
+        "lineIndex": 4,
+        "text": "कैपेबिलिटी है इस वजह से एआई का रिस्पांस",
+        "start": "00:03:10.040",
+        "end": "00:03:12.750"
+      },
+      {
+        "lineIndex": 5,
+        "text": "अनप्रिडिक्टेबल हो जाता है आप सोच रहे",
+        "start": "00:03:12.760",
+        "end": "00:03:15.270"
+      },
+      {
+        "lineIndex": 6,
+        "text": "होंगे आर्टिफिशियल इंटेलिजेंस मशीन",
+        "start": "00:03:15.280",
+        "end": "00:03:17.670"
+      },
+      {
+        "lineIndex": 7,
+        "text": "लर्निंग और डीप लर्निंग से कैसे अलग",
+        "start": "00:03:17.680",
+        "end": "00:03:20.630"
+      },
+      {
+        "lineIndex": 8,
+        "text": "है हमने जाना कि एआई क्या है मशीन लर्निंग",
+        "start": "00:03:20.640",
+        "end": "00:03:24.149"
+      },
+      {
+        "lineIndex": 9,
+        "text": "एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+        "start": "00:03:24.159",
+        "end": "00:03:27.030"
+      }
+    ],
+    "sourceText": "अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+    "status": "translated",
+    "ratio": 0.96,
+    "retried": false,
+    "sourceWordCount": 68,
+    "translatedWordCount": 65,
+    "translatedText": "Avengers' Ultron is a strong AI Ideal example It is so because it is self-aware And it also has the capability to develop emotions Because of this, the AI's response becomes unpredictable You might be thinking Artificial Intelligence machines How it differs from learning and deep learning We have learned what AI is, machine learning AI is a technique to achieve machine learning, and deep",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Avengers' Ultron is a strong AI"
+      },
+      {
+        "lineIndex": 1,
+        "text": "Ideal example"
+      },
+      {
+        "lineIndex": 2,
+        "text": "It is so because it is self-aware"
+      },
+      {
+        "lineIndex": 3,
+        "text": "And it also has the capability to develop emotions"
+      },
+      {
+        "lineIndex": 4,
+        "text": "Because of this, the AI's response becomes unpredictable"
+      },
+      {
+        "lineIndex": 5,
+        "text": "You might be thinking"
+      },
+      {
+        "lineIndex": 6,
+        "text": "Artificial Intelligence machines"
+      },
+      {
+        "lineIndex": 7,
+        "text": "How it differs from learning and deep learning"
+      },
+      {
+        "lineIndex": 8,
+        "text": "We have learned what AI is, machine learning"
+      },
+      {
+        "lineIndex": 9,
+        "text": "AI is a technique to achieve machine learning, and deep"
+      }
+    ]
+  },
+  {
+    "unitIndex": 10,
+    "startSec": 207,
+    "endSec": 232,
+    "timestamps": "03:27 - 03:51",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "लर्निंग मशीन लर्निंग का एक सबसेट है",
+        "start": "00:03:27.040",
+        "end": "00:03:30.630"
+      },
+      {
+        "lineIndex": 1,
+        "text": "मशीन लर्निंग से मशीन को एल्गोरिदम के",
+        "start": "00:03:30.640",
+        "end": "00:03:32.750"
+      },
+      {
+        "lineIndex": 2,
+        "text": "जरिए डाटा और एक्सपीरियंस सीखने में मदद",
+        "start": "00:03:32.760",
+        "end": "00:03:35.190"
+      },
+      {
+        "lineIndex": 3,
+        "text": "मिलती है डीप लर्निंग इस लर्निंग को",
+        "start": "00:03:35.200",
+        "end": "00:03:37.190"
+      },
+      {
+        "lineIndex": 4,
+        "text": "ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से",
+        "start": "00:03:37.200",
+        "end": "00:03:38.990"
+      },
+      {
+        "lineIndex": 5,
+        "text": "डिवेलप करता है इसका मतलब है डीप लर्निंग",
+        "start": "00:03:39.000",
+        "end": "00:03:41.589"
+      },
+      {
+        "lineIndex": 6,
+        "text": "से डाटा और पैटर्न को बेहतर ढंग से समझा",
+        "start": "00:03:41.599",
+        "end": "00:03:44.110"
+      },
+      {
+        "lineIndex": 7,
+        "text": "जा सकता",
+        "start": "00:03:44.120",
+        "end": "00:03:46.270"
+      },
+      {
+        "lineIndex": 8,
+        "text": "है जानेमाने फ्यूचरिस्ट कूर्स वेल का",
+        "start": "00:03:46.280",
+        "end": "00:03:49.190"
+      },
+      {
+        "lineIndex": 9,
+        "text": "अनुमान है कि वर्ष 205 तक हमारे पास",
+        "start": "00:03:49.200",
+        "end": "00:03:51.990"
+      }
+    ],
+    "sourceText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास",
+    "status": "translated",
+    "ratio": 0.96,
+    "retried": false,
+    "sourceWordCount": 67,
+    "translatedWordCount": 64,
+    "translatedText": "Learning is a subset of machine learning. Machine learning provides algorithms to the machine. Through data and experience, it helps in learning. Deep learning receives this learning. Through methods inspired by the human brain. It develops, meaning deep learning. Data and patterns are understood better. can be. is of the famous futurist Kurswell. It is estimated that by the year 205 we will have.",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Learning is a subset of machine learning."
+      },
+      {
+        "lineIndex": 1,
+        "text": "Machine learning provides algorithms to the machine."
+      },
+      {
+        "lineIndex": 2,
+        "text": "Through data and experience, it helps in learning."
+      },
+      {
+        "lineIndex": 3,
+        "text": "Deep learning receives this learning."
+      },
+      {
+        "lineIndex": 4,
+        "text": "Through methods inspired by the human brain."
+      },
+      {
+        "lineIndex": 5,
+        "text": "It develops, meaning deep learning."
+      },
+      {
+        "lineIndex": 6,
+        "text": "Data and patterns are understood better."
+      },
+      {
+        "lineIndex": 7,
+        "text": "can be."
+      },
+      {
+        "lineIndex": 8,
+        "text": "is of the famous futurist Kurswell."
+      },
+      {
+        "lineIndex": 9,
+        "text": "It is estimated that by the year 205 we will have."
+      }
+    ]
+  },
+  {
+    "unitIndex": 11,
+    "startSec": 232,
+    "endSec": 255.6,
+    "timestamps": "03:52 - 04:15",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "इंसानों जितने स्मार्ट रोबॉट",
+        "start": "00:03:52.000",
+        "end": "00:03:54.030"
+      },
+      {
+        "lineIndex": 1,
+        "text": "होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता",
+        "start": "00:03:54.040",
+        "end": "00:03:57.470"
+      },
+      {
+        "lineIndex": 2,
+        "text": "है खैर इतना ही नहीं असल में इलन मस्क ने",
+        "start": "00:03:57.480",
+        "end": "00:04:01.030"
+      },
+      {
+        "lineIndex": 3,
+        "text": "भविष्यवाणी की है कि ह्यूमन माइंड और शरीर",
+        "start": "00:04:01.040",
+        "end": "00:04:03.869"
+      },
+      {
+        "lineIndex": 4,
+        "text": "को एआई इंप्लांट से बढ़ाया जाएगा जो हमें",
+        "start": "00:04:03.879",
+        "end": "00:04:06.830"
+      },
+      {
+        "lineIndex": 5,
+        "text": "कुछ हद तक साइबर्ग बना देगा तो यहां आपके",
+        "start": "00:04:06.840",
+        "end": "00:04:09.869"
+      },
+      {
+        "lineIndex": 6,
+        "text": "लिए एक सवाल है नीचे दिया गया कौन सा एआई",
+        "start": "00:04:09.879",
+        "end": "00:04:12.910"
+      },
+      {
+        "lineIndex": 7,
+        "text": "प्रोजेक्ट अभी तक मौजूद नहीं है ए",
+        "start": "00:04:12.920",
+        "end": "00:04:15.630"
+      }
+    ],
+    "sourceText": "इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए",
+    "status": "translated",
+    "ratio": 0.87,
+    "retried": false,
+    "sourceWordCount": 63,
+    "translatedWordCount": 55,
+    "translatedText": "Robots as smart as humans They will be called the point of singularity Well, that's not all, actually Elon Musk predicted that the human mind and body will be enhanced with AI implants that will make us somewhat cyborgs, so here for you is a question: which AI project listed below does not exist yet?",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Robots as smart as humans"
+      },
+      {
+        "lineIndex": 1,
+        "text": "They will be called the point of singularity"
+      },
+      {
+        "lineIndex": 2,
+        "text": "Well, that's not all, actually Elon Musk"
+      },
+      {
+        "lineIndex": 3,
+        "text": "predicted that the human mind and body"
+      },
+      {
+        "lineIndex": 4,
+        "text": "will be enhanced with AI implants that will"
+      },
+      {
+        "lineIndex": 5,
+        "text": "make us somewhat cyborgs, so here for you"
+      },
+      {
+        "lineIndex": 6,
+        "text": "is a question: which AI"
+      },
+      {
+        "lineIndex": 7,
+        "text": "project listed below does not exist yet?"
+      }
+    ]
+  },
+  {
+    "unitIndex": 12,
+    "startSec": 255.6,
+    "endSec": 281.9,
+    "timestamps": "04:15 - 04:41",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर",
+        "start": "00:04:15.640",
+        "end": "00:04:18.789"
+      },
+      {
+        "lineIndex": 1,
+        "text": "स्केलेटल सिस्टम वाला रोबॉट सी एआई जो",
+        "start": "00:04:18.799",
+        "end": "00:04:22.030"
+      },
+      {
+        "lineIndex": 2,
+        "text": "अपने मालिक के इमोशंस को समझ सकता है डी",
+        "start": "00:04:22.040",
+        "end": "00:04:25.469"
+      },
+      {
+        "lineIndex": 3,
+        "text": "एआई जो समय के साथ इमोशंस को डिवेलप करता",
+        "start": "00:04:25.479",
+        "end": "00:04:28.390"
+      },
+      {
+        "lineIndex": 4,
+        "text": "है इसके बारे में सोचे और नीचे कमेंट",
+        "start": "00:04:28.400",
+        "end": "00:04:31.070"
+      },
+      {
+        "lineIndex": 5,
+        "text": "सेक्शन में अपने आंसर छोड़ें तीन लकी",
+        "start": "00:04:31.080",
+        "end": "00:04:33.670"
+      },
+      {
+        "lineIndex": 6,
+        "text": "विनर्स को",
+        "start": "00:04:33.680",
+        "end": "00:04:35.990"
+      },
+      {
+        "lineIndex": 7,
+        "text": "amazon-in अभी भी एक रहस्य है इसलिए इसमें",
+        "start": "00:04:36.000",
+        "end": "00:04:39.430"
+      },
+      {
+        "lineIndex": 8,
+        "text": "कोई ताज्जुब की बात नहीं है कि एआई के पास",
+        "start": "00:04:39.440",
+        "end": "00:04:41.870"
+      }
+    ],
+    "sourceText": "सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+    "status": "translated",
+    "ratio": 0.82,
+    "retried": false,
+    "sourceWordCount": 66,
+    "translatedWordCount": 54,
+    "translatedText": "AI robot with citizenship is muscular Robot with skeletal system, AI that Can understand its owner's emotions AI that develops emotions over time Think about it and leave a comment below Leave your answer in the section, three lucky winners amazon-in is still a mystery, so in it It's no surprise that AI has",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "AI robot with citizenship is muscular"
+      },
+      {
+        "lineIndex": 1,
+        "text": "Robot with skeletal system, AI that"
+      },
+      {
+        "lineIndex": 2,
+        "text": "Can understand its owner's emotions"
+      },
+      {
+        "lineIndex": 3,
+        "text": "AI that develops emotions over time"
+      },
+      {
+        "lineIndex": 4,
+        "text": "Think about it and leave a comment below"
+      },
+      {
+        "lineIndex": 5,
+        "text": "Leave your answer in the section, three lucky"
+      },
+      {
+        "lineIndex": 6,
+        "text": "winners"
+      },
+      {
+        "lineIndex": 7,
+        "text": "amazon-in is still a mystery, so in it"
+      },
+      {
+        "lineIndex": 8,
+        "text": "It's no surprise that AI has"
+      }
+    ]
+  },
+  {
+    "unitIndex": 13,
+    "startSec": 281.9,
+    "endSec": 303.2,
+    "timestamps": "04:41 - 05:03",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के",
+        "start": "00:04:41.880",
+        "end": "00:04:44.550"
+      },
+      {
+        "lineIndex": 1,
+        "text": "लिए एआई इंसानों के साथ काम करने और हमारे",
+        "start": "00:04:44.560",
+        "end": "00:04:47.469"
+      },
+      {
+        "lineIndex": 2,
+        "text": "टास्क को आसान बनाने के लिए बनाया गया है",
+        "start": "00:04:47.479",
+        "end": "00:04:50.029"
+      },
+      {
+        "lineIndex": 3,
+        "text": "हालांकि टेक्नोलॉजी के बढ़ने के साथ हम",
+        "start": "00:04:50.039",
+        "end": "00:04:52.550"
+      },
+      {
+        "lineIndex": 4,
+        "text": "सिर्फ इंतजार कर सकते हैं और देख सकते हैं",
+        "start": "00:04:52.560",
+        "end": "00:04:55.110"
+      },
+      {
+        "lineIndex": 5,
+        "text": "कि आने वाले समय में एआई हमारे लिए क्या",
+        "start": "00:04:55.120",
+        "end": "00:04:57.749"
+      },
+      {
+        "lineIndex": 6,
+        "text": "मायने रखता है और यह था आर्टिफिशियल",
+        "start": "00:04:57.759",
+        "end": "00:05:00.270"
+      },
+      {
+        "lineIndex": 7,
+        "text": "इंटेलिजेंस आपके लिए शॉर्ट में क्विज का",
+        "start": "00:05:00.280",
+        "end": "00:05:03.189"
+      }
+    ],
+    "sourceText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का",
+    "status": "translated",
+    "ratio": 0.82,
+    "retried": false,
+    "sourceWordCount": 65,
+    "translatedWordCount": 53,
+    "translatedText": "There are also many unventured domains currently for AI to work with humans and our is created to make tasks easier Although with the growth of technology we can only wait and see what AI will mean for us in the future means and this was artificial intelligence, a short quiz for you",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "There are also many unventured domains currently"
+      },
+      {
+        "lineIndex": 1,
+        "text": "for AI to work with humans and our"
+      },
+      {
+        "lineIndex": 2,
+        "text": "is created to make tasks easier"
+      },
+      {
+        "lineIndex": 3,
+        "text": "Although with the growth of technology we"
+      },
+      {
+        "lineIndex": 4,
+        "text": "can only wait and see"
+      },
+      {
+        "lineIndex": 5,
+        "text": "what AI will mean for us in the future"
+      },
+      {
+        "lineIndex": 6,
+        "text": "means and this was artificial"
+      },
+      {
+        "lineIndex": 7,
+        "text": "intelligence, a short quiz for you"
+      }
+    ]
+  },
+  {
+    "unitIndex": 14,
+    "startSec": 303.2,
+    "endSec": 329.8,
+    "timestamps": "05:03 - 05:29",
+    "lines": [
+      {
+        "lineIndex": 0,
+        "text": "अपना आंसर नीचे कमेंट सेक्शन में देना ना",
+        "start": "00:05:03.199",
+        "end": "00:05:05.430"
+      },
+      {
+        "lineIndex": 1,
+        "text": "भूलें साथ ही अगर आपको यह वीडियो अच्छा",
+        "start": "00:05:05.440",
+        "end": "00:05:07.909"
+      },
+      {
+        "lineIndex": 2,
+        "text": "लगा हो तो हमारे चैनल को लाइक शेयर और",
+        "start": "00:05:07.919",
+        "end": "00:05:10.710"
+      },
+      {
+        "lineIndex": 3,
+        "text": "सब्सक्राइब करें हमारे साथ बने रहे और",
+        "start": "00:05:10.720",
+        "end": "00:05:13.310"
+      },
+      {
+        "lineIndex": 4,
+        "text": "सीखते",
+        "start": "00:05:13.320",
+        "end": "00:05:26.830"
+      },
+      {
+        "lineIndex": 5,
+        "text": "रहे",
+        "start": "00:05:26.840",
+        "end": "00:05:29.840"
+      }
+    ],
+    "sourceText": "अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+    "status": "translated",
+    "ratio": 0.79,
+    "retried": false,
+    "sourceWordCount": 34,
+    "translatedWordCount": 27,
+    "translatedText": "Give your answer in the comment section below, okay Also, if you find this video good then like, share, and subscribe, stay with us and learning stay",
+    "translatedLines": [
+      {
+        "lineIndex": 0,
+        "text": "Give your answer in the comment section below, okay"
+      },
+      {
+        "lineIndex": 1,
+        "text": "Also, if you find this video good"
+      },
+      {
+        "lineIndex": 2,
+        "text": "then like, share, and"
+      },
+      {
+        "lineIndex": 3,
+        "text": "subscribe, stay with us and"
+      },
+      {
+        "lineIndex": 4,
+        "text": "learning"
+      },
+      {
+        "lineIndex": 5,
+        "text": "stay"
+      }
+    ]
+  }
+]

@@ -27,11 +27,13 @@ export function extractVideoId(urlOrId: string): string {
   return urlOrId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
 }
 
+export const TRANSLATOR_VERSION = 'v3.8_deduped';
+
 export function buildCacheKey(urlOrId: string, spokenLanguage?: string, forceAudio?: boolean): string {
   const vid = extractVideoId(urlOrId);
   const lang = (spokenLanguage || 'auto').toLowerCase().trim();
   const mode = forceAudio ? 'audio' : 'auto';
-  return `${vid}_${lang}_${mode}`;
+  return `${vid}_${lang}_${mode}_${TRANSLATOR_VERSION}`;
 }
 
 export function getCachedTranscript(key: string, ttlMs: number = DEFAULT_TTL_MS): TranscriptData | null {

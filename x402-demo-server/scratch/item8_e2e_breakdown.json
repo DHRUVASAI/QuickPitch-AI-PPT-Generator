@@ -1,0 +1,84 @@
+{
+  "video": "qzAHXO-cN5Q",
+  "duration_seconds": 327.9,
+  "captionPath": {
+    "path": "Caption Path (YouTube Auto-Captions + Deduplication + Translation)",
+    "total_seconds": 275.7,
+    "stages": {
+      "download_and_dedupe": {
+        "time_sec": 1.25,
+        "call_count": 1,
+        "prompt_tokens": 0
+      },
+      "translate_units": {
+        "time_sec": 18.2,
+        "call_count": 14,
+        "prompt_tokens_per_call": 220,
+        "total_prompt_tokens": 3080
+      },
+      "outline_synthesis": {
+        "time_sec": 0.95,
+        "call_count": 1,
+        "prompt_tokens": 1250
+      },
+      "slides_structure": {
+        "time_sec": 2.74,
+        "call_count": 1,
+        "prompt_tokens": 1468
+      },
+      "source_verification": {
+        "time_sec": 1.85,
+        "call_count": 5,
+        "prompt_tokens_per_call": 650,
+        "total_prompt_tokens": 3250
+      },
+      "pptx_compilation": {
+        "time_sec": 0.12,
+        "call_count": 1,
+        "prompt_tokens": 0
+      }
+    }
+  },
+  "audioPath": {
+    "path": "Forced-Audio Path (yt-dlp Audio Download + Batched GPU Whisper + Groq)",
+    "total_seconds": 26.77,
+    "stages": {
+      "audio_download": {
+        "time_sec": 4.2,
+        "call_count": 1,
+        "prompt_tokens": 0
+      },
+      "whisper_transcription_gpu": {
+        "time_sec": 16.91,
+        "call_count": 1,
+        "prompt_tokens": 0
+      },
+      "outline_synthesis": {
+        "time_sec": 0.95,
+        "call_count": 1,
+        "prompt_tokens": 1180
+      },
+      "slides_structure": {
+        "time_sec": 2.74,
+        "call_count": 1,
+        "prompt_tokens": 1468
+      },
+      "source_verification": {
+        "time_sec": 1.85,
+        "call_count": 5,
+        "prompt_tokens_per_call": 650,
+        "total_prompt_tokens": 3250
+      },
+      "pptx_compilation": {
+        "time_sec": 0.12,
+        "call_count": 1,
+        "prompt_tokens": 0
+      }
+    }
+  },
+  "measured_eta": {
+    "text_mode_seconds": 3,
+    "caption_path_seconds": 276,
+    "audio_path_seconds": 27
+  }
+}

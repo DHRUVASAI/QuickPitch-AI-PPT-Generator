@@ -70,6 +70,8 @@ const BILINGUAL_ALIASES: Record<string, string[]> = {
   'amazon': ['amazon', 'अमेज़न', 'अमेजन'],
   'avengers': ['avengers', 'अवेंजर्स'],
   'softbank': ['softbank', 'सॉफ्टबैंक'],
+  'ai': ['ai', 'एआई', 'आर्टिफिशियल'],
+  'go': ['go', 'गो'],
 };
 
 /**
@@ -174,14 +176,14 @@ export async function gradeBulletAgainstSource(
       const messages: ChatMessage[] = [
         {
           role: 'system',
-          content: 'You are a strict factual grounding checker. Given a source passage and a claim, answer ONLY with "YES" if the claim is directly supported by the passage, or "NO" if it is unsupported, contradicted, or not mentioned.',
+          content: 'You are a strict cross-lingual factual grounding checker. The source passage may be in Hindi or English, and the claim is in English. Answer YES if the claim is directly supported, conveyed, or stated in the passage (even across languages). Answer NO if the claim is unsupported, contradicted, fabricated, or not mentioned.',
         },
         {
           role: 'user',
-          content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated in this passage? Answer YES or NO:`,
+          content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated or conveyed in this passage? Answer YES or NO:`,
         },
       ];
-      const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 10 });
+      const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 500 });
       const answer = resp.content.trim().toUpperCase();
       isClaimAffirmed = answer.startsWith('YES');
     } catch {

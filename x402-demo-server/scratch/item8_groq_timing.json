@@ -1,0 +1,23 @@
+{
+  "model": "openai/gpt-oss-20b",
+  "targetSlideCount": 8,
+  "actualSlideCount": 8,
+  "durationMs": 2742,
+  "durationSec": 2.74,
+  "retries": 0,
+  "isValidJson": true,
+  "validationErrors": [],
+  "usage": {
+    "queue_time": 0.307354546,
+    "prompt_tokens": 1468,
+    "prompt_time": 0.073880631,
+    "completion_tokens": 1937,
+    "completion_time": 2.173374276,
+    "total_tokens": 3405,
+    "total_time": 2.247254907,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1312
+    }
+  },
+  "deckTitle": "Strategic AI Executive Briefing"
+}

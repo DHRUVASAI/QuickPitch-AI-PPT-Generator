@@ -4,6 +4,7 @@ import type { ITranscriptionProvider } from '../../models/types.js';
 import { type TranscriptData, validateTranscriptData } from '../schemas/transcript.schema.js';
 import { sanitizeTranscriptText } from './sanitizer.js';
 import { withRetryAndTimeout } from '../utils/retry.js';
+import { dedupeRollingCaptions } from './dedupe-captions.js';
 
 // In-memory transcript cache per URL
 const youtubeCache = new Map<string, { title: string; transcript: string; description: string; fetchedAt: number }>();
@@ -51,7 +52,13 @@ async function tryYouTubeCaptions(url: string): Promise<string | null> {
       { name: 'YouTubeTranscript (en)', timeoutMs: 7000, retries: 1, initialDelayMs: 250 }
     );
     if (lines && lines.length > 0) {
-      return lines.map((t: any) => t.text).join(' ');
+      const cues = lines.map((t: any) => ({
+        start: t.offset ? t.offset / 1000 : 0,
+        end: t.offset ? (t.offset + (t.duration || 0)) / 1000 : 0,
+        text: t.text,
+      }));
+      const deduped = dedupeRollingCaptions(cues);
+      return deduped.map((t: any) => t.text).join(' ');
     }
   } catch {
     // Try auto-detect language
@@ -61,7 +68,13 @@ async function tryYouTubeCaptions(url: string): Promise<string | null> {
         { name: 'YouTubeTranscript (auto)', timeoutMs: 7000, retries: 1, initialDelayMs: 250 }
       );
       if (lines && lines.length > 0) {
-        return lines.map((t: any) => t.text).join(' ');
+        const cues = lines.map((t: any) => ({
+          start: t.offset ? t.offset / 1000 : 0,
+          end: t.offset ? (t.offset + (t.duration || 0)) / 1000 : 0,
+          text: t.text,
+        }));
+        const deduped = dedupeRollingCaptions(cues);
+        return deduped.map((t: any) => t.text).join(' ');
       }
     } catch {
       // YouTube captions unavailable

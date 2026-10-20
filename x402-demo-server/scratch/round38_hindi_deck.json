@@ -1,0 +1,405 @@
+{
+  "title": "What is Artificial Intelligence? (AI Explained)",
+  "duration": 327.9,
+  "counts": {
+    "countSupported": 0,
+    "countPartial": 0,
+    "countNoSupport": 24,
+    "countRegenerated": 12,
+    "countDropped": 12
+  },
+  "slides": [
+    {
+      "slideIndex": 1,
+      "title": "AI Makes Everyday Tasks Easier",
+      "subtitle": "Machines with human‑like intelligence automate daily activities",
+      "source_timestamps": "00:00 - 01:10",
+      "cards": [
+        {
+          "card_title": "What AI Is",
+          "points": [
+            "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+            "Functions are compiled from algorithms that enable perception, decision‑making, and action"
+          ]
+        },
+        {
+          "card_title": "Everyday Presence",
+          "points": [
+            "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+            "Its impact is visible across multiple facets of modern daily life"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedChunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Generalized learning",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedChunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "AI is employed in smartphones, automobiles,",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedChunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "AI technologies",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 1,
+          "citedChunkTimestamps": "00:00 - 01:10",
+          "citedChunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+          "isVerified": false
+        }
+      ]
+    },
+    {
+      "slideIndex": 2,
+      "title": "Robot Reasoning in Dynamic Environments",
+      "subtitle": "Generalized learning enables adaptive decision‑making",
+      "source_timestamps": "01:10 - 02:18",
+      "cards": [
+        {
+          "card_title": "Adaptive Path Selection",
+          "points": [
+            "Robot evaluates lighting and landscape variations to maintain expected performance",
+            "Chooses firm or rocky path based on real‑time situational analysis"
+          ]
+        },
+        {
+          "card_title": "Problem Solving Example",
+          "points": [
+            "Faced with an uncrossable river, robot uses a provided plank as input",
+            "Applies reasoning to construct a solution and successfully cross"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedChunkText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+          "isVerified": false
+        },
+        {
+          "bullet": "Selects either the",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedChunkText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+          "isVerified": false
+        },
+        {
+          "bullet": "When the robot",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedChunkText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+          "isVerified": false
+        },
+        {
+          "bullet": "Applies reasoning to construct a solution and successfully cross",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 2,
+          "citedChunkTimestamps": "01:10 - 02:18",
+          "citedChunkText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+          "isVerified": false
+        }
+      ]
+    },
+    {
+      "slideIndex": 3,
+      "title": "AI Categories: Weak vs. Strong",
+      "subtitle": "Understanding the two broad classifications of artificial intelligence",
+      "source_timestamps": "02:18 - 03:27",
+      "cards": [
+        {
+          "card_title": "Weak (Narrow) AI",
+          "points": [
+            "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+            "Limited transferability; cannot perform unrelated tasks such as chess"
+          ]
+        },
+        {
+          "card_title": "Strong AI",
+          "points": [
+            "Hypothetical self‑aware systems capable of reasoning and emotions",
+            "Often depicted in fiction, e.g., Ultron from the Avengers"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "Alexa can only perform tasks it has been specifically trained for, such as playing a requested song, and",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedChunkText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+          "isVerified": false
+        },
+        {
+          "bullet": "Alexa can only handle tasks it has been specifically trained for and cannot",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedChunkText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+          "isVerified": false
+        },
+        {
+          "bullet": "Strong AI would be self",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Entity/Product \"AI\".",
+          "flaggedTerms": [
+            "Entity/Product \"AI\""
+          ],
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedChunkText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+          "isVerified": false
+        },
+        {
+          "bullet": "Ultron from the Avengers is cited as an ideal example of strong AI.",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Entity/Product \"AI\".",
+          "flaggedTerms": [
+            "Entity/Product \"AI\""
+          ],
+          "citedChunkIndex": 3,
+          "citedChunkTimestamps": "02:18 - 03:27",
+          "citedChunkText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+          "isVerified": false
+        }
+      ]
+    },
+    {
+      "slideIndex": 4,
+      "title": "Limitations of Current Assistants",
+      "subtitle": "Why voice assistants remain narrow AI",
+      "source_timestamps": "03:27 - 04:42",
+      "cards": [
+        {
+          "card_title": "Training Boundaries",
+          "points": [
+            "Alexa responds only to intents it has been explicitly trained for",
+            "Fails to answer traffic queries when not pre‑programmed"
+          ]
+        },
+        {
+          "card_title": "Perceived Versus Actual Scope",
+          "points": [
+            "User perception of multi‑task ability masks underlying narrow functionality",
+            "Each request triggers a specific programmed response rather than true understanding"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "Alexa responds only to intents it has been explicitly trained for",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedChunkText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+          "isVerified": false
+        },
+        {
+          "bullet": "Fails to answer traffic queries when not pre‑programmed",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedChunkText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+          "isVerified": false
+        },
+        {
+          "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedChunkText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+          "isVerified": false
+        },
+        {
+          "bullet": "Each request triggers a specific programmed response rather than true understanding",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 4,
+          "citedChunkTimestamps": "03:27 - 04:42",
+          "citedChunkText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+          "isVerified": false
+        }
+      ]
+    },
+    {
+      "slideIndex": 5,
+      "title": "From Machine Learning to Deep Learning",
+      "subtitle": "How layered algorithms enhance AI capabilities",
+      "source_timestamps": "04:42 - 05:30",
+      "cards": [
+        {
+          "card_title": "Machine Learning",
+          "points": [
+            "Provides algorithms that learn from data and experience",
+            "Enables systems to improve performance without explicit programming"
+          ]
+        },
+        {
+          "card_title": "Deep Learning",
+          "points": [
+            "Subset of machine learning using neural‑network architectures inspired by the brain",
+            "Excels at extracting complex patterns from large datasets"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "AI is created to collaborate with humans and simplify tasks",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Assists humans by collaborating with AI to simplify and streamline tasks.",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Entity/Product \"AI\".",
+          "flaggedTerms": [
+            "Entity/Product \"AI\""
+          ],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Assists humans in simplifying tasks",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        }
+      ]
+    },
+    {
+      "slideIndex": 6,
+      "title": "Future Frontiers and Unexplored Domains",
+      "subtitle": "Speculative AI projects and societal impact",
+      "source_timestamps": "04:42 - 05:30",
+      "cards": [
+        {
+          "card_title": "Emerging Concepts",
+          "points": [
+            "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+            "AI that understands or develops emotions could reshape human‑machine interaction"
+          ]
+        },
+        {
+          "card_title": "Strategic Implications",
+          "points": [
+            "Unexplored AI domains present investment opportunities and ethical considerations",
+            "Future advancements may lead to human augmentation and new market paradigms"
+          ]
+        }
+      ],
+      "bullets": [
+        {
+          "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: Entity/Product \"AI\".",
+          "flaggedTerms": [
+            "Entity/Product \"AI\""
+          ],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        },
+        {
+          "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+          "grade": "NO SUPPORT",
+          "reason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "flaggedTerms": [],
+          "citedChunkIndex": 5,
+          "citedChunkTimestamps": "04:42 - 05:30",
+          "citedChunkText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+          "isVerified": false
+        }
+      ]
+    }
+  ]
+}

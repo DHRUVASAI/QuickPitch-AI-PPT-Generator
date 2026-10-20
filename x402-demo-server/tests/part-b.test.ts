@@ -284,15 +284,15 @@ describe('Part B: Caption Quality Gate, Audio Download, GPU Lock, and VAD Dedupl
   // ── 6. Transcript Cache by Video ID & Language (Requirement 3) ────────────
   describe('Transcript Cache (Requirement 3)', () => {
     it('should generate consistent cache keys from video IDs and spoken languages', async () => {
-      const { buildCacheKey, extractVideoId } = await import('../core/transcript/transcript-cache.js');
+      const { buildCacheKey, extractVideoId, TRANSLATOR_VERSION } = await import('../core/transcript/transcript-cache.js');
       const key1 = buildCacheKey('https://www.youtube.com/watch?v=qzAHXO-cN5Q', 'hi', false);
       const key2 = buildCacheKey('https://youtu.be/qzAHXO-cN5Q', 'hi', false);
       const keyAudio = buildCacheKey('https://www.youtube.com/watch?v=qzAHXO-cN5Q', 'hi', true);
 
       assert.strictEqual(extractVideoId('https://www.youtube.com/watch?v=qzAHXO-cN5Q'), 'qzAHXO-cN5Q');
-      assert.strictEqual(key1, 'qzAHXO-cN5Q_hi_auto');
-      assert.strictEqual(key2, 'qzAHXO-cN5Q_hi_auto');
-      assert.strictEqual(keyAudio, 'qzAHXO-cN5Q_hi_audio');
+      assert.strictEqual(key1, `qzAHXO-cN5Q_hi_auto_${TRANSLATOR_VERSION}`);
+      assert.strictEqual(key2, `qzAHXO-cN5Q_hi_auto_${TRANSLATOR_VERSION}`);
+      assert.strictEqual(keyAudio, `qzAHXO-cN5Q_hi_audio_${TRANSLATOR_VERSION}`);
       assert.strictEqual(key1, key2);
     });
 

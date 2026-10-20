@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import fs from 'node:fs';
+import path from 'node:path';
 import OpenAI from 'openai';
 import { validateSlideDeck } from '../core/schemas/slide.schema.js';
 
@@ -45,8 +46,13 @@ RULES:
 3. Every card must have a card_title and 2-3 concise bullet points.
 4. Output ONLY valid JSON matching this schema.`;
 
-  const userPrompt = `Create an 8-slide strategic presentation based on this source text:
-"Artificial Intelligence overview: From everyday convenience in wardrobe sorting and personalized coffee brewing to autonomous robotic navigation and generalized learning. Two broad categories: Weak/Narrow AI like AlphaGo (champion in Go, incapable of chess) and Alexa (rule-based keyword execution), versus Strong AI like Ultron (self-aware with emotional synthesis). Machine learning uses algorithms to learn from data, while deep learning uses neural architectures inspired by the human brain. Milestones: Futurist Ray Kurzweil estimates parity with humans by 2045 (technological singularity), and Elon Musk anticipates brain-machine neural implants creating cyborg symbiosis. Quiz on AI projects including citizenship robots, muscular skeletal androids, and emotional comprehension."`;
+  const step3Path = path.join(process.cwd(), 'scratch', 'qzAHXO_step3_deduped_translated.json');
+  const units = JSON.parse(fs.readFileSync(step3Path, 'utf-8'));
+  const realChunksPrompt = units.map((u: any, i: number) => `[CHUNK ${i + 1} | ${u.timestamps}]:\n"${u.translatedText}"`).join('\n\n');
+
+  const userPrompt = `Create an 8-slide strategic executive presentation based strictly on these REAL transcript chunks from the video:
+
+${realChunksPrompt}`;
 
   let retries = 0;
   const startTime = Date.now();
