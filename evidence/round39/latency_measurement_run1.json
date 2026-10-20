@@ -1,0 +1,76 @@
+{
+  "evidenceName": "latency_measurement_run1.json",
+  "timestamp": "2026-10-20T12:49:34.566Z",
+  "gitCommit": "d97c7f8ce3339245b4ac53460e178f878910ccef",
+  "inputs": [
+    {
+      "path": "handlers/generate-ppt.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\handlers\\generate-ppt.ts",
+      "exists": true,
+      "sha256": "80d4707b6e74f0c4c9af465bb65d2c007bb60b036b4db591a613cc6c78d32c75",
+      "mtime": "2026-10-20T12:45:32.005Z"
+    },
+    {
+      "path": "core/synthesis/slide-planner.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\slide-planner.ts",
+      "exists": true,
+      "sha256": "58e790222ebc74debbb9d2b581a53d0312948256599c0cf31e26fc85f06e0c93",
+      "mtime": "2026-10-20T12:44:31.288Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "bbad78581e7e7b7d7ddb3834f0de3d72bedff05035b3cca45fc19991f1bbbbc4",
+      "mtime": "2026-10-20T12:43:25.637Z"
+    },
+    {
+      "path": "core/transcript/chunk-translator.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\transcript\\chunk-translator.ts",
+      "exists": true,
+      "sha256": "07cb1525a409cf45215c0274eb2ed315424706d1608ac31236ec78e4720566d8",
+      "mtime": "2026-10-20T12:42:46.200Z"
+    }
+  ],
+  "data": {
+    "description": "End-to-end latency measurement through the real HTTP endpoint (/generate-ppt) for caption-driven generation.",
+    "testUrl": "https://www.youtube.com/watch?v=qzAHXO-cN5Q",
+    "endpoint": "http://127.0.0.1:4021/generate-ppt",
+    "measurements": {
+      "localBatchedMode": {
+        "allowCloudFallback": false,
+        "httpStatus": 200,
+        "providerUsed": "ollama",
+        "stage1_transcriptIngestion_ms": 21,
+        "stage2_outlineSynthesis_ms": 24451,
+        "stage3_slidesAndVerification_ms": 56454,
+        "stage4_pptxCompilation_ms": 40,
+        "stageSum_ms": 80966,
+        "totalHttpDuration_ms": 81005,
+        "stageSum_vs_total_diff_ms": 39
+      },
+      "perRequestCloudMode": {
+        "allowCloudFallback": true,
+        "httpStatus": 200,
+        "providerUsed": "ollama",
+        "stage1_transcriptIngestion_ms": 0,
+        "stage2_outlineSynthesis_ms": 5465,
+        "stage3_slidesAndVerification_ms": 52735,
+        "stage4_pptxCompilation_ms": 17,
+        "stageSum_ms": 58217,
+        "totalHttpDuration_ms": 58222,
+        "stageSum_vs_total_diff_ms": 5
+      }
+    },
+    "serverTimingLogs": [
+      "[QuickPitch Stage 1] Ingesting source (type: youtube, cloudFallback: true, outputLang: en, spokenLang: hi)...",
+      "[QuickPitch Stage 2] Synthesizing outline (Target slides: 6, outputLanguage: \"en\")...",
+      "[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: \"Artificial Intelligence Kya Hai? | What Is Artificial Intelligence In Hindi | Simplilearn\", Theme: cyber-blue, Provider: ollama)...",
+      "[QuickPitch Timing] Ingestion: 21ms | Outline: 24451ms | Slides+Verify: 56454ms | Compile: 40ms | StageSum: 80966ms | Total: 80966ms",
+      "[QuickPitch Stage 1] Ingesting source (type: youtube, cloudFallback: true, outputLang: en, spokenLang: hi)...",
+      "[QuickPitch Stage 2] Synthesizing outline (Target slides: 6, outputLanguage: \"en\")...",
+      "[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: \"Artificial Intelligence Kya Hai? | What Is Artificial Intelligence In Hindi | Simplilearn\", Theme: cyber-blue, Provider: ollama)...",
+      "[QuickPitch Timing] Ingestion: 0ms | Outline: 5465ms | Slides+Verify: 52735ms | Compile: 17ms | StageSum: 58217ms | Total: 58217ms"
+    ]
+  }
+}

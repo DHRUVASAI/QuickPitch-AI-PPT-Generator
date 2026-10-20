@@ -1,0 +1,237 @@
+{
+  "evidenceName": "held_out_controls.json",
+  "timestamp": "2026-10-20T05:50:41.496Z",
+  "gitCommit": "d97c7f8ce3339245b4ac53460e178f878910ccef",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "c14946756cdf0cad1aeca019759eb3f0c0098b2f65544ab077c168a49b51982e",
+      "mtime": "2026-10-20T05:27:34.929Z"
+    }
+  ],
+  "data": {
+    "description": "Pre-check corpus grep and single-run verification results for 10 user-provided held-out controls (5 positive, 5 negative).",
+    "preRunCorpusGrepCheck": {
+      "allPositivesConfirmedPresent": true,
+      "allNegativesConfirmedAbsent": true,
+      "details": [
+        {
+          "type": "POSITIVE",
+          "claim": "Weak AI performs only one kind of task.",
+          "confirmedInCorpus": true,
+          "foundIn": {
+            "inHindi": true,
+            "inWhisper": true,
+            "inTranslation": true
+          }
+        },
+        {
+          "type": "POSITIVE",
+          "claim": "AlphaGo is an example of narrow AI.",
+          "confirmedInCorpus": true,
+          "foundIn": {
+            "inHindi": true,
+            "inWhisper": true,
+            "inTranslation": true
+          }
+        },
+        {
+          "type": "POSITIVE",
+          "claim": "Alexa is an example of narrow AI.",
+          "confirmedInCorpus": true,
+          "foundIn": {
+            "inHindi": true,
+            "inWhisper": true,
+            "inTranslation": true
+          }
+        },
+        {
+          "type": "POSITIVE",
+          "claim": "Ultron from Avengers is an example of strong AI.",
+          "confirmedInCorpus": true,
+          "foundIn": {
+            "inHindi": true,
+            "inWhisper": true,
+            "inTranslation": true
+          }
+        },
+        {
+          "type": "POSITIVE",
+          "claim": "Deep learning is a subset of machine learning.",
+          "confirmedInCorpus": true,
+          "foundIn": {
+            "inHindi": true,
+            "inWhisper": true,
+            "inTranslation": true
+          }
+        },
+        {
+          "type": "NEGATIVE",
+          "claim": "The speaker explains how transformer models use attention.",
+          "confirmedAbsentInCorpus": true,
+          "foundIn": {
+            "inHindi": false,
+            "inWhisper": false,
+            "inTranslation": false
+          }
+        },
+        {
+          "type": "NEGATIVE",
+          "claim": "The video recommends banning autonomous weapons.",
+          "confirmedAbsentInCorpus": true,
+          "foundIn": {
+            "inHindi": false,
+            "inWhisper": false,
+            "inTranslation": false
+          }
+        },
+        {
+          "type": "NEGATIVE",
+          "claim": "The speaker says strong AI is already sold in commercial products.",
+          "confirmedAbsentInCorpus": true,
+          "foundIn": {
+            "inHindi": false,
+            "inWhisper": false,
+            "inTranslation": false
+          }
+        },
+        {
+          "type": "NEGATIVE",
+          "claim": "The speaker says AI was invented at MIT in 1970.",
+          "confirmedAbsentInCorpus": true,
+          "foundIn": {
+            "inHindi": false,
+            "inWhisper": false,
+            "inTranslation": false
+          }
+        },
+        {
+          "type": "NEGATIVE",
+          "claim": "The speaker explains how blockchain secures AI models.",
+          "confirmedAbsentInCorpus": true,
+          "foundIn": {
+            "inHindi": false,
+            "inWhisper": false,
+            "inTranslation": false
+          }
+        }
+      ]
+    },
+    "verificationMetrics": {
+      "positiveGroup": {
+        "total": 5,
+        "supportedCount": 5,
+        "flaggedCount": 0,
+        "flagRate": "0.0%",
+        "falseRejectRate": "0.0%"
+      },
+      "negativeGroup": {
+        "total": 5,
+        "flaggedCount": 1,
+        "acceptedCount": 4,
+        "flagRate": "20.0%",
+        "falseAcceptRate": "80.0%"
+      }
+    },
+    "positiveControls": [
+      {
+        "bullet": "Weak AI performs only one kind of task.",
+        "grade": "SUPPORTED",
+        "isVerified": true,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "AlphaGo is an example of narrow AI.",
+        "grade": "SUPPORTED",
+        "isVerified": true,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "Alexa is an example of narrow AI.",
+        "grade": "SUPPORTED",
+        "isVerified": true,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "Ultron from Avengers is an example of strong AI.",
+        "grade": "SUPPORTED",
+        "isVerified": true,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "Deep learning is a subset of machine learning.",
+        "grade": "SUPPORTED",
+        "isVerified": true,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      }
+    ],
+    "negativeControls": [
+      {
+        "bullet": "The speaker explains how transformer models use attention.",
+        "grade": "SUPPORTED",
+        "isFlagged": false,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "The video recommends banning autonomous weapons.",
+        "grade": "SUPPORTED",
+        "isFlagged": false,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "The speaker says strong AI is already sold in commercial products.",
+        "grade": "SUPPORTED",
+        "isFlagged": false,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bullet": "The speaker says AI was invented at MIT in 1970.",
+        "grade": "NO SUPPORT",
+        "isFlagged": true,
+        "flaggedTerms": [
+          "Number \"1970\"",
+          "Entity/Product \"MIT\""
+        ],
+        "reason": "Unsupported entities/numbers absent from source text: Number \"1970\", Entity/Product \"MIT\"."
+      },
+      {
+        "bullet": "The speaker explains how blockchain secures AI models.",
+        "grade": "SUPPORTED",
+        "isFlagged": false,
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      }
+    ]
+  }
+}

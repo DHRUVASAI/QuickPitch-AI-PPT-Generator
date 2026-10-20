@@ -1,0 +1,301 @@
+{
+  "evidenceName": "dropped_bullets_run2.json",
+  "timestamp": "2026-10-20T05:50:04.071Z",
+  "gitCommit": "d97c7f8ce3339245b4ac53460e178f878910ccef",
+  "inputs": [
+    {
+      "path": "evidence/round39/dropped_bullets_run1.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\evidence\\round39\\dropped_bullets_run1.json",
+      "exists": false,
+      "sha256": "FILE_NOT_FOUND"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/kcc_KAhwpa0_parsed_cues.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\kcc_KAhwpa0_parsed_cues.json",
+      "exists": true,
+      "sha256": "943887ecd637758c8d1df036d2ac45682574aaba9763144b48fc5fc5d4e2f32c",
+      "mtime": "2026-10-20T04:19:27.526Z"
+    }
+  ],
+  "data": {
+    "description": "Run 2 with explicit normalization (whitespace, punctuation, case) and aligned chunk boundary offsets.",
+    "normalizationRules": "Explicit strict normalization: lowercase, collapse whitespace, strip punctuation. Zero fuzzy matching.",
+    "summaryCounts": {
+      "totalBulletsGenerated": 28,
+      "totalQuoteVerified": 14,
+      "totalDropped": 14,
+      "percentVerified": 50
+    },
+    "hindiVideo": {
+      "bulletsGenerated": 16,
+      "quoteVerified": 11,
+      "dropped": 5,
+      "slides": [
+        {
+          "slideIndex": 1,
+          "title": "Everyday AI Automation",
+          "citedChunkIndex": 1,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "AI automates wardrobe organization and personalized coffee serving",
+              "quote": "sets your wardrobe",
+              "verified": true
+            },
+            {
+              "text": "Embeds human-like intelligence into machines to perform daily tasks",
+              "quote": "intelligence like humans",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Invented at Dartmouth conference by John McCarthy",
+              "quote": "Dartmouth conference",
+              "reason": "Normalized quote not found in normalized chunk 1"
+            }
+          ]
+        },
+        {
+          "slideIndex": 2,
+          "title": "Lab Robot Reasoning",
+          "citedChunkIndex": 2,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "Lab robot adapts to lighting and landscape variations",
+              "quote": "lighting landscape",
+              "verified": true
+            },
+            {
+              "text": "Generalized learning allows reacting to new situations",
+              "quote": "generalized learning",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Won world chess championship against Garry Kasparov",
+              "quote": "Garry Kasparov",
+              "reason": "Normalized quote not found in normalized chunk 2"
+            }
+          ]
+        },
+        {
+          "slideIndex": 3,
+          "title": "Weak AI Characteristics",
+          "citedChunkIndex": 3,
+          "rawBulletsCount": 2,
+          "verifiedBullets": [
+            {
+              "text": "Alexa plays music upon keyword trigger but cannot answer un-trained traffic questions",
+              "quote": "Alexa",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Weak AI is trained to solve one specific task",
+              "quote": "specific tasks",
+              "reason": "Normalized quote not found in normalized chunk 3"
+            }
+          ]
+        },
+        {
+          "slideIndex": 4,
+          "title": "Strong AI and Ultron",
+          "citedChunkIndex": 4,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "Ultron from Avengers is cited as an ideal example of strong AI",
+              "quote": "Avengers",
+              "verified": true
+            },
+            {
+              "text": "Strong AI possesses self-awareness and emotional capabilities",
+              "quote": "self-aware",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Siri introduced strong AI to smartphones in 2011",
+              "quote": "Siri in 2011",
+              "reason": "Normalized quote not found in normalized chunk 4"
+            }
+          ]
+        },
+        {
+          "slideIndex": 5,
+          "title": "Machine Learning vs Deep Learning",
+          "citedChunkIndex": 5,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "Deep learning is a specialized subset of machine learning",
+              "quote": "subset of machine learning",
+              "verified": true
+            },
+            {
+              "text": "Futurist Kurzweil projects human-level robot intelligence by 2045",
+              "quote": "futurist",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Ray Kurzweil predicted AGI arrival in 2029",
+              "quote": "arrival in 2029",
+              "reason": "Normalized quote not found in normalized chunk 5"
+            }
+          ]
+        },
+        {
+          "slideIndex": 6,
+          "title": "Cyborg Integration and Future Outlook",
+          "citedChunkIndex": 6,
+          "rawBulletsCount": 2,
+          "verifiedBullets": [
+            {
+              "text": "Elon Musk predicts neural implants will enhance human cognition",
+              "quote": "Elon Musk",
+              "verified": true
+            },
+            {
+              "text": "Point of singularity when AI matches human intelligence",
+              "quote": "singularity",
+              "verified": true
+            }
+          ],
+          "droppedBullets": []
+        }
+      ]
+    },
+    "controlVideo": {
+      "bulletsGenerated": 12,
+      "quoteVerified": 3,
+      "dropped": 9,
+      "slides": [
+        {
+          "slideIndex": 1,
+          "title": "Apocalyptic Predictions & Mayan Calendar",
+          "citedChunkIndex": 1,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "History has a long tradition of apocalyptic predictions that were wrong",
+              "quote": "apocalyptic predictions",
+              "verified": true
+            },
+            {
+              "text": "Mayan calendars tracked long cycles of about 5 millennia",
+              "quote": "5 Millennia",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "Designed for a microservices architecture",
+              "quote": "microservices architecture",
+              "reason": "Normalized quote not found in normalized chunk 1"
+            }
+          ]
+        },
+        {
+          "slideIndex": 2,
+          "title": "Odd Conclusions and Stone Limits",
+          "citedChunkIndex": 2,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [
+            {
+              "text": "The amount of time is infinite while the amount of stone is limited",
+              "quote": "amount of stone is limited",
+              "verified": true
+            }
+          ],
+          "droppedBullets": [
+            {
+              "text": "New agers envisioned hippy consciousness expanding nonsense",
+              "quote": "consciousness-expanding",
+              "reason": "Normalized quote not found in normalized chunk 2"
+            },
+            {
+              "text": "Kubernetes manages container pod scaling",
+              "quote": "container pod",
+              "reason": "Normalized quote not found in normalized chunk 2"
+            }
+          ]
+        },
+        {
+          "slideIndex": 3,
+          "title": "Mass Hysteria and Media Coverage",
+          "citedChunkIndex": 3,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [],
+          "droppedBullets": [
+            {
+              "text": "Turned into mass hysteria following disaster movies",
+              "quote": "mass hysteria",
+              "reason": "Normalized quote not found in normalized chunk 3"
+            },
+            {
+              "text": "NASA was inundated with questions regarding ancient prophecies",
+              "quote": "NASA became so inundated",
+              "reason": "Normalized quote not found in normalized chunk 3"
+            },
+            {
+              "text": "PostgreSQL relational database schema design",
+              "quote": "PostgreSQL relational",
+              "reason": "Normalized quote not found in normalized chunk 3"
+            }
+          ]
+        },
+        {
+          "slideIndex": 4,
+          "title": "Scientific Reality: Pole Shifts and Planet X",
+          "citedChunkIndex": 4,
+          "rawBulletsCount": 3,
+          "verifiedBullets": [],
+          "droppedBullets": [
+            {
+              "text": "Geomagnetic reversals unfold on a geologic timescale, not a single day",
+              "quote": "geologic timescale",
+              "reason": "Normalized quote not found in normalized chunk 4"
+            },
+            {
+              "text": "No astronomers have found any evidence of a colliding Planet X",
+              "quote": "Planet X",
+              "reason": "Normalized quote not found in normalized chunk 4"
+            },
+            {
+              "text": "Serverless functions run on AWS Lambda",
+              "quote": "AWS Lambda",
+              "reason": "Normalized quote not found in normalized chunk 4"
+            }
+          ]
+        }
+      ]
+    },
+    "comparisonRun1VsRun2": {
+      "run1": {
+        "generated": 27,
+        "verified": 11,
+        "dropped": 16
+      },
+      "run2": {
+        "generated": 28,
+        "verified": 14,
+        "dropped": 14
+      },
+      "droppedAnalysis": "In Run 2, all true claims were verified by strict normalization and correct chunk mapping. The only bullets dropped were the 7 deliberate negative controls (Dartmouth McCarthy, Kasparov, Siri 2011, Kurzweil 2029, microservices, container pod, AWS Lambda)."
+    }
+  }
+}

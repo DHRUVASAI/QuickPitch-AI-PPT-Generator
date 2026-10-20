@@ -137,7 +137,7 @@ Supports 8 distinct visual themes with live color dot swatch previews:
 | **AWS EC2** | `t2.micro` instance running Node.js 20 + PM2 Process Manager | 12-Month Free Tier (750 hrs/mo) |
 | **AWS S3** | `quickpitch-ppts` bucket with CORS policies for presentation storage | Free Tier (5 GB + 20k GETs) |
 | **AWS Transcribe**| Speech-to-Text engine for raw audio uploads | Pay-per-use ($0.024/min) |
-| **AWS IAM** | User `VUPO` (Account: `957036694697`, Region: `us-east-1`) | Always Free |
+| **AWS IAM** | User `<IAM_USER>` (Account: `<AWS_ACCOUNT_ID>`, Region: `us-east-1`) | Always Free |
 | **AWS CLI** | Automated via `deploy-aws.sh` and `configure-aws.ps1` | Always Free |
 
 ---

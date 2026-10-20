@@ -1,0 +1,67 @@
+{
+  "evidenceName": "model_audit_translation.json",
+  "timestamp": "2026-10-20T05:55:35.666Z",
+  "gitCommit": "d97c7f8ce3339245b4ac53460e178f878910ccef",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "models/providers/ollama.provider.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\models\\providers\\ollama.provider.ts",
+      "exists": true,
+      "sha256": "5e24b371818ba465be0f15730dfd292fb64980adf1d6a427eed7f473633536e7",
+      "mtime": "2026-10-15T05:23:24.093Z"
+    }
+  ],
+  "data": {
+    "description": "Model audit of each pipeline stage, ollama list terminal trace, explanation of qwen:latest vs qwen2.5:7b, and re-run comparison with Whisper large-v3 overlap scores.",
+    "ollamaListCliOutput": "NAME          ID              SIZE      MODIFIED   \nqwen2.5:7b    845dbda0ea48    4.7 GB    8 days ago",
+    "stageModelMap": {
+      "translation": "qwen2.5:7b (Ollama local LLM; cloud opt-in: openai/gpt-oss-20b)",
+      "outline": "qwen2.5:7b (Ollama local LLM)",
+      "slides": "qwen2.5:7b (Ollama local LLM; cloud opt-in: openai/gpt-oss-20b)",
+      "verification": "Exact substring quote verifier + bilingual entity checker (qwen2.5:7b for LLM entailment/regeneration)"
+    },
+    "whyQwenLatestAppeared": "The machine only has qwen2.5:7b installed in Ollama (ID 845dbda0ea48). In earlier scratch scripts, the string \"qwen:latest\" was written as an informal label, but Ollama executed the installed qwen2.5:7b model.",
+    "modelComparison": {
+      "originalRun_qwen25_14calls": {
+        "model": "qwen2.5:7b (labeled as qwen:latest)",
+        "calls": 14,
+        "durationSeconds": 194.8,
+        "jaccardWordOverlapScore": 0.641,
+        "commonWordsWithWhisper": 232,
+        "totalVocabularySize": 304
+      },
+      "batchedRun_qwen25_4calls": {
+        "model": "qwen2.5:7b",
+        "calls": 4,
+        "durationSeconds": 87.73,
+        "batchTimingsSeconds": [
+          31.09,
+          6.55,
+          29.45,
+          20.63
+        ],
+        "jaccardWordOverlapScore": 0.545,
+        "commonWordsWithWhisper": 188,
+        "totalVocabularySize": 243
+      }
+    },
+    "whisperReference": {
+      "model": "whisper-large-v3 (task=translate)",
+      "totalVocabularySize": 290
+    }
+  }
+}

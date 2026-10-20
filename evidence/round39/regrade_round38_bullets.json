@@ -1,0 +1,312 @@
+{
+  "evidenceName": "regrade_round38_bullets.json",
+  "timestamp": "2026-10-20T05:49:22.375Z",
+  "gitCommit": "d97c7f8ce3339245b4ac53460e178f878910ccef",
+  "inputs": [
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "c14946756cdf0cad1aeca019759eb3f0c0098b2f65544ab077c168a49b51982e",
+      "mtime": "2026-10-20T05:27:34.929Z"
+    }
+  ],
+  "data": {
+    "description": "Re-grading of the original 24 Round 3.8 bullets using the fixed English-vs-Hindi verifier with bilingual matching and Whisper cross-check.",
+    "totalBulletsAudited": 24,
+    "gradeCounts": {
+      "SUPPORTED": 24,
+      "PARTIAL": 0,
+      "NO_SUPPORT": 0
+    },
+    "nonSupportedCount": 0,
+    "nonSupportedBullets": [],
+    "allAuditedBullets": [
+      {
+        "bulletNumber": 1,
+        "slideIndex": 1,
+        "bulletText": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:09",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 2,
+        "slideIndex": 1,
+        "bulletText": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:09",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 3,
+        "slideIndex": 1,
+        "bulletText": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:09",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 4,
+        "slideIndex": 1,
+        "bulletText": "Its impact is visible across multiple facets of modern daily life",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 1,
+        "citedChunkTimestamps": "00:00 - 01:09",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 5,
+        "slideIndex": 2,
+        "bulletText": "Robot evaluates lighting and landscape variations to maintain expected performance",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:09 - 02:18",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 6,
+        "slideIndex": 2,
+        "bulletText": "Chooses firm or rocky path based on real‑time situational analysis",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:09 - 02:18",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 7,
+        "slideIndex": 2,
+        "bulletText": "Faced with an uncrossable river, robot uses a provided plank as input",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:09 - 02:18",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 8,
+        "slideIndex": 2,
+        "bulletText": "Applies reasoning to construct a solution and successfully cross",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 2,
+        "citedChunkTimestamps": "01:09 - 02:18",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 9,
+        "slideIndex": 3,
+        "bulletText": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 10,
+        "slideIndex": 3,
+        "bulletText": "Limited transferability; cannot perform unrelated tasks such as chess",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 11,
+        "slideIndex": 3,
+        "bulletText": "Hypothetical self‑aware systems capable of reasoning and emotions",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 12,
+        "slideIndex": 3,
+        "bulletText": "Often depicted in fiction, e.g., Ultron from the Avengers",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 3,
+        "citedChunkTimestamps": "02:18 - 03:27",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 13,
+        "slideIndex": 4,
+        "bulletText": "Alexa responds only to intents it has been explicitly trained for",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:41",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 14,
+        "slideIndex": 4,
+        "bulletText": "Fails to answer traffic queries when not pre‑programmed",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:41",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 15,
+        "slideIndex": 4,
+        "bulletText": "User perception of multi‑task ability masks underlying narrow functionality",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:41",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 16,
+        "slideIndex": 4,
+        "bulletText": "Each request triggers a specific programmed response rather than true understanding",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 4,
+        "citedChunkTimestamps": "03:27 - 04:41",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 17,
+        "slideIndex": 5,
+        "bulletText": "Provides algorithms that learn from data and experience",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:41 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 18,
+        "slideIndex": 5,
+        "bulletText": "Enables systems to improve performance without explicit programming",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:41 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 19,
+        "slideIndex": 5,
+        "bulletText": "Subset of machine learning using neural‑network architectures inspired by the brain",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:41 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 20,
+        "slideIndex": 5,
+        "bulletText": "Excels at extracting complex patterns from large datasets",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 5,
+        "citedChunkTimestamps": "04:41 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 21,
+        "slideIndex": 6,
+        "bulletText": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 6,
+        "citedChunkTimestamps": "05:03 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 22,
+        "slideIndex": 6,
+        "bulletText": "AI that understands or develops emotions could reshape human‑machine interaction",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 6,
+        "citedChunkTimestamps": "05:03 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 23,
+        "slideIndex": 6,
+        "bulletText": "Unexplored AI domains present investment opportunities and ethical considerations",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 6,
+        "citedChunkTimestamps": "05:03 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      },
+      {
+        "bulletNumber": 24,
+        "slideIndex": 6,
+        "bulletText": "Future advancements may lead to human augmentation and new market paradigms",
+        "grade": "SUPPORTED",
+        "isSupported": true,
+        "citedChunkIndex": 6,
+        "citedChunkTimestamps": "05:03 - 05:29",
+        "flaggedTerms": [],
+        "reason": "All numbers, names, and core claims are verified in source-language text."
+      }
+    ]
+  }
+}

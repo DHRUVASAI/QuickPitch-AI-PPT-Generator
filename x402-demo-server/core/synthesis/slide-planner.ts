@@ -292,6 +292,8 @@ export async function planSlideStructure(
     }
   }
 
+  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
+
   // 2. Translation Stage (Item 3)
   // Translate each chunk to English with timestamps kept, cache it with transcript,
   // and generate slides ONLY from the English chunks!
@@ -304,7 +306,7 @@ export async function planSlideStructure(
     englishChunks = cachedChunks;
   } else if (detectedLang !== 'en' && detectedLang !== 'english') {
     console.log(`[SlidePlanner: Translation] Source language is "${detectedLang}". Translating ${slideChunks.length} chunks to English...`);
-    const translated = await translateChunksToEnglish(slideChunks, client, detectedLang);
+    const translated = await translateChunksToEnglish(slideChunks, client, detectedLang, { allowCloudFallback: allowCloud });
     englishChunks = translated;
     if (transcript.metadata) {
       (transcript.metadata as any).translatedChunks = englishChunks;
@@ -369,7 +371,6 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
   ]
 }`;
 
-  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
   const primaryName = client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
@@ -416,7 +417,7 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
         }
 
         // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source English chunk
-        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification);
+        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification, { allowCloudFallback: allowCloud });
 
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" produced ${genResult.deck.slides.length} slides`);
         return {
@@ -440,7 +441,7 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
-  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification);
+  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification, { allowCloudFallback: allowCloud });
 
   return {
     ...validateSlideDeck({
@@ -459,7 +460,8 @@ async function verifyAndAttachSourceReferences(
   videoDuration: number,
   client?: UnifiedModelClient,
   whisperRawText?: string,
-  skipRepair: boolean = false
+  skipRepair: boolean = false,
+  options?: { allowCloudFallback?: boolean }
 ): Promise<void> {
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
@@ -473,7 +475,7 @@ async function verifyAndAttachSourceReferences(
   }
 
   if (!skipRepair) {
-    await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText);
+    await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText, options);
   }
 }
 

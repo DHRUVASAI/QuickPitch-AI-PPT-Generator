@@ -143,8 +143,12 @@ export async function handleGeneratePpt(c: Context) {
     let isPartial = false;
     let partialNotice = '';
 
+    const pipelineStartTime = Date.now();
+    let s1Dur = 0, s2Dur = 0, s3Dur = 0, s4Dur = 0;
+
     // Stage 1: Transcript Ingestion & Sanitization
     console.log(`[QuickPitch Stage 1] Ingesting source (type: ${source_type}, cloudFallback: ${allowCloudFallback}, outputLang: ${output_language}, spokenLang: ${spoken_language || 'auto'})...`);
+    const t1Start = Date.now();
     if (source_type === 'audio' || (source_type === 'youtube' && force_audio)) {
       setJobStage(jobId, 'transcribe', 35, 'Transcribing audio with Batched GPU Whisper...');
     }
@@ -198,6 +202,7 @@ export async function handleGeneratePpt(c: Context) {
     }
 
     console.log(`✓ Transcript ready: "${transcriptData.title}" (${transcriptData.charCount} chars, detectedLang: ${transcriptData.metadata?.detectedLanguage || 'unknown'})`);
+    s1Dur = Date.now() - t1Start;
 
     const detectedLang = transcriptData.metadata?.detectedLanguage || transcriptData.metadata?.language || 'unknown';
     const langConfidence = transcriptData.metadata?.languageConfidence ?? 1.0;
@@ -227,6 +232,7 @@ export async function handleGeneratePpt(c: Context) {
     // Stage 2: Synthesis & Outline Planning (with schema validation & chunking)
     console.log(`[QuickPitch Stage 2] Synthesizing outline (Target slides: ${finalSlideCount}, outputLanguage: "en")...`);
     setJobStage(jobId, 'synthesize', 75, 'Structuring executive slides & source-language verification...');
+    const t2Start = Date.now();
     const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, {
       allowCloudFallback,
       outputLanguage: 'en',
@@ -239,7 +245,9 @@ export async function handleGeneratePpt(c: Context) {
       isPartial = true;
       partialNotice = 'Model synthesis used deterministic fallback';
     }
+    s2Dur = Date.now() - t2Start;
 
+    const t3Start = Date.now();
     const slideDeck = await planSlideStructure(
       outline,
       transcriptData,
@@ -264,10 +272,12 @@ export async function handleGeneratePpt(c: Context) {
     const providerUsed = slideDeck.providerUsed || outline.providerUsed || 'ollama';
     slideDeck.title = transcriptData.title;
     slideDeck.subtitle = outline.subtitle || 'Executive Intelligence Briefing & Strategic Synthesis';
+    s3Dur = Date.now() - t3Start;
 
     // Stage 3: Slide Compilation (.pptx)
     console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: "${slideDeck.title}", Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
     setJobStage(jobId, 'compile', 95, 'Compiling PowerPoint .pptx deck...');
+    const t4Start = Date.now();
     let pptxResult;
     try {
       pptxResult = await compilePptx(slideDeck, theme, transcriptData.sanitizedText);
@@ -294,6 +304,11 @@ export async function handleGeneratePpt(c: Context) {
       pptxResult = await compilePptx(safeDeck, 'cyber-blue');
     }
 
+    s4Dur = Date.now() - t4Start;
+    const totalDur = Date.now() - pipelineStartTime;
+    const sumDur = s1Dur + s2Dur + s3Dur + s4Dur;
+    console.log(`[QuickPitch Timing] Ingestion: ${s1Dur}ms | Outline: ${s2Dur}ms | Slides+Verify: ${s3Dur}ms | Compile: ${s4Dur}ms | StageSum: ${sumDur}ms | Total: ${totalDur}ms`);
+
     console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'} (Provider: ${providerUsed})`);
     setJobStage(jobId, 'complete', 100, 'Deck compiled successfully!');
 
@@ -308,6 +323,12 @@ export async function handleGeneratePpt(c: Context) {
         'X-QuickPitch-Detected-Language': detectedLang,
         'X-QuickPitch-Slide-Count': String(slideDeck.slides?.length || 0),
         'X-QuickPitch-Slide-Target': String(finalSlideCount),
+        'X-QuickPitch-Stage1-Ms': String(s1Dur),
+        'X-QuickPitch-Stage2-Ms': String(s2Dur),
+        'X-QuickPitch-Stage3-Ms': String(s3Dur),
+        'X-QuickPitch-Stage4-Ms': String(s4Dur),
+        'X-QuickPitch-StageSum-Ms': String(sumDur),
+        'X-QuickPitch-Total-Ms': String(totalDur),
         ...(((slideDeck as any).slideAdjustmentNotice || (slideDeck as any).adjustmentNotice) ? { 'X-QuickPitch-Slide-Adjustment': (slideDeck as any).slideAdjustmentNotice || (slideDeck as any).adjustmentNotice } : {}),
         ...(isPartial ? { 'X-QuickPitch-Notice': partialNotice } : {}),
       },

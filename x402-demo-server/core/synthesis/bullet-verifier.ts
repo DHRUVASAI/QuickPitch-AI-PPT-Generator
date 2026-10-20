@@ -135,7 +135,8 @@ export async function gradeBulletAgainstSource(
   bullet: string,
   chunk: ChunkWithTime & { originalText?: string },
   client?: UnifiedModelClient,
-  whisperRawText?: string
+  whisperRawText?: string,
+  options?: { allowCloudFallback?: boolean }
 ): Promise<BulletAuditResult> {
   // Fix for English-vs-Hindi verification:
   // Compare against English translation PLUS Hindi source (and Whisper transcript if available)
@@ -192,7 +193,11 @@ export async function gradeBulletAgainstSource(
           content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated or conveyed in this passage? Answer YES or NO:`,
         },
       ];
-      const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 500 });
+      const resp = await client.complete(messages, {
+        temperature: 0.0,
+        maxTokens: 500,
+        allowCloudFallback: options?.allowCloudFallback,
+      });
       const answer = resp.content.trim().toUpperCase();
       isClaimAffirmed = answer.startsWith('YES');
     } catch {
@@ -239,7 +244,8 @@ export async function gradeBulletAgainstSource(
 async function regenerateUnsupportedBullet(
   bullet: string,
   chunk: ChunkWithTime & { originalText?: string },
-  client: UnifiedModelClient
+  client: UnifiedModelClient,
+  options?: { allowCloudFallback?: boolean }
 ): Promise<string | null> {
   const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
     ? `Source excerpt (Original):\n"${chunk.originalText}"\n\nSource excerpt (English translation):\n"${chunk.text}"`
@@ -258,7 +264,11 @@ Do NOT invent numbers, terms, or personal names. Return ONLY the single replacem
   ];
 
   try {
-    const resp = await client.complete(messages, { temperature: 0.0, maxTokens: 100 });
+    const resp = await client.complete(messages, {
+      temperature: 0.0,
+      maxTokens: 100,
+      allowCloudFallback: options?.allowCloudFallback,
+    });
     const cleaned = resp.content.trim().replace(/^[-*•"\s]+|["\s]+$/g, '');
     return cleaned.length > 10 ? cleaned : null;
   } catch (err: any) {
@@ -279,7 +289,8 @@ export async function verifyAndRepairSlideDeck(
   slides: SlideItem[],
   chunks: Array<ChunkWithTime & { originalText?: string }>,
   client?: UnifiedModelClient,
-  whisperRawText?: string
+  whisperRawText?: string,
+  options?: { allowCloudFallback?: boolean }
 ): Promise<{ slides: SlideItem[]; report: VerificationPipelineReport }> {
   let totalBulletsBefore = 0;
   let supportedBefore = 0;
@@ -309,7 +320,7 @@ export async function verifyAndRepairSlideDeck(
 
       for (const bullet of card.points) {
         totalBulletsBefore++;
-        const audit = await gradeBulletAgainstSource(bullet, chunk, client, whisperRawText);
+        const audit = await gradeBulletAgainstSource(bullet, chunk, client, whisperRawText, options);
 
         if (audit.resolvedNumber) {
           numberResolutions.push({
@@ -340,11 +351,11 @@ export async function verifyAndRepairSlideDeck(
           let repairedBullet: string | null = null;
           if (client) {
             console.warn(`⚠️ [VerificationPass] Slide ${sIdx + 1} bullet had NO SUPPORT: "${bullet}". Regenerating once...`);
-            repairedBullet = await regenerateUnsupportedBullet(bullet, chunk, client);
+            repairedBullet = await regenerateUnsupportedBullet(bullet, chunk, client, options);
           }
 
           if (repairedBullet) {
-            const reAudit = await gradeBulletAgainstSource(repairedBullet, chunk, client, whisperRawText);
+            const reAudit = await gradeBulletAgainstSource(repairedBullet, chunk, client, whisperRawText, options);
             if (reAudit.grade === 'SUPPORTED' || reAudit.grade === 'PARTIAL') {
               auditedBullets.push(reAudit);
               verifiedCardPoints.push(repairedBullet);

@@ -5,10 +5,10 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { gradeBulletAgainstSource } from '../core/synthesis/bullet-verifier.js';
-import type { ChunkWithTime } from '../core/transcript/timestamp-utils.js';
-import { GroqProvider } from '../models/providers/groq.provider.js';
-import { UnifiedModelClient } from '../models/unified-client.js';
+import { gradeBulletAgainstSource } from '../../core/synthesis/bullet-verifier.js';
+import type { ChunkWithTime } from '../../core/transcript/timestamp-utils.js';
+import { GroqProvider } from '../../models/providers/groq.provider.js';
+import { UnifiedModelClient } from '../../models/unified-client.js';
 
 describe('Item 6: Negative Controls v2 - 10 Injected + 5 Positive Controls', () => {
   // Load full deduped Hindi text as reference

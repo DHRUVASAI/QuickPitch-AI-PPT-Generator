@@ -230,7 +230,8 @@ export function validateTranslationResult(
 export async function translateSmallUnits(
   units: SmallTranslationUnit[],
   client: UnifiedModelClient,
-  sourceLanguage: string = 'hi'
+  sourceLanguage: string = 'hi',
+  options?: { allowCloudFallback?: boolean }
 ): Promise<SmallTranslationUnit[]> {
   const normLang = (sourceLanguage || 'auto').toLowerCase().trim();
   if (normLang === 'en' || normLang === 'english') {
@@ -289,6 +290,7 @@ Return ONLY a valid JSON object in this format:
           temperature: 0.0,
           jsonMode: true,
           maxTokens: 1000,
+          allowCloudFallback: options?.allowCloudFallback,
         });
 
         let parsed: any;
@@ -360,7 +362,8 @@ Return ONLY a valid JSON object in this format:
 export async function translateChunksToEnglish(
   chunks: ChunkWithTime[],
   client: UnifiedModelClient,
-  sourceLanguage: string = 'auto'
+  sourceLanguage: string = 'auto',
+  options?: { allowCloudFallback?: boolean }
 ): Promise<TranslatedChunk[]> {
   const normLang = (sourceLanguage || 'auto').toLowerCase().trim();
   if (normLang === 'en' || normLang === 'english') {
@@ -388,7 +391,7 @@ export async function translateChunksToEnglish(
       .filter(s => s.text.length > 0);
 
     const units = buildSmallTranslationUnits(sentences, 4, 60);
-    const translatedUnits = await translateSmallUnits(units, client, normLang);
+    const translatedUnits = await translateSmallUnits(units, client, normLang, options);
 
     const isAnyUntranslated = translatedUnits.some(u => u.status === 'untranslated');
     const fullEnglish = translatedUnits.map(u => u.translatedText).join(' ').trim();
