@@ -1388,16 +1388,28 @@ export default function QuickPitchHome() {
                           <span>{card.card_title}</span>
                         </div>
                         <ul className="space-y-1.5">
-                          {card.points.map((pt, pi) => (
-                            <li 
-                              key={pi} 
-                              className="text-[10px] flex items-start space-x-1.5 leading-relaxed"
-                              style={{ color: activeThemeConfig.textMuted }}
-                            >
-                              <span style={{ color: activeThemeConfig.accent }}>▪</span>
-                              <span className="line-clamp-2">{pt}</span>
-                            </li>
-                          ))}
+                          {card.points.map((pt, pi) => {
+                            const isUnverified = pt.startsWith('[UNVERIFIED');
+                            const isPartial = pt.includes('PARTIAL');
+                            const cleanPt = pt.replace(/^\[UNVERIFIED:[^\]]+\]\s*/, '');
+                            return (
+                              <li 
+                                key={pi} 
+                                className="text-[10px] flex items-start space-x-1.5 leading-relaxed"
+                                style={{ color: activeThemeConfig.textMuted }}
+                              >
+                                <span style={{ color: isUnverified ? '#f59e0b' : activeThemeConfig.accent }}>▪</span>
+                                <span className="line-clamp-2">
+                                  {isUnverified && (
+                                    <span className="inline-block mr-1 px-1 py-0.2 text-[8px] font-mono rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                      {isPartial ? 'PARTIAL' : 'FLAGGED'}
+                                    </span>
+                                  )}
+                                  {cleanPt}
+                                </span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     ))}
@@ -1677,12 +1689,24 @@ export default function QuickPitchHome() {
                       <span>{card.card_title}</span>
                     </div>
                     <ul className="space-y-2 text-xs text-slate-400">
-                      {card.points.map((pt, pi) => (
-                        <li key={pi} className="flex items-start space-x-2">
-                          <span className="text-brand-400">▪</span>
-                          <span className="leading-relaxed">{pt}</span>
-                        </li>
-                      ))}
+                      {card.points.map((pt, pi) => {
+                        const isUnverified = pt.startsWith('[UNVERIFIED');
+                        const isPartial = pt.includes('PARTIAL');
+                        const cleanPt = pt.replace(/^\[UNVERIFIED:[^\]]+\]\s*/, '');
+                        return (
+                          <li key={pi} className="flex items-start space-x-2">
+                            <span className={isUnverified ? "text-amber-400" : "text-brand-400"}>▪</span>
+                            <span className="leading-relaxed">
+                              {isUnverified && (
+                                <span className="inline-block mr-1.5 px-1.5 py-0.5 text-[9px] font-mono rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                  {isPartial ? 'PARTIAL (UNVERIFIED)' : 'FLAGGED (NO SUPPORT)'}
+                                </span>
+                              )}
+                              {cleanPt}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
