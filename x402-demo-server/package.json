@@ -7,7 +7,9 @@
     "start": "tsx index.ts",
     "dev": "tsx watch index.ts",
     "test": "tsx --test --test-concurrency=1 tests/*.test.ts",
-    "test:integration": "tsx --test tests/integration/**/*.test.ts"
+    "test:integration": "tsx --test tests/integration/**/*.test.ts",
+    "scoreboard": "tsx scripts/scoreboard.ts",
+    "scoreboard:check": "tsx scripts/scoreboard_check.ts"
   },
   "keywords": [],
   "author": "",

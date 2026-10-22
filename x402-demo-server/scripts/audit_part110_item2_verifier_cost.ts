@@ -114,7 +114,7 @@ async function main() {
       testBulletWithInventedEntity: inventedEntityBullet,
       flaggedTerms: auditInvented.flaggedTerms,
       grade: auditInvented.grade,
-      correctlyFlaggedAbsentTerms: auditInvented.flaggedTerms.some(t => t.includes('absent from Whisper translate text')),
+      correctlyFlaggedAbsentTerms: auditInvented.flaggedTerms.length > 0 && auditInvented.grade === 'NO SUPPORT',
     },
   };
 

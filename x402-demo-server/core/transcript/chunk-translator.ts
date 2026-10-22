@@ -282,6 +282,7 @@ Return ONLY a valid JSON object in this format:
     let finalRatio = 0;
     let lastReason: string | undefined = undefined;
 
+    const unitStartMs = Date.now();
     while (attempt < 2 && !success) {
       attempt++;
       try {
@@ -328,6 +329,9 @@ Return ONLY a valid JSON object in this format:
         lastReason = `LLM call error: ${err.message}`;
       }
     }
+
+    const unitElapsedMs = Date.now() - unitStartMs;
+    console.log(`[SlidePlanner: Translation] Unit ${unit.unitIndex} translation completed in ${unitElapsedMs}ms (words: ${unit.sourceWordCount} -> ${finalTranslatedText.split(/\\s+/).filter(Boolean).length}, status: ${success ? 'SUCCESS' : 'FAILED'})`);
 
     if (success) {
       results.push({

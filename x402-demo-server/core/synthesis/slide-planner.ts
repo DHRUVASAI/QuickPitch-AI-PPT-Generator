@@ -86,6 +86,7 @@ export interface PlanSlideStructureOptions {
   includeSummary?: boolean;
   focusText?: string;
   llm_provider_preference?: 'local' | 'cloud';
+  doNotCache?: boolean;
 }
 
 interface SlideGenResult {
@@ -301,8 +302,9 @@ export async function planSlideStructure(
   const detectedLang = ((transcript.metadata as any)?.detectedLanguage || (transcript.metadata as any)?.language || 'auto').toLowerCase();
   let englishChunks: ChunkWithTime[] = slideChunks;
 
+  const doNotCache = options?.doNotCache === true;
   const cachedChunks = (transcript.metadata as any)?.translatedChunks as ChunkWithTime[] | undefined;
-  if (Array.isArray(cachedChunks) && cachedChunks.length === contentSlidesCount) {
+  if (!doNotCache && Array.isArray(cachedChunks) && cachedChunks.length === contentSlidesCount) {
     console.log(`[SlidePlanner: Translation] Using ${cachedChunks.length} cached English chunks.`);
     englishChunks = cachedChunks;
   } else if (detectedLang !== 'en' && detectedLang !== 'english') {

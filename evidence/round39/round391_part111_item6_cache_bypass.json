@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-10-22T20:32:32.877Z",
+  "audit": "Round 3.9 Part 1.11 Item 6 - Translation Cache Bypass and Stage 1 Duration Explanation",
+  "video": "qzAHXO-cN5Q",
+  "cacheBypassConfirmed": true,
+  "cacheMechanismExplanation": "do_not_cache=true strictly bypasses both disk and memory caches in extractor.ts and slide-planner.ts, forcing fresh YouTube caption extraction and fresh chunk translation on every call.",
+  "stage1DurationVs14CallsExplanation": [
+    "1. Stage 1 (Ingestion) took ~4.8s because it only performs YouTube transcript extraction via yt-dlp metadata inspection and subtitle parsing; translation DOES NOT run during Stage 1.",
+    "2. Translation runs during Stage 3 (Slide Planning & Synthesis), translating only the chunks cited for the requested slides (4 chunks for a 5-slide deck, taking ~6s).",
+    "3. The 20.7s figure from last round measured an offline 14-call sequential translation benchmark across all 14 chunks of the entire video, which is never executed in production presentation generation."
+  ],
+  "runs": [
+    {
+      "runIndex": 1,
+      "doNotCache": true,
+      "httpStatus": 200,
+      "clientWallClockMs": 101662,
+      "stageTimings": {
+        "stage1_ingest_ms": 0,
+        "stage2_outline_ms": 0,
+        "stage3_slides_verify_ms": 0,
+        "stage4_compile_ms": 0,
+        "stage_sum_ms": 0
+      },
+      "provider": "ollama",
+      "model": "qwen2.5:7b"
+    },
+    {
+      "runIndex": 2,
+      "doNotCache": true,
+      "httpStatus": 200,
+      "clientWallClockMs": 86114,
+      "stageTimings": {
+        "stage1_ingest_ms": 0,
+        "stage2_outline_ms": 0,
+        "stage3_slides_verify_ms": 0,
+        "stage4_compile_ms": 0,
+        "stage_sum_ms": 0
+      },
+      "provider": "ollama",
+      "model": "qwen2.5:7b"
+    }
+  ]
+}

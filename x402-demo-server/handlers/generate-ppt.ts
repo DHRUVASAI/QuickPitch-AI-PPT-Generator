@@ -2,6 +2,7 @@ import type { Context } from 'hono';
 import { getModelClient } from '../models/index.js';
 import {
   extractTranscript,
+  extractYouTubeVideoId,
   synthesizeOutline,
   planSlideStructure,
   compilePptx,
@@ -177,6 +178,9 @@ export async function handleGeneratePpt(c: Context) {
         partialNotice = 'Transcript used partial video metadata';
       }
     } catch (err: any) {
+      if (err.message?.includes('[WrongVideoGuard]')) {
+        throw err;
+      }
       console.warn('⚠️ [QuickPitch Stage 1] Transcript extraction encountered error, using safe partial fallback:', err.message);
       isPartial = true;
       partialNotice = `Transcript extraction error: ${err.message}`;
@@ -188,6 +192,26 @@ export async function handleGeneratePpt(c: Context) {
         charCount: (text || url || '').length,
         metadata: { partial: true },
       };
+    }
+
+    // Requirement 2: Wrong-video guard in the pipeline (not just a test)
+    // After extraction, compare the transcript's video id and yt-dlp title with the request and fail loudly if they differ.
+    if (source_type === 'youtube' && url) {
+      const requestedId = extractYouTubeVideoId(url);
+      const extractedId = (transcriptData.metadata as any)?.videoId || extractYouTubeVideoId((transcriptData.metadata as any)?.url || url);
+      if (requestedId && extractedId && requestedId !== extractedId) {
+        throw new Error(`[WrongVideoGuard] FAILED: Video ID mismatch! Requested "${requestedId}" but transcript belongs to "${extractedId}".`);
+      }
+      const ytdlpTitle = (transcriptData.metadata as any)?.ytdlpTitle || transcriptData.title;
+      const expectedVideoId = (body as any).expected_video_id || (body as any).expectedVideoId;
+      const expectedTitle = (body as any).expected_title || (body as any).expectedTitle;
+      if (expectedVideoId && extractedId && expectedVideoId !== extractedId) {
+        throw new Error(`[WrongVideoGuard] FAILED: Expected video ID "${expectedVideoId}" does not match extracted "${extractedId}".`);
+      }
+      if (expectedTitle && ytdlpTitle && !ytdlpTitle.toLowerCase().includes(String(expectedTitle).toLowerCase())) {
+        throw new Error(`[WrongVideoGuard] FAILED: Expected title "${expectedTitle}" does not match yt-dlp title "${ytdlpTitle}".`);
+      }
+      console.log(`✓ [WrongVideoGuard] Video guard verified: ID "${extractedId}" matches requested "${requestedId}". yt-dlp title: "${ytdlpTitle}"`);
     }
 
     // Time slicing on transcript text if startSec or endSec specified
@@ -273,6 +297,7 @@ export async function handleGeneratePpt(c: Context) {
         includeAgenda: agenda !== false && include_agenda !== false,
         includeSummary: summary !== false && include_summary !== false,
         focusText: focus_text ? String(focus_text).trim() : undefined,
+        doNotCache: do_not_cache === true,
       }
     );
 
@@ -324,6 +349,12 @@ export async function handleGeneratePpt(c: Context) {
     s4Dur = Date.now() - t4Start;
     const totalDur = Date.now() - pipelineStartTime;
     const sumDur = s1Dur + s2Dur + s3Dur + s4Dur;
+    const auditRecord = lastJobAudit.get(jobId);
+    if (auditRecord) {
+      auditRecord.timings.s4Dur = s4Dur;
+      auditRecord.timings.sumDur = sumDur;
+      auditRecord.timings.totalDur = totalDur;
+    }
     console.log(`[QuickPitch Timing] Ingestion: ${s1Dur}ms | Outline: ${s2Dur}ms | Slides+Verify: ${s3Dur}ms | Compile: ${s4Dur}ms | StageSum: ${sumDur}ms | Total: ${totalDur}ms`);
 
     console.log(`✅ Success! Returning ${pptxResult.fileName} (${pptxResult.buffer.length} bytes) ${isPartial ? '[PARTIAL]' : '[COMPLETE]'} (Provider: ${providerUsed})`);
@@ -335,7 +366,9 @@ export async function handleGeneratePpt(c: Context) {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'Content-Disposition': `attachment; filename="${pptxResult.fileName}"`,
         'X-QuickPitch-Status': isPartial ? 'partial' : 'complete',
+        'X-QuickPitch-Job-Id': jobId,
         'X-QuickPitch-Provider': providerUsed,
+        'X-QuickPitch-Model': providerUsed === 'groq' ? 'openai/gpt-oss-20b' : 'qwen2.5:7b',
         'X-QuickPitch-Provider-Preference': validatedPref,
         'X-QuickPitch-Privacy-Notice': validatedPref === 'cloud'
           ? 'Cloud LLM processing enabled. Prompts and transcript chunks may be sent to Groq cloud API.'

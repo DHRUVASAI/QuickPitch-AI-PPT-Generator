@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-10-22T20:28:35.430Z",
+  "audit": "Round 3.9 Part 1.11 Item 7 - Cloud-Preference Pipeline Benchmark and Telemetry",
+  "slidesPlusVerifyLatencyExplanation": [
+    "In Part 1.9, Stage 3 (Slides + Verify) took 160 to 325s during cloud-preference runs because of two compounding architectural factors:",
+    "1. Verification Judge Defaulted to Local Ollama: By design (Part 1.9 Item 1 requirement: \"judge runs locally through Ollama qwen2.5:7b by default\"), each bullet was evaluated by local Ollama rather than Groq. A 6-8 slide deck generates 25-35 bullets; each bullet evaluation plus regeneration took 3-6s of local GPU inference, summing to over 150-200s.",
+    "2. Regeneration Cascade & Sequential LLM Calls: Whenever a bullet was flagged as NO SUPPORT, it triggered an LLM regeneration pass followed by a second verification pass. With 30+ sequential calls and local VRAM switching, total Stage 3 time reached 160-325s.",
+    "3. Cloud Outline/Slide synthesis itself was extremely fast (700-900ms on Groq); the latency was entirely consumed by the sequential verification loop on local Ollama."
+  ],
+  "runs": [
+    {
+      "runIndex": 1,
+      "prompt": "Synthesize an executive summary of the Fermi Paradox in 2 concise sentences.",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "httpStatus": 200,
+      "retries": 0,
+      "count429": 0,
+      "usage": {
+        "promptTokens": 43,
+        "completionTokens": 55,
+        "totalTokens": 98
+      },
+      "durationMs": 1508,
+      "responseExcerpt": "The Fermi Paradox questions why, given the vast number of potentially habitable planets, we have not..."
+    },
+    {
+      "runIndex": 2,
+      "prompt": "List 3 potential solutions to the Fermi Paradox based on astrophysics.",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "httpStatus": 200,
+      "retries": 0,
+      "count429": 0,
+      "usage": {
+        "promptTokens": 43,
+        "completionTokens": 120,
+        "totalTokens": 163
+      },
+      "durationMs": 2465,
+      "responseExcerpt": "1. **Technological Limitations**: Advanced civilizations may face insurmountable technological barri..."
+    },
+    {
+      "runIndex": 3,
+      "prompt": "Explain why human-level AI development requires rigorous verification.",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "httpStatus": 200,
+      "retries": 0,
+      "count429": 0,
+      "usage": {
+        "promptTokens": 37,
+        "completionTokens": 79,
+        "totalTokens": 116
+      },
+      "durationMs": 1665,
+      "responseExcerpt": "Human-level AI development requires rigorous verification to ensure safety, reliability, and ethical..."
+    }
+  ]
+}

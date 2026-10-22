@@ -125,6 +125,7 @@ export async function listYouTubeCaptionTracks(url: string): Promise<{
   autoTracks: CaptionTrackInfo[];
   durationSeconds: number;
   title: string;
+  videoId: string;
 }> {
   try {
     const { stdout } = await execAsync(`yt-dlp --extractor-args "youtube:player_client=android,web" --dump-json --no-playlist "${url}"`, {
@@ -166,6 +167,7 @@ export async function listYouTubeCaptionTracks(url: string): Promise<{
       autoTracks,
       durationSeconds: info.duration || 0,
       title: info.title || 'YouTube Video',
+      videoId: info.id || '',
     };
   } catch (err: any) {
     return {
@@ -173,6 +175,7 @@ export async function listYouTubeCaptionTracks(url: string): Promise<{
       autoTracks: [],
       durationSeconds: 0,
       title: 'YouTube Video',
+      videoId: '',
     };
   }
 }

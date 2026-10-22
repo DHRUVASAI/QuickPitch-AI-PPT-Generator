@@ -13,7 +13,7 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 
 // Import handler functions
-import { handleGeneratePpt, jobStages } from './handlers/generate-ppt';
+import { handleGeneratePpt, jobStages, lastJobAudit } from './handlers/generate-ppt';
 import { handleTranscribeAudio } from './handlers/transcribe-audio';
 import { handleLoadYouTubeTranscript, handleYouTubeChat } from './handlers/youtube-chat';
 
@@ -124,6 +124,16 @@ app.get('/generate-ppt/status/:jobId', (c) => {
     return c.json({ status: 'unknown', stage: 'ingest', percent: 15, message: 'Processing presentation...' }, 200);
   }
   return c.json({ status: 'ok', ...stage }, 200);
+});
+
+// QuickPitch - Audit endpoint for scoreboard and inspection
+app.get('/generate-ppt/audit/:jobId', (c) => {
+  const jobId = c.req.param('jobId');
+  const audit = lastJobAudit.get(jobId);
+  if (!audit) {
+    return c.json({ status: 'not_found' }, 404);
+  }
+  return c.json({ status: 'ok', jobId, audit }, 200);
 });
 
 // AWS Transcribe Audio - Real speech-to-text via AWS Transcribe + S3
@@ -251,7 +261,7 @@ app.notFound((c) => {
 
 if (!process.env.NO_AUTO_SERVE) {
   try {
-    serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
+    const serverInstance = serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
       console.log('\n✅ QuickPitch AI Server is running! (Free Mode)\n');
       console.log('═'.repeat(60));
       console.log('Endpoints:');
@@ -264,6 +274,11 @@ if (!process.env.NO_AUTO_SERVE) {
       console.log(`  curl http://localhost:${port}/health\n`);
       console.log('═'.repeat(60) + '\n');
     });
+    if (serverInstance && typeof (serverInstance as any).on === 'function') {
+      (serverInstance as any).on('error', (err: any) => {
+        console.warn(`[Server] Port ${port} notice: ${err.message}`);
+      });
+    }
   } catch (err: any) {
     console.warn(`[Server] Already running on port ${port} or cannot bind: ${err.message}`);
   }

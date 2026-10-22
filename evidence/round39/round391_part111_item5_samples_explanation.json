@@ -1,0 +1,112 @@
+{
+  "timestamp": "2026-10-22T20:24:39.918Z",
+  "audit": "Round 3.9 Part 1.11 Item 5 - Explanation of Table 2A Samples & Chunk Misattribution",
+  "productionUsesSameChunkPlusNeighbourPath": true,
+  "productionImplementationNote": "Production slide-planner.ts and bullet-verifier.ts accept neighbourChunk and evaluate citedChunk + 1 adjacent neighbour to prevent edge boundary drops, but cannot recover if the model cites a completely disjoint chunk (e.g. Chunk 8 vs Chunk 5).",
+  "samples": [
+    {
+      "sampleId": "SAMPLE-1",
+      "bullet": "In the robot example, the robot used a wooden plank to cross the river.",
+      "modelCitedChunk": {
+        "citedChunkId": 8,
+        "neighbourChunkId": 9,
+        "timestamps": "02:38 - 03:00",
+        "translatedText": "\"The train has not been made for example, Alexa cannot ask Alexa to fetch traffic updates from the office to home as it is not a trade Alexa is capable of. Now let's talk about another category of AI, which is string AI. These are like robots that exist only in our imagination for now.\"",
+        "verdict": "NO SUPPORT",
+        "reason": "Model misattributed chunk ID. Chunk 8 contains \"\"The train has not been made for example, Alexa cannot ask Alexa to fetch traffi...\", which has 0 overlap with the claim.",
+        "substringMatches": []
+      },
+      "top3HighestOverlapChunks": [
+        {
+          "unitIndex": 4,
+          "timestamps": "01:09 - 01:32",
+          "jaccardOverlap": 0.1395,
+          "exactKeyPhraseMatches": [],
+          "translatedSnippet": "However, while one path is clear, the other is rocky, and the robot must decide which path to take u...",
+          "hindiSnippet": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा..."
+        },
+        {
+          "unitIndex": 5,
+          "timestamps": "01:32 - 01:54",
+          "jaccardOverlap": 0.1395,
+          "exactKeyPhraseMatches": [
+            "cross the river"
+          ],
+          "translatedSnippet": "The robot uses the given input to cross the river and finds a solution to the problem, which is call...",
+          "hindiSnippet": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूं..."
+        },
+        {
+          "unitIndex": 3,
+          "timestamps": "00:48 - 01:09",
+          "jaccardOverlap": 0.102,
+          "exactKeyPhraseMatches": [],
+          "translatedSnippet": "There is a robot that we have built in our lab, and it has now been released into the field. Despite...",
+          "hindiSnippet": "यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैं..."
+        }
+      ],
+      "trueContainingUnit": {
+        "unitIndex": 4,
+        "timestamps": "01:09 - 01:32",
+        "exactMatches": [],
+        "verdict": "SUPPORTED",
+        "evidenceText": "However, while one path is clear, the other is rocky, and the robot must decide which path to take u..."
+      },
+      "modelChunkAttributionDiagnosis": "The model's slide synthesis correctly generated facts from the video, but hallucinates/misindexes the numeric CHUNK_ID metadata (citing Chunk 8 instead of Chunk 4). When tested against the misattributed Chunk 8, the verifier strictly and correctly returns NO SUPPORT. When searched against Chunk 4, the bullet is verified with exact substring matches."
+    },
+    {
+      "sampleId": "SAMPLE-2",
+      "bullet": "Weak AI is also called narrow AI and handles only one dedicated task.",
+      "modelCitedChunk": {
+        "citedChunkId": 12,
+        "neighbourChunkId": 13,
+        "timestamps": "04:15 - 04:41",
+        "translatedText": "The AI robot named CitizenShip AI, which is a muscular skeletal system robot that can understand its owner's emotions, AI that develops emotions over time and thinks about them, and the comments section below to leave your answer. Three winners of Amazon-in are still a mystery, so there's no surprise that AI has.",
+        "verdict": "NO SUPPORT",
+        "reason": "Model misattributed chunk ID. Chunk 12 contains \"The AI robot named CitizenShip AI, which is a muscular skeletal system robot tha...\", which has 0 overlap with the claim.",
+        "substringMatches": []
+      },
+      "top3HighestOverlapChunks": [
+        {
+          "unitIndex": 6,
+          "timestamps": "01:54 - 02:18",
+          "jaccardOverlap": 0.1154,
+          "exactKeyPhraseMatches": [
+            "weak ai",
+            "narrow ai"
+          ],
+          "translatedSnippet": "Let's take a look at the two broad categories in which AI has been divided: Weak AI, also known as N...",
+          "hindiSnippet": "है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कह..."
+        },
+        {
+          "unitIndex": 5,
+          "timestamps": "01:32 - 01:54",
+          "jaccardOverlap": 0.087,
+          "exactKeyPhraseMatches": [],
+          "translatedSnippet": "The robot uses the given input to cross the river and finds a solution to the problem, which is call...",
+          "hindiSnippet": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूं..."
+        },
+        {
+          "unitIndex": 7,
+          "timestamps": "02:18 - 02:38",
+          "jaccardOverlap": 0.0851,
+          "exactKeyPhraseMatches": [
+            "weak ai"
+          ],
+          "translatedSnippet": "We can say that Alexa is not a weak AI because it can perform many tasks. Well, it's not really true...",
+          "hindiSnippet": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में ..."
+        }
+      ],
+      "trueContainingUnit": {
+        "unitIndex": 6,
+        "timestamps": "01:54 - 02:18",
+        "exactMatches": [
+          "weak ai",
+          "narrow ai"
+        ],
+        "verdict": "SUPPORTED",
+        "evidenceText": "Let's take a look at the two broad categories in which AI has been divided: Weak AI, also known as N..."
+      },
+      "modelChunkAttributionDiagnosis": "The model's slide synthesis correctly generated facts from the video, but hallucinates/misindexes the numeric CHUNK_ID metadata (citing Chunk 12 instead of Chunk 6). When tested against the misattributed Chunk 12, the verifier strictly and correctly returns NO SUPPORT. When searched against Chunk 6, the bullet is verified with exact substring matches."
+    }
+  ]
+}

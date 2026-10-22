@@ -19,6 +19,12 @@ export interface ExtractTranscriptInput {
   topicHint?: string;
 }
 
+export function extractYouTubeVideoId(url: string): string {
+  if (!url) return '';
+  const match = url.match(/(?:v=|\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : '';
+}
+
 export async function fetchYouTubeMetadata(url: string): Promise<{ title: string; description: string }> {
   try {
     return await withRetryAndTimeout(
@@ -229,9 +235,10 @@ export async function extractTranscript(
       throw new Error('Valid YouTube URL is required');
     }
 
+    const requestedVideoId = extractYouTubeVideoId(url);
     const meta = await fetchYouTubeMetadata(url);
     title = meta.title || title;
-    metadata = { url, description: meta.description };
+    metadata = { url, videoId: requestedVideoId, description: meta.description };
 
     let useCaptions = false;
 
@@ -240,6 +247,9 @@ export async function extractTranscript(
       // Step 1: Caption Quality Gate (Check tracks & word count relative to duration)
       console.log(`[TranscriptChain: YouTube] Step 1: Checking caption tracks & quality gate for ${url}...`);
       const trackInfo = await listYouTubeCaptionTracks(url);
+      if (trackInfo.videoId && requestedVideoId && trackInfo.videoId !== requestedVideoId) {
+        throw new Error(`[WrongVideoGuard] FAILED: Video ID mismatch! Requested "${requestedVideoId}" but yt-dlp returned "${trackInfo.videoId}".`);
+      }
       const durationSeconds = trackInfo.durationSeconds;
       if (trackInfo.title && trackInfo.title !== 'YouTube Video') {
         title = trackInfo.title;
@@ -266,6 +276,8 @@ export async function extractTranscript(
           const detectedLang = isDevanagari ? 'hi' : (gateResult.language || trackInfo.manualTracks[0]?.language || trackInfo.autoTracks[0]?.language || 'en');
           metadata = {
             url,
+            videoId: trackInfo.videoId || requestedVideoId,
+            ytdlpTitle: trackInfo.title,
             description: meta.description,
             durationSeconds,
             isManualCaptions: gateResult.isManual,

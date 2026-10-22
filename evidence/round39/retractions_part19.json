@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-10-22T20:25:00.000Z",
+  "audit": "Round 3.9 Part 1.11 Item 1 - Formal Retractions of Part 1.9 Claims and Tables",
+  "gitDiffCheck": {
+    "file": "evidence/round39/round391_part19_item4_real_endpoint.json",
+    "comparedCommits": "5f80e2b vs 1f02442",
+    "changed": false,
+    "linesChanged": 0,
+    "confirmation": "git diff 5f80e2b 1f02442 -- evidence/round39/round391_part19_item4_real_endpoint.json produced 0 diff lines. File was created in commit 5f80e2b and remained completely untouched in commit 1f02442."
+  },
+  "retractions": [
+    {
+      "claimOrTable": "Closest-lines table (Part 1.9 Table 3B / Python script output)",
+      "oneLineReason": "In Part 1.9, top 3 closest lines were matched using uncalibrated fuzzy substring heuristics without Unicode Devanagari timestamp alignment.",
+      "replacementEvidenceFile": "scratch/closest_lines_fresh_controls.json and evidence/round39/round391_part110_item4_original_negatives.json"
+    },
+    {
+      "claimOrTable": "Translation side-by-side overlap table (reported values 0.545 and 0.641)",
+      "oneLineReason": "Reported overlap values (0.545 and 0.641) used an unvalidated legacy string similarity formula rather than standard unit-tested Jaccard set intersection over union.",
+      "replacementEvidenceFile": "evidence/round39/round391_part19_item6_translation_remeasure.json and core/utils/jaccard.ts"
+    },
+    {
+      "claimOrTable": "Security table with docs/ files assertion of 'rotation confirmed'",
+      "oneLineReason": "Asserted AWS key rotation as 'confirmed' based only on local repo history, when AWS IAM key deactivation/deletion is external, and flagged generic docs examples rather than active secrets.",
+      "replacementEvidenceFile": "evidence/round39/round391_part110_item1_disclosure.json and Part 1.10 Item 7 raw git log -G output"
+    },
+    {
+      "claimOrTable": "Cloud latency table labelled llama-3.3-70b",
+      "oneLineReason": "Cloud benchmark table was statically labelled llama-3.3-70b-versatile, whereas Groq's active runtime model list at the time served openai/gpt-oss-20b.",
+      "replacementEvidenceFile": "evidence/round39/round391_part110_item5_groq_runtime_models.json"
+    },
+    {
+      "claimOrTable": "'Mayan Civilization' title for video kcc_KAhwpa0",
+      "oneLineReason": "Video ID kcc_KAhwpa0 was mistakenly titled 'Mayan Civilization' in early test scripts when its true yt-dlp YouTube title is 'The Fermi Paradox — Where Are All The Aliens?'.",
+      "replacementEvidenceFile": "evidence/round39/round391_part19_item4_real_endpoint.json"
+    },
+    {
+      "claimOrTable": "Hindi 32/24/8 counts",
+      "oneLineReason": "Counts of 32 generated, 24 verified, 8 dropped conflated synthetic injected negative controls into production model-generated bullet totals.",
+      "replacementEvidenceFile": "evidence/round39/round391_part19_item4_real_endpoint.json"
+    }
+  ]
+}
