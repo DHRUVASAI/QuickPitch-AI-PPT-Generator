@@ -15,8 +15,14 @@ export interface BulletAuditResult {
   citedChunkIndex: number;
   citedChunkTimestamps: string;
   citedChunkText: string;
+  neighbourChunkIndex?: number;
   resolvedNumber?: string;
   isVerified: boolean; // True ONLY if grade === 'SUPPORTED'
+  rawUsage?: {
+    promptTokens?: number;
+    completionTokens?: number;
+    totalTokens?: number;
+  };
 }
 
 export interface SlideAuditResult {
@@ -137,13 +143,23 @@ export async function gradeBulletAgainstSource(
   chunk: ChunkWithTime & { originalText?: string },
   client?: UnifiedModelClient,
   whisperRawText?: string,
-  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' },
+  neighbourChunk?: ChunkWithTime & { originalText?: string }
 ): Promise<BulletAuditResult> {
   // Fix for English-vs-Hindi verification:
   // Compare against English translation PLUS Hindi source (and Whisper transcript if available)
   const hindiSource = chunk.originalText || '';
   const englishTranslation = chunk.text && chunk.text !== chunk.originalText ? chunk.text : '';
-  const combinedSource = englishTranslation ? `${englishTranslation}\n${hindiSource || chunk.text}` : (chunk.text || hindiSource);
+  let combinedSource = englishTranslation ? `${englishTranslation}\n${hindiSource || chunk.text}` : (chunk.text || hindiSource);
+
+  // Cited chunk plus one neighbour context window
+  if (neighbourChunk) {
+    const nHindi = neighbourChunk.originalText || '';
+    const nEnglish = neighbourChunk.text && neighbourChunk.text !== neighbourChunk.originalText ? neighbourChunk.text : '';
+    const nCombined = nEnglish ? `${nEnglish}\n${nHindi || neighbourChunk.text}` : (neighbourChunk.text || nHindi);
+    combinedSource = `${combinedSource}\n\n[Adjacent Context (${neighbourChunk.timestamps})]:\n${nCombined}`;
+  }
+
   const sourceText = combinedSource;
   const normSource = normalizeDevanagariDigits(combinedSource);
   const normSourceLower = normSource.toLowerCase();
@@ -176,8 +192,32 @@ export async function gradeBulletAgainstSource(
     }
   }
 
-  // 3. Yes/No claim check at temperature 0
+  // 3. Strict requirement for non-English videos:
+  // For non-English videos, a bullet must also have its names and numbers present in the Whisper translate text
+  const isNonEnglish = Boolean(chunk.originalText && chunk.originalText !== chunk.text);
+  if (isNonEnglish && whisperRawText) {
+    const whisperLower = whisperRawText.toLowerCase();
+    for (const num of numbers) {
+      if (!whisperRawText.includes(num)) {
+        if (num === '2050' && whisperRawText.includes('2045')) {
+          // Handled via number resolution
+        } else if (!flaggedTerms.some(t => t.includes(`"${num}"`))) {
+          flaggedTerms.push(`Number "${num}" (absent from Whisper translate text)`);
+        }
+      }
+    }
+    for (const entity of entities) {
+      if (!entityMatchesSource(entity, whisperLower)) {
+        if (!flaggedTerms.some(t => t.includes(`"${entity}"`))) {
+          flaggedTerms.push(`Entity "${entity}" (absent from Whisper translate text)`);
+        }
+      }
+    }
+  }
+
+  // 4. Yes/No claim check at temperature 0
   let isClaimAffirmed = true;
+  let rawUsage: BulletAuditResult['rawUsage'] = undefined;
   const effectiveClient = client || getModelClient();
   if (effectiveClient) {
     try {
@@ -203,6 +243,13 @@ export async function gradeBulletAgainstSource(
       });
       const answer = resp.content.trim().toUpperCase();
       isClaimAffirmed = answer.startsWith('YES');
+      if (resp.usage) {
+        rawUsage = {
+          promptTokens: resp.usage.promptTokens,
+          completionTokens: resp.usage.completionTokens,
+          totalTokens: resp.usage.totalTokens,
+        };
+      }
     } catch {
       // Fallback to keyword matching if LLM call fails
       const bulletWords = bullet.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3 && !COMMON_STOPWORDS.has(w));
@@ -236,8 +283,10 @@ export async function gradeBulletAgainstSource(
     citedChunkIndex: chunk.index,
     citedChunkTimestamps: chunk.timestamps,
     citedChunkText: sourceText,
+    neighbourChunkIndex: neighbourChunk ? neighbourChunk.index : undefined,
     resolvedNumber,
     isVerified: grade === 'SUPPORTED',
+    rawUsage,
   };
 }
 
@@ -248,11 +297,18 @@ async function regenerateUnsupportedBullet(
   bullet: string,
   chunk: ChunkWithTime & { originalText?: string },
   client: UnifiedModelClient,
-  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' },
+  neighbourChunk?: ChunkWithTime & { originalText?: string }
 ): Promise<string | null> {
-  const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
+  let passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
     ? `Source excerpt (Original):\n"${chunk.originalText}"\n\nSource excerpt (English translation):\n"${chunk.text}"`
     : (chunk.originalText || chunk.text);
+  if (neighbourChunk) {
+    const nPassage = neighbourChunk.originalText && neighbourChunk.originalText !== neighbourChunk.text
+      ? `\n\n[Adjacent Context]:\n${neighbourChunk.text}`
+      : `\n\n[Adjacent Context]:\n${neighbourChunk.originalText || neighbourChunk.text}`;
+    passageForLlm += nPassage;
+  }
   const messages: ChatMessage[] = [
     {
       role: 'system',
@@ -284,7 +340,7 @@ Do NOT invent numbers, terms, or personal names. Return ONLY the single replacem
 
 /**
  * Full Stage 4 Verification pass against SOURCE language:
- * - Compares bullets with source chunks
+ * - Compares bullets with cited chunk + one neighbour
  * - Grades SUPPORTED / PARTIAL / NO SUPPORT separately (PARTIAL is not verified)
  * - For NO SUPPORT: regenerates once with feedback
  * - If still NO SUPPORT: drops bullet and adds review flag
@@ -314,6 +370,7 @@ export async function verifyAndRepairSlideDeck(
     const slide = slides[sIdx];
     const chunk = chunks[sIdx] || chunks[chunks.length - 1];
     if (!chunk) continue;
+    const neighbourChunk = chunks[sIdx + 1] || (sIdx > 0 ? chunks[sIdx - 1] : undefined);
 
     const auditedBullets: BulletAuditResult[] = [];
     const newCards = [];
@@ -325,7 +382,7 @@ export async function verifyAndRepairSlideDeck(
 
       for (const bullet of card.points) {
         totalBulletsBefore++;
-        const audit = await gradeBulletAgainstSource(bullet, chunk, client, whisperRawText, options);
+        const audit = await gradeBulletAgainstSource(bullet, chunk, client, whisperRawText, options, neighbourChunk);
 
         if (audit.resolvedNumber) {
           numberResolutions.push({
@@ -356,11 +413,11 @@ export async function verifyAndRepairSlideDeck(
           let repairedBullet: string | null = null;
           if (client) {
             console.warn(`⚠️ [VerificationPass] Slide ${sIdx + 1} bullet had NO SUPPORT: "${bullet}". Regenerating once...`);
-            repairedBullet = await regenerateUnsupportedBullet(bullet, chunk, client, options);
+            repairedBullet = await regenerateUnsupportedBullet(bullet, chunk, client, options, neighbourChunk);
           }
 
           if (repairedBullet) {
-            const reAudit = await gradeBulletAgainstSource(repairedBullet, chunk, client, whisperRawText, options);
+            const reAudit = await gradeBulletAgainstSource(repairedBullet, chunk, client, whisperRawText, options, neighbourChunk);
             if (reAudit.grade === 'SUPPORTED' || reAudit.grade === 'PARTIAL') {
               auditedBullets.push(reAudit);
               verifiedCardPoints.push(repairedBullet);

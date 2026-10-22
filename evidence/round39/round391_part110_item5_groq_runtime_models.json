@@ -1,0 +1,92 @@
+{
+  "timestamp": "2026-10-22T20:02:33.458Z",
+  "audit": "Round 3.9 Part 1.10 Item 5 - Groq Runtime Models List & Cloud Telemetry",
+  "runtimeModelListQuery": {
+    "endpoint": "https://api.groq.com/openai/v1/models",
+    "httpStatus": 200,
+    "totalListedModels": 11,
+    "listedModels": [
+      "qwen/qwen3.8-27b",
+      "meta-llama/llama-prompt-guard-2-22m",
+      "openai/gpt-oss-120b",
+      "meta-llama/llama-prompt-guard-2-86m",
+      "whisper-large-v3",
+      "canopylabs/orpheus-arabic-saudi",
+      "canopylabs/orpheus-v1-english",
+      "allam-2-7b",
+      "whisper-large-v3-turbo",
+      "openai/gpt-oss-safeguard-20b",
+      "openai/gpt-oss-20b"
+    ],
+    "selectedModelForGeneration": "openai/gpt-oss-20b"
+  },
+  "uiPrivacyTextMapping": {
+    "location": "QuickPitchHome.tsx (lines 1148-1154)",
+    "displayedModelName": "openai/gpt-oss-20b",
+    "text": "Privacy Notice (Cloud Enabled): Translation, outline, slide planning, and verification will prioritize Groq cloud API (openai/gpt-oss-20b). Transcript text and synthesis prompts are transmitted over TLS to Groq's API servers."
+  },
+  "cloudTelemetry": {
+    "totalCalls": 3,
+    "latestHttpStatus": 200,
+    "count429": 0,
+    "retries": 0,
+    "tokensPerCall": [
+      {
+        "promptTokens": 91,
+        "completionTokens": 36,
+        "totalTokens": 127
+      },
+      {
+        "promptTokens": 90,
+        "completionTokens": 50,
+        "totalTokens": 140
+      },
+      {
+        "promptTokens": 96,
+        "completionTokens": 36,
+        "totalTokens": 132
+      }
+    ],
+    "averagePromptTokens": 92,
+    "averageCompletionTokens": 41,
+    "averageTotalTokens": 133
+  },
+  "callRecords": [
+    {
+      "callIndex": 1,
+      "prompt": "State in 1 sentence what artificial intelligence is.",
+      "modelUsed": "openai/gpt-oss-20b",
+      "durationMs": 138,
+      "usage": {
+        "promptTokens": 91,
+        "completionTokens": 36,
+        "totalTokens": 127
+      },
+      "responseSnippet": "Artificial intelligence is the simulation of human-like reasoning, learning, and"
+    },
+    {
+      "callIndex": 2,
+      "prompt": "List 3 common everyday applications of AI.",
+      "modelUsed": "openai/gpt-oss-20b",
+      "durationMs": 493,
+      "usage": {
+        "promptTokens": 90,
+        "completionTokens": 50,
+        "totalTokens": 140
+      },
+      "responseSnippet": "1. **Voice assistants** (e.g., Siri, Alexa, Google Assistant) – interpret speech"
+    },
+    {
+      "callIndex": 3,
+      "prompt": "Is weak AI restricted to a single domain? Answer in 1 word.",
+      "modelUsed": "openai/gpt-oss-20b",
+      "durationMs": 135,
+      "usage": {
+        "promptTokens": 96,
+        "completionTokens": 36,
+        "totalTokens": 132
+      },
+      "responseSnippet": "Yes"
+    }
+  ]
+}

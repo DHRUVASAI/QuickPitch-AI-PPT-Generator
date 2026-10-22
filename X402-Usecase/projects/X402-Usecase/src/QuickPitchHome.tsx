@@ -1149,7 +1149,7 @@ export default function QuickPitchHome() {
                     <div className="flex items-start space-x-2">
                       <span className="text-sm">🌐</span>
                       <div>
-                        <strong>Privacy Notice (Cloud Enabled):</strong> Translation, outline, slide planning, and verification will prioritize Groq cloud API (Llama-3.3-70b-versatile). Transcript text and synthesis prompts are transmitted over TLS to Groq's API servers.
+                        <strong>Privacy Notice (Cloud Enabled):</strong> Translation, outline, slide planning, and verification will prioritize Groq cloud API (openai/gpt-oss-20b). Transcript text and synthesis prompts are transmitted over TLS to Groq's API servers.
                       </div>
                     </div>
                   ) : (

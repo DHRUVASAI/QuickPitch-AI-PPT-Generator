@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-10-22T19:56:07.180Z",
+  "audit": "Round 3.9 Part 1.10 Item 4 - Original 5 Negatives (Mode D Evidence-Bound)",
+  "description": "Model supplies chunk ID and exact quote; code ONLY verifies verbatim substring. Evaluated against 5 original negatives.",
+  "datasetClassification": {
+    "originalNegatives": "Held-out test controls (5 items)",
+    "part19FreshControls": "Development set (12 items: 5 pos, 7 neg)"
+  },
+  "part18SurvivalExplanation": "In Part 1.8, 2 negatives survived because the code heuristic extractVerifiableEntities found zero capitalized entities (regex was /[A-Z][a-z]+/) and fell back to matching individual words across the entire 14,000 character full-video transcript. In Mode D with strict chunk ID and exact quote verification, 0 survived.",
+  "counts": {
+    "tested": 5,
+    "survived": 0,
+    "dropped": 5,
+    "autoCheckPassed": true
+  },
+  "items": [
+    {
+      "id": "NEG-ORIG-1",
+      "name": "transformer attention",
+      "claim": "The speaker explains how transformer models use attention.",
+      "modelReturned": {
+        "chunkId": 0,
+        "quote": "NONE",
+        "rawResponse": "CHUNK_ID: 0\nQUOTE: \"NONE\""
+      },
+      "codeVerification": {
+        "verified": false,
+        "survivalStatus": "DROPPED",
+        "dropReason": "Model correctly identified no supporting chunk (returned CHUNK_ID: 0 / NONE)",
+        "citedChunkIndex": 0,
+        "citedChunkText": "N/A - No chunk contains this claim"
+      }
+    },
+    {
+      "id": "NEG-ORIG-2",
+      "name": "banning autonomous weapons",
+      "claim": "The video recommends banning autonomous weapons.",
+      "modelReturned": {
+        "chunkId": 0,
+        "quote": "NONE",
+        "rawResponse": "CHUNK_ID: 0\nQUOTE: \"NONE\""
+      },
+      "codeVerification": {
+        "verified": false,
+        "survivalStatus": "DROPPED",
+        "dropReason": "Model correctly identified no supporting chunk (returned CHUNK_ID: 0 / NONE)",
+        "citedChunkIndex": 0,
+        "citedChunkText": "N/A - No chunk contains this claim"
+      }
+    },
+    {
+      "id": "NEG-ORIG-3",
+      "name": "commercial strong AI",
+      "claim": "The speaker says strong AI is already sold in commercial products.",
+      "modelReturned": {
+        "chunkId": 0,
+        "quote": "NONE",
+        "rawResponse": "CHUNK_ID: 0\nQUOTE: \"NONE\""
+      },
+      "codeVerification": {
+        "verified": false,
+        "survivalStatus": "DROPPED",
+        "dropReason": "Model correctly identified no supporting chunk (returned CHUNK_ID: 0 / NONE)",
+        "citedChunkIndex": 0,
+        "citedChunkText": "N/A - No chunk contains this claim"
+      }
+    },
+    {
+      "id": "NEG-ORIG-4",
+      "name": "MIT 1970",
+      "claim": "The speaker says AI was invented at MIT in 1970.",
+      "modelReturned": {
+        "chunkId": 0,
+        "quote": "NONE",
+        "rawResponse": "CHUNK_ID: 0\nQUOTE: \"NONE\""
+      },
+      "codeVerification": {
+        "verified": false,
+        "survivalStatus": "DROPPED",
+        "dropReason": "Model correctly identified no supporting chunk (returned CHUNK_ID: 0 / NONE)",
+        "citedChunkIndex": 0,
+        "citedChunkText": "N/A - No chunk contains this claim"
+      }
+    },
+    {
+      "id": "NEG-ORIG-5",
+      "name": "blockchain",
+      "claim": "The speaker explains how blockchain secures AI models.",
+      "modelReturned": {
+        "chunkId": 0,
+        "quote": "NONE",
+        "rawResponse": "CHUNK_ID: 0\nQUOTE: \"NONE\""
+      },
+      "codeVerification": {
+        "verified": false,
+        "survivalStatus": "DROPPED",
+        "dropReason": "Model correctly identified no supporting chunk (returned CHUNK_ID: 0 / NONE)",
+        "citedChunkIndex": 0,
+        "citedChunkText": "N/A - No chunk contains this claim"
+      }
+    }
+  ]
+}

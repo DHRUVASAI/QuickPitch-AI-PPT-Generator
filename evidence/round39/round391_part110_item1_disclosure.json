@@ -1,0 +1,162 @@
+{
+  "timestamp": "2026-10-22T20:01:55.346Z",
+  "audit": "Round 3.9 Part 1.10 Item 1 - Disclosure of Files Changed Since 629b267 & kcc_KAhwpa0 Drop Rate Transition",
+  "changedFilesCount": 25,
+  "changedFiles": [
+    {
+      "file": "X402-Usecase/projects/X402-Usecase/src/QuickPitchHome.tsx",
+      "changeType": "modified",
+      "oneLineReason": "Added per-request llm_provider_preference toggle button and dynamic visible privacy note for local vs cloud."
+    },
+    {
+      "file": "evidence/round39/round391_part19_item3_fresh_controls.json",
+      "changeType": "new file",
+      "oneLineReason": "Persisted results for Item 3 fresh controls across modes A, B, C, D (local and cloud)."
+    },
+    {
+      "file": "evidence/round39/round391_part19_item4_real_endpoint.json",
+      "changeType": "new file",
+      "oneLineReason": "Persisted per-bullet evaluation and timing table for real endpoint runs on kcc_KAhwpa0 and qzAHXO-cN5Q."
+    },
+    {
+      "file": "evidence/round39/round391_part19_item5_provider_latency.json",
+      "changeType": "new file",
+      "oneLineReason": "Persisted cold latency benchmark data across 3 local and 3 cloud runs with stage times."
+    },
+    {
+      "file": "evidence/round39/round391_part19_item6_translation_remeasure.json",
+      "changeType": "new file",
+      "oneLineReason": "Persisted re-measured 14-call, batched, and Whisper large-v3 translation runs and comparisons."
+    },
+    {
+      "file": "x402-demo-server/core/synthesis/bullet-verifier.ts",
+      "changeType": "modified",
+      "oneLineReason": "Fixed LLM verifier null-client bug by defaulting to getModelClient(), bound llm_provider_preference, set maxTokens: 5 with strict YES/NO check."
+    },
+    {
+      "file": "x402-demo-server/core/synthesis/outline-synthesizer.ts",
+      "changeType": "modified",
+      "oneLineReason": "Propagated llm_provider_preference into outline synthesis model calls."
+    },
+    {
+      "file": "x402-demo-server/core/synthesis/slide-planner.ts",
+      "changeType": "modified",
+      "oneLineReason": "Propagated llm_provider_preference and provider options to slide deck synthesis and verification passes."
+    },
+    {
+      "file": "x402-demo-server/core/transcript/chunk-translator.ts",
+      "changeType": "modified",
+      "oneLineReason": "Propagated llm_provider_preference into Hindi translation unit synthesis calls."
+    },
+    {
+      "file": "x402-demo-server/core/transcript/extractor.ts",
+      "changeType": "modified",
+      "oneLineReason": "Enhanced transcript extraction metadata and duration handling."
+    },
+    {
+      "file": "x402-demo-server/evidence/round39/round391_part17_audit.json",
+      "changeType": "deleted",
+      "oneLineReason": "Removed duplicate evidence file from demo server subdirectory to retain root evidence/ only."
+    },
+    {
+      "file": "x402-demo-server/evidence/round39/round391_part18_item1_precheck.json",
+      "changeType": "deleted",
+      "oneLineReason": "Removed duplicate evidence file from demo server subdirectory to retain root evidence/ only."
+    },
+    {
+      "file": "x402-demo-server/handlers/generate-ppt.ts",
+      "changeType": "modified",
+      "oneLineReason": "Parsed llm_provider_preference from request payload, emitted per-call timing and provider headers, updated lastJobAudit."
+    },
+    {
+      "file": "x402-demo-server/index.ts",
+      "changeType": "modified",
+      "oneLineReason": "Registered provider preference headers on HTTP responses."
+    },
+    {
+      "file": "x402-demo-server/models/providers/ollama.provider.ts",
+      "changeType": "modified",
+      "oneLineReason": "Added support for passing structured option overrides to Ollama."
+    },
+    {
+      "file": "x402-demo-server/models/types.ts",
+      "changeType": "modified",
+      "oneLineReason": "Added llm_provider_preference to GeneratePptRequest and completion options."
+    },
+    {
+      "file": "x402-demo-server/models/unified-client.ts",
+      "changeType": "modified",
+      "oneLineReason": "Bound provider selection priority to llm_provider_preference (cloud prioritizes Groq, local prioritizes Ollama)."
+    },
+    {
+      "file": "x402-demo-server/scripts/audit_round391_new_controls.ts",
+      "changeType": "modified",
+      "oneLineReason": "Import and lint cleanup."
+    },
+    {
+      "file": "x402-demo-server/scripts/audit_round391_part18_item1.ts",
+      "changeType": "modified",
+      "oneLineReason": "Import and lint cleanup."
+    },
+    {
+      "file": "x402-demo-server/scripts/audit_round391_part19_item3.ts",
+      "changeType": "new file",
+      "oneLineReason": "Script to execute fresh controls across modes A, B, C, D."
+    },
+    {
+      "file": "x402-demo-server/scripts/diagnose_item1_raw_calls.ts",
+      "changeType": "new file",
+      "oneLineReason": "Script to capture raw Ollama requests and responses for the 3 diagnostic bullets."
+    },
+    {
+      "file": "x402-demo-server/scripts/find_closest_lines_fresh_controls.py",
+      "changeType": "new file",
+      "oneLineReason": "Script to locate the 3 closest English and Hindi lines with timestamps for fresh controls."
+    },
+    {
+      "file": "x402-demo-server/scripts/run_latency_measurement_part19.ts",
+      "changeType": "new file",
+      "oneLineReason": "Benchmark script to execute cold local and cloud runs with stage timings."
+    },
+    {
+      "file": "x402-demo-server/scripts/run_real_endpoint_part19.ts",
+      "changeType": "new file",
+      "oneLineReason": "End-to-end audit script executing POST /generate-ppt on kcc_KAhwpa0 and qzAHXO-cN5Q."
+    },
+    {
+      "file": "x402-demo-server/scripts/run_translation_remeasure_part19.ts",
+      "changeType": "new file",
+      "oneLineReason": "Real-time measurement script for 14-call, batched, and Whisper translations."
+    }
+  ],
+  "comparison": {
+    "commitAt629b267": {
+      "commitHash": "629b267",
+      "testedBullets": 12,
+      "verifiedBullets": 3,
+      "droppedBullets": 9,
+      "dropRate": "75.0%",
+      "verifiedRate": "25.0%",
+      "autoCheck": "3 + 9 == 12 (PASS)",
+      "rootCauseOf9Drops": [
+        "Injected Controls (3 drops): Microservices, Kubernetes, and AWS Lambda negative controls deliberately injected into deck bullets.",
+        "Rigid 10-cue chunk boundary slicing (6 drops): True facts from video (galactic center, every year, thousands of years, solar, visible, 2012) placed into Chunk 1 while slide cited Chunk 2 (or vice versa), failing single-chunk exact substring match."
+      ]
+    },
+    "commitAtHead": {
+      "commitHash": "HEAD (5f80e2b)",
+      "testedBullets": 33,
+      "verifiedBullets": 32,
+      "droppedBullets": 1,
+      "dropRate": "3.0%",
+      "verifiedRate": "97.0%",
+      "autoCheck": "32 + 1 == 33 (PASS)",
+      "changesThatMovedDropsFrom9of12To1of33": [
+        "Removed all injected negative controls from model-output counts per strict evidence rules.",
+        "Contiguous transcript chunking: Slide planner aligns slides to actual contiguous caption chunks rather than artificial 10-cue slices.",
+        "Neighbour context window: Bullet verification checks cited chunk plus adjacent neighbour, preventing false chunk-boundary edge rejections on true facts.",
+        "Single regeneration on NO SUPPORT: Unsupported bullets are regenerated once against cited source excerpt before dropping, recovering valid phrasing."
+      ]
+    }
+  }
+}

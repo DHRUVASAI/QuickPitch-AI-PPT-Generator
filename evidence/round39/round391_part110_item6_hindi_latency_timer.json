@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-10-22T20:03:05.525Z",
+  "audit": "Round 3.9 Part 1.10 Item 6 - Cold Hindi Path Latency (Independent Client-Side Timer)",
+  "video": "qzAHXO-cN5Q (Hindi Video)",
+  "options": {
+    "do_not_cache": true,
+    "llm_provider_preference": "local",
+    "allow_cloud_fallback": false
+  },
+  "runs": [
+    {
+      "runIndex": 1,
+      "mode": "local",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "clientWallClockMs": 98799,
+      "stageTimings": {
+        "stage1_ingest_translation_ms": 4752,
+        "stage2_outline_ms": 7532,
+        "stage3_slides_verify_ms": 86403,
+        "stage4_compile_ms": 12,
+        "stage_sum_ms": 98699
+      },
+      "gapMs": 100
+    },
+    {
+      "runIndex": 2,
+      "mode": "local",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "clientWallClockMs": 84398,
+      "stageTimings": {
+        "stage1_ingest_translation_ms": 5098,
+        "stage2_outline_ms": 7114,
+        "stage3_slides_verify_ms": 72164,
+        "stage4_compile_ms": 13,
+        "stage_sum_ms": 84389
+      },
+      "gapMs": 9
+    },
+    {
+      "runIndex": 3,
+      "mode": "local",
+      "provider": "ollama",
+      "model": "qwen2.5:7b",
+      "clientWallClockMs": 84945,
+      "stageTimings": {
+        "stage1_ingest_translation_ms": 4664,
+        "stage2_outline_ms": 4960,
+        "stage3_slides_verify_ms": 75296,
+        "stage4_compile_ms": 16,
+        "stage_sum_ms": 84936
+      },
+      "gapMs": 9
+    }
+  ],
+  "averages": {
+    "clientWallClockMs": 89381,
+    "stage1_ingest_translation_ms": 4838,
+    "stage2_outline_ms": 6535,
+    "stage3_slides_verify_ms": 77954,
+    "stage4_compile_ms": 14,
+    "stage_sum_ms": 89341,
+    "gapMs": 39
+  }
+}

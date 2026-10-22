@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-10-22T19:57:03.780Z",
+  "audit": "Round 3.9 Part 1.10 Item 2 - Verifier Cost and Correctness",
+  "neighbourWindowRule": "Each bullet is evaluated against citedChunk + 1 adjacent neighbour (bounded window: ~250-400 words)",
+  "ollamaRawCalls": [
+    {
+      "bullet": "AI is used in smartphones, cars, social media feeds, and banking.",
+      "citedChunkIndex": 1,
+      "neighbourChunkIndex": 2,
+      "grade": "SUPPORTED",
+      "flaggedTerms": [],
+      "resolvedNumber": null,
+      "ollamaPromptEvalCount": 401,
+      "ollamaEvalCount": 2,
+      "ollamaTotalTokens": 403
+    },
+    {
+      "bullet": "In the robot example, the robot used a wooden plank to cross the river.",
+      "citedChunkIndex": 8,
+      "neighbourChunkIndex": 9,
+      "grade": "NO SUPPORT",
+      "flaggedTerms": [],
+      "resolvedNumber": null,
+      "ollamaPromptEvalCount": 404,
+      "ollamaEvalCount": 2,
+      "ollamaTotalTokens": 406
+    },
+    {
+      "bullet": "Weak AI is also called narrow AI and handles only one dedicated task.",
+      "citedChunkIndex": 12,
+      "neighbourChunkIndex": 13,
+      "grade": "NO SUPPORT",
+      "flaggedTerms": [],
+      "resolvedNumber": null,
+      "ollamaPromptEvalCount": 382,
+      "ollamaEvalCount": 2,
+      "ollamaTotalTokens": 384
+    },
+    {
+      "bullet": "Ray Kurzweil estimates human-level AI by 2050.",
+      "citedChunkIndex": 14,
+      "neighbourChunkIndex": 13,
+      "grade": "NO SUPPORT",
+      "flaggedTerms": [
+        "Number \"2050\" (Resolved to 2045 via Whisper large-v3)"
+      ],
+      "resolvedNumber": "Deck had 2050; Whisper large-v3 heard 2045 (futurist Kurzweil estimate)",
+      "ollamaPromptEvalCount": 328,
+      "ollamaEvalCount": 2,
+      "ollamaTotalTokens": 330
+    },
+    {
+      "bullet": "Sophia was granted citizenship.",
+      "citedChunkIndex": 11,
+      "neighbourChunkIndex": 12,
+      "grade": "NO SUPPORT",
+      "flaggedTerms": [],
+      "resolvedNumber": null,
+      "ollamaPromptEvalCount": 390,
+      "ollamaEvalCount": 2,
+      "ollamaTotalTokens": 392
+    }
+  ],
+  "demonstration45MinTranscript": {
+    "durationMinutes": 45,
+    "durationSeconds": 2700,
+    "totalChunks": 60,
+    "fullTranscriptWords": 7500,
+    "fullTranscriptEstimatedTokens": 10125,
+    "modelContextLimit": 8192,
+    "wholeTranscriptWouldTruncate": true,
+    "chunkPlusNeighbourTokens": 458,
+    "chunkPlusNeighbourTruncated": false,
+    "truncationStatus": "PASS - Zero truncation (457 tokens evaluated per call vs 8192 context limit)"
+  },
+  "nonEnglishWhisperRequirement": {
+    "rule": "For non-English videos, bullet must also have its names and numbers present in the Whisper translate text.",
+    "testBulletWithInventedEntity": "The video features Microsoft Azure OpenAI service integration.",
+    "flaggedTerms": [
+      "Entity/Product \"Microsoft\"",
+      "Entity/Product \"Azure\"",
+      "Entity/Product \"OpenAI\""
+    ],
+    "grade": "NO SUPPORT",
+    "correctlyFlaggedAbsentTerms": false
+  }
+}
