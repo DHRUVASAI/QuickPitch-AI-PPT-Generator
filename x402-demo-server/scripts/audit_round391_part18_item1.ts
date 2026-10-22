@@ -16,7 +16,6 @@ import { gradeBulletAgainstSource, extractVerifiableEntities, entityMatchesSourc
 import type { ChunkWithTime } from '../core/transcript/timestamp-utils.js';
 import { normalizeDevanagariDigits } from '../core/transcript/chunk-translator.js';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1'));
 const serverDir = path.resolve(__dirname, '..');
 
 // ── Load data ────────────────────────────────────────────────────────────────

@@ -1,4 +1,5 @@
 import type { UnifiedModelClient } from '../../models/unified-client.js';
+import { getModelClient } from '../../models/index.js';
 import type { ChatMessage } from '../../models/types.js';
 import type { SlideItem } from '../schemas/slide.schema.js';
 import type { ChunkWithTime } from '../transcript/timestamp-utils.js';
@@ -136,7 +137,7 @@ export async function gradeBulletAgainstSource(
   chunk: ChunkWithTime & { originalText?: string },
   client?: UnifiedModelClient,
   whisperRawText?: string,
-  options?: { allowCloudFallback?: boolean }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
 ): Promise<BulletAuditResult> {
   // Fix for English-vs-Hindi verification:
   // Compare against English translation PLUS Hindi source (and Whisper transcript if available)
@@ -177,7 +178,8 @@ export async function gradeBulletAgainstSource(
 
   // 3. Yes/No claim check at temperature 0
   let isClaimAffirmed = true;
-  if (client) {
+  const effectiveClient = client || getModelClient();
+  if (effectiveClient) {
     try {
       const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
         ? `Source text (Original):\n"${chunk.originalText}"\n\nSource text (English translation):\n"${chunk.text}"`
@@ -186,17 +188,18 @@ export async function gradeBulletAgainstSource(
       const messages: ChatMessage[] = [
         {
           role: 'system',
-          content: 'You are a strict cross-lingual factual grounding checker. The source passage may be in Hindi or English, and the claim is in English. Answer YES if the claim is directly supported, conveyed, or stated in the passage (even across languages). Answer NO if the claim is unsupported, contradicted, fabricated, or not mentioned.',
+          content: 'You are a strict cross-lingual factual grounding checker. The source passage may be in Hindi or English, and the claim is in English. Answer strictly YES if the claim is directly supported, conveyed, or stated in the passage (even across languages). Answer strictly NO if the claim is unsupported, contradicted, fabricated, or not mentioned. Return ONLY "YES" or "NO".',
         },
         {
           role: 'user',
-          content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated or conveyed in this passage? Answer YES or NO:`,
+          content: `Source passage:\n"${passageForLlm}"\n\nClaim:\n"${bullet}"\n\nIs this claim stated or conveyed in this passage? Answer strictly YES or NO:`,
         },
       ];
-      const resp = await client.complete(messages, {
+      const resp = await effectiveClient.complete(messages, {
         temperature: 0.0,
-        maxTokens: 500,
+        maxTokens: 5,
         allowCloudFallback: options?.allowCloudFallback,
+        llm_provider_preference: options?.llm_provider_preference,
       });
       const answer = resp.content.trim().toUpperCase();
       isClaimAffirmed = answer.startsWith('YES');
@@ -245,7 +248,7 @@ async function regenerateUnsupportedBullet(
   bullet: string,
   chunk: ChunkWithTime & { originalText?: string },
   client: UnifiedModelClient,
-  options?: { allowCloudFallback?: boolean }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
 ): Promise<string | null> {
   const passageForLlm = chunk.originalText && chunk.originalText !== chunk.text
     ? `Source excerpt (Original):\n"${chunk.originalText}"\n\nSource excerpt (English translation):\n"${chunk.text}"`
@@ -268,6 +271,8 @@ Do NOT invent numbers, terms, or personal names. Return ONLY the single replacem
       temperature: 0.0,
       maxTokens: 100,
       allowCloudFallback: options?.allowCloudFallback,
+      llm_provider_preference: options?.llm_provider_preference,
+      preferredProvider: options?.llm_provider_preference === 'cloud' ? 'groq' : undefined,
     });
     const cleaned = resp.content.trim().replace(/^[-*•"\s]+|["\s]+$/g, '');
     return cleaned.length > 10 ? cleaned : null;
@@ -290,7 +295,7 @@ export async function verifyAndRepairSlideDeck(
   chunks: Array<ChunkWithTime & { originalText?: string }>,
   client?: UnifiedModelClient,
   whisperRawText?: string,
-  options?: { allowCloudFallback?: boolean }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
 ): Promise<{ slides: SlideItem[]; report: VerificationPipelineReport }> {
   let totalBulletsBefore = 0;
   let supportedBefore = 0;

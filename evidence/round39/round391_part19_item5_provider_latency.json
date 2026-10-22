@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-22T19:42:03.691Z",
+  "item": "Round 3.9 Part 1.9 Item 5 - Provider Preference Latency Benchmark",
+  "local": {
+    "provider": "ollama",
+    "model": "qwen2.5:7b",
+    "runs": [
+      {
+        "runIndex": 1,
+        "mode": "local",
+        "providerUsed": "ollama",
+        "modelUsed": "qwen2.5:7b",
+        "privacyNotice": "Local LLM processing active. Data processed entirely on-device via Ollama.",
+        "timings": {
+          "stage1_ingest_ms": 8417,
+          "stage2_outline_ms": 5479,
+          "stage3_slides_verify_ms": 35892,
+          "stage4_compile_ms": 39,
+          "stage_sum_ms": 49827,
+          "total_measured_ms": 49827
+        }
+      },
+      {
+        "runIndex": 2,
+        "mode": "local",
+        "providerUsed": "ollama",
+        "modelUsed": "qwen2.5:7b",
+        "privacyNotice": "Local LLM processing active. Data processed entirely on-device via Ollama.",
+        "timings": {
+          "stage1_ingest_ms": 8054,
+          "stage2_outline_ms": 4520,
+          "stage3_slides_verify_ms": 35133,
+          "stage4_compile_ms": 16,
+          "stage_sum_ms": 47723,
+          "total_measured_ms": 47723
+        }
+      },
+      {
+        "runIndex": 3,
+        "mode": "local",
+        "providerUsed": "ollama",
+        "modelUsed": "qwen2.5:7b",
+        "privacyNotice": "Local LLM processing active. Data processed entirely on-device via Ollama.",
+        "timings": {
+          "stage1_ingest_ms": 8402,
+          "stage2_outline_ms": 4547,
+          "stage3_slides_verify_ms": 32459,
+          "stage4_compile_ms": 16,
+          "stage_sum_ms": 45424,
+          "total_measured_ms": 45425
+        }
+      }
+    ],
+    "average": {
+      "avgS1": 8291,
+      "avgS2": 4849,
+      "avgS3": 34495,
+      "avgS4": 24,
+      "avgSum": 47658,
+      "avgTot": 47658
+    }
+  },
+  "cloud": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "runs": [
+      {
+        "runIndex": 1,
+        "mode": "cloud",
+        "providerUsed": "groq",
+        "modelUsed": "llama-3.3-70b-versatile",
+        "privacyNotice": "Cloud LLM processing enabled. Prompts and transcript chunks may be sent to Groq cloud API.",
+        "timings": {
+          "stage1_ingest_ms": 8626,
+          "stage2_outline_ms": 724,
+          "stage3_slides_verify_ms": 199493,
+          "stage4_compile_ms": 39,
+          "stage_sum_ms": 208882,
+          "total_measured_ms": 208882
+        }
+      },
+      {
+        "runIndex": 2,
+        "mode": "cloud",
+        "providerUsed": "groq",
+        "modelUsed": "llama-3.3-70b-versatile",
+        "privacyNotice": "Cloud LLM processing enabled. Prompts and transcript chunks may be sent to Groq cloud API.",
+        "timings": {
+          "stage1_ingest_ms": 8714,
+          "stage2_outline_ms": 724,
+          "stage3_slides_verify_ms": 324602,
+          "stage4_compile_ms": 27,
+          "stage_sum_ms": 334067,
+          "total_measured_ms": 334067
+        }
+      },
+      {
+        "runIndex": 3,
+        "mode": "cloud",
+        "providerUsed": "groq",
+        "modelUsed": "llama-3.3-70b-versatile",
+        "privacyNotice": "Cloud LLM processing enabled. Prompts and transcript chunks may be sent to Groq cloud API.",
+        "timings": {
+          "stage1_ingest_ms": 8517,
+          "stage2_outline_ms": 978,
+          "stage3_slides_verify_ms": 159666,
+          "stage4_compile_ms": 17,
+          "stage_sum_ms": 169178,
+          "total_measured_ms": 169178
+        }
+      }
+    ],
+    "average": {
+      "avgS1": 8619,
+      "avgS2": 809,
+      "avgS3": 227920,
+      "avgS4": 28,
+      "avgSum": 237376,
+      "avgTot": 237376
+    }
+  },
+  "speedupRatio": "0.20x"
+}

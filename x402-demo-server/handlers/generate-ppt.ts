@@ -17,6 +17,8 @@ export interface JobProgress {
 
 export const jobStages = new Map<string, JobProgress>();
 
+export const lastJobAudit = new Map<string, any>();
+
 export function setJobStage(jobId: string | undefined, stage: JobProgress['stage'], percent: number, message: string) {
   if (!jobId) return;
   jobStages.set(jobId, { stage, percent, message, timestamp: Date.now() });
@@ -69,7 +71,10 @@ export async function handleGeneratePpt(c: Context) {
       force_audio = false,
       accuracy_mode,
       job_id,
+      llm_provider_preference = 'local',
     } = body;
+
+    const validatedPref: 'local' | 'cloud' = llm_provider_preference === 'cloud' ? 'cloud' : 'local';
 
     const jobId = job_id || c.req.query('job_id') || `job_${Date.now()}`;
     setJobStage(jobId, 'ingest', 15, 'Ingesting source & verifying duration limits...');
@@ -234,7 +239,8 @@ export async function handleGeneratePpt(c: Context) {
     setJobStage(jobId, 'synthesize', 75, 'Structuring executive slides & source-language verification...');
     const t2Start = Date.now();
     const outline = await synthesizeOutline(transcriptData, modelClient, detail_level, {
-      allowCloudFallback,
+      allowCloudFallback: allowCloudFallback || validatedPref === 'cloud',
+      llm_provider_preference: validatedPref,
       outputLanguage: 'en',
       targetSlideCount: finalSlideCount,
       audience: audience ? String(audience).trim() : undefined,
@@ -255,7 +261,8 @@ export async function handleGeneratePpt(c: Context) {
       theme,
       detail_level,
       {
-        allowCloudFallback,
+        allowCloudFallback: allowCloudFallback || validatedPref === 'cloud',
+        llm_provider_preference: validatedPref,
         outputLanguage: 'en',
         targetSlideCount: finalSlideCount,
         bulletsPerSlide: finalBulletsPerSlide,
@@ -273,6 +280,16 @@ export async function handleGeneratePpt(c: Context) {
     slideDeck.title = transcriptData.title;
     slideDeck.subtitle = outline.subtitle || 'Executive Intelligence Briefing & Strategic Synthesis';
     s3Dur = Date.now() - t3Start;
+
+    lastJobAudit.set(jobId, {
+      verificationReport: (slideDeck as any).verificationReport,
+      englishChunks: (slideDeck as any).englishChunks,
+      slides: slideDeck.slides,
+      outline,
+      transcriptData,
+      providerUsed,
+      timings: { s1Dur, s2Dur, s3Dur },
+    });
 
     // Stage 3: Slide Compilation (.pptx)
     console.log(`[QuickPitch Stage 3] Compiling native PowerPoint deck (Title: "${slideDeck.title}", Theme: ${slideDeck.theme}, Provider: ${providerUsed})...`);
@@ -319,6 +336,10 @@ export async function handleGeneratePpt(c: Context) {
         'Content-Disposition': `attachment; filename="${pptxResult.fileName}"`,
         'X-QuickPitch-Status': isPartial ? 'partial' : 'complete',
         'X-QuickPitch-Provider': providerUsed,
+        'X-QuickPitch-Provider-Preference': validatedPref,
+        'X-QuickPitch-Privacy-Notice': validatedPref === 'cloud'
+          ? 'Cloud LLM processing enabled. Prompts and transcript chunks may be sent to Groq cloud API.'
+          : 'Local LLM processing active. Data processed entirely on-device via Ollama.',
         'X-QuickPitch-Low-Language-Confidence': isLowConfidence ? 'true' : 'false',
         'X-QuickPitch-Detected-Language': detectedLang,
         'X-QuickPitch-Slide-Count': String(slideDeck.slides?.length || 0),

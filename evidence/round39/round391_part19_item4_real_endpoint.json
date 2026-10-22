@@ -1,0 +1,723 @@
+{
+  "timestamp": "2026-10-22T19:18:49.251Z",
+  "audit": "Round 3.9 Part 1.9 Item 4 - Real Endpoint Per-Bullet Table",
+  "endpoint": "POST /generate-ppt",
+  "options": {
+    "do_not_cache": true,
+    "allow_cloud_fallback": false,
+    "llm_provider_preference": "local"
+  },
+  "videos": [
+    {
+      "videoId": "kcc_KAhwpa0",
+      "title": "AWS Lambda Serverless Architecture",
+      "language": "en",
+      "translationStageRan": false,
+      "jobId": "job_part19_kcc_KAhwpa0_1792696609436",
+      "timings": {
+        "s1_ingest_ms": 8606,
+        "s2_outline_ms": 4971,
+        "s3_slides_verify_ms": 43384,
+        "s4_compile_ms": 35,
+        "stage_sum_ms": 56996,
+        "total_pipeline_ms": 56996
+      },
+      "counts": {
+        "generated": 33,
+        "verified": 32,
+        "dropped": 1,
+        "dropRatePercent": "3.0%",
+        "verifiedRatePercent": "97.0%",
+        "autoCheckPassed": true
+      },
+      "dropsClassificationSummary": {
+        "typeA_hallucinated": 0,
+        "typeB_unsupported_entity_number": 0,
+        "typeC_true_fact_failed_heuristic": 1
+      },
+      "callTable": [
+        {
+          "stage": "Stage 1: Ingestion & Subtitle Parse",
+          "provider": "native-vtt/yt-dlp",
+          "model": "yt-dlp",
+          "ms": 8606
+        },
+        {
+          "stage": "Stage 2: Outline Synthesis",
+          "provider": "ollama",
+          "model": "qwen2.5:7b",
+          "ms": 4971
+        },
+        {
+          "stage": "Stage 3: Slide Deck Planning & Verification",
+          "provider": "ollama",
+          "model": "qwen2.5:7b",
+          "ms": 43384
+        },
+        {
+          "stage": "Stage 4: PowerPoint Compilation (.pptx)",
+          "provider": "pptxgenjs",
+          "model": "native",
+          "ms": 35
+        }
+      ],
+      "bullets": [
+        {
+          "slide": 1,
+          "bullet": "Mayan calendars recorded days and years",
+          "chunkId": 1,
+          "quote": "Mayan calendars recorded days and years",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Long cycles of about 5 millennia",
+          "chunkId": 1,
+          "quote": "Long cycles of about 5 millennia",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Calendars extended 1,000s of years into the future",
+          "chunkId": 1,
+          "quote": "Calendars extended 1,000s of years into ",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Ancient Mayan calendars stopped in 2012",
+          "chunkId": 1,
+          "quote": "Ancient Mayan calendars stopped in 2012",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Some people believed 2012 was the real deal due to ancient Mayan calendars.",
+          "chunkId": 1,
+          "quote": "Some people believed 2012 was the real d",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Some people believe 2012 is apocalyptic due to ancient Mayan calendars.",
+          "chunkId": 1,
+          "quote": "Some people believe 2012 is apocalyptic ",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Some people believe 2012 is apocalyptic due to ancient Mayan calendars.",
+          "chunkId": 1,
+          "quote": "Some people believe 2012 is apocalyptic ",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Mentioned that Mayan calendars extended 5 millennia into the future but stopped in 2012.",
+          "chunkId": 1,
+          "quote": "Mentioned that Mayan calendars extended ",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Some people believe 2012 is the end due to ancient Mayan calendars.",
+          "chunkId": 1,
+          "quote": "Some people believe 2012 is the end due ",
+          "chunkText": "History has a long and rich tradition of apocalyptic predictions – all of which were wrong – yet some people still think that this time ’round in 2012 is the real deal. Why 2012? B...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "The idea that the calendar's end signifies the end of the world is an odd conclusion, as a normal person might think.",
+          "chunkId": 2,
+          "quote": "The idea that the calendar's end signifi",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "The idea that the calendar's end signifies the end of the world is an odd conclusion, as the Mayans likely did not intend for the calendar's completion to represent an apocalypse.",
+          "chunkId": 2,
+          "quote": "The idea that the calendar's end signifi",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "The Mayan calendar continued for thousands of years into the future.",
+          "chunkId": 2,
+          "quote": "NONE (Dropped)",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "fail",
+          "dropReason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "dropClassification": "(c)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Mayans stopped making calendars",
+          "chunkId": 2,
+          "quote": "Mayans stopped making calendars",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Calendar finishes therefore end of the world is an odd conclusion to draw.",
+          "chunkId": 2,
+          "quote": "Calendar finishes therefore end of the w",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "New agers’ spiritual awakening",
+          "chunkId": 2,
+          "quote": "New agers’ spiritual awakening",
+          "chunkText": "agey people decided that the wise Mayans stopped making calendars because they knew when the world would end. And because new agers are happy – though scientifically illiterate – p...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "2012 leading to mass hysteria and disaster movies",
+          "chunkId": 3,
+          "quote": "2012 leading to mass hysteria and disast",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Mass hysteria and media sensationalism with 2012 disaster movies and documentaries on The History Channel",
+          "chunkId": 3,
+          "quote": "Mass hysteria and media sensationalism w",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Mass hysteria surrounding 2012 disaster movies and documentaries",
+          "chunkId": 3,
+          "quote": "Mass hysteria surrounding 2012 disaster ",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Disaster movie swept the academy awards",
+          "chunkId": 3,
+          "quote": "Disaster movie swept the academy awards",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Apocalypse documentaries on The History Channel",
+          "chunkId": 3,
+          "quote": "Apocalypse documentaries on The History ",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "NASA had to allocate time to address an influx of questions about 2012.",
+          "chunkId": 3,
+          "quote": "NASA had to allocate time to address an ",
+          "chunkText": "time in the Universe is infinite and the amount of stone is limited. So, at some point the Mayans had to stop carving calendars. But never mind. What should have stayed a fringe be...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Wrote a webpage explaining the myth",
+          "chunkId": 4,
+          "quote": "Wrote a webpage explaining the myth",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Explained that a stone-age society didn’t know more about science than real scientists do today.",
+          "chunkId": 4,
+          "quote": "Explained that a stone-age society didn’",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Debunked wild predictions like geomagnetic reversals",
+          "chunkId": 4,
+          "quote": "Debunked wild predictions like geomagnet",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Geomagnetic reversals",
+          "chunkId": 4,
+          "quote": "Geomagnetic reversals",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Collision with mysterious Planet X",
+          "chunkId": 4,
+          "quote": "Collision with mysterious Planet X",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Local star going supernova",
+          "chunkId": 4,
+          "quote": "Local star going supernova",
+          "chunkText": "ilization inspiring schedule, to write a webpage explaining that no, a human-sacrificing, stone-age society with neither wheels to pull carts nor glass to make telescopes, didn’t k...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "Mayans never predicted apocalypse",
+          "chunkId": 5,
+          "quote": "Mayans never predicted apocalypse",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "The Mayans never predicted apocalypse, according to the excerpt.",
+          "chunkId": 5,
+          "quote": "The Mayans never predicted apocalypse, a",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "The Mayans never predicted apocalypse, according to the excerpt.",
+          "chunkId": 5,
+          "quote": "The Mayans never predicted apocalypse, a",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "The Mayans never predicted apocalypse; claims to the contrary are not from Mayans.",
+          "chunkId": 5,
+          "quote": "The Mayans never predicted apocalypse; c",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "A sane person would wonder how the Mayans were able to predict astro-physical anomalies thousands of years in advance and millions of miles away yet didn’t foresee the Spanish coming across the Atlantic.",
+          "chunkId": 5,
+          "quote": "A sane person would wonder how the Mayan",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "A sane person would wonder how the Mayans were able to predict astro-physical anomalies thousands of years in advance and millions of miles away yet didn’t foresee the Spanish coming across the Atlantic.",
+          "chunkId": 5,
+          "quote": "A sane person would wonder how the Mayan",
+          "chunkText": "espite there being no such candidates) • An Alien Invasion (Which is ludicrous on the face of it… or is it?) • And a galactic synchronization beam, whatever the hell that is. A san...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        }
+      ]
+    },
+    {
+      "videoId": "qzAHXO-cN5Q",
+      "title": "Artificial Intelligence: Weak AI vs Strong AI",
+      "language": "en",
+      "translationStageRan": false,
+      "jobId": "job_part19_qzAHXO-cN5Q_1792696666453",
+      "timings": {
+        "s1_ingest_ms": 4580,
+        "s2_outline_ms": 8096,
+        "s3_slides_verify_ms": 50105,
+        "s4_compile_ms": 16,
+        "stage_sum_ms": 62797,
+        "total_pipeline_ms": 62797
+      },
+      "counts": {
+        "generated": 32,
+        "verified": 24,
+        "dropped": 8,
+        "dropRatePercent": "25.0%",
+        "verifiedRatePercent": "75.0%",
+        "autoCheckPassed": true
+      },
+      "dropsClassificationSummary": {
+        "typeA_hallucinated": 1,
+        "typeB_unsupported_entity_number": 4,
+        "typeC_true_fact_failed_heuristic": 3
+      },
+      "callTable": [
+        {
+          "stage": "Stage 1: Ingestion & Subtitle Parse",
+          "provider": "native-vtt/yt-dlp",
+          "model": "yt-dlp",
+          "ms": 4580
+        },
+        {
+          "stage": "Stage 2: Outline Synthesis",
+          "provider": "ollama",
+          "model": "qwen2.5:7b",
+          "ms": 8096
+        },
+        {
+          "stage": "Stage 3: Slide Deck Planning & Verification",
+          "provider": "ollama",
+          "model": "qwen2.5:7b",
+          "ms": 50105
+        },
+        {
+          "stage": "Stage 4: PowerPoint Compilation (.pptx)",
+          "provider": "pptxgenjs",
+          "model": "native",
+          "ms": 16
+        }
+      ],
+      "bullets": [
+        {
+          "slide": 1,
+          "bullet": "Machines performing tasks like setting up wardrobes or serving coffee",
+          "chunkId": 1,
+          "quote": "Machines performing tasks like setting u",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Human-like intelligence in machines",
+          "chunkId": 1,
+          "quote": "Human-like intelligence in machines",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Examples of AI in daily life",
+          "chunkId": 1,
+          "quote": "Examples of AI in daily life",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Artificial intelligence products aim to perform complex tasks as humans do.",
+          "chunkId": 1,
+          "quote": "Artificial intelligence products aim to ",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Performance in different dimensions and scenarios",
+          "chunkId": 1,
+          "quote": "Performance in different dimensions and ",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Performance in different environments",
+          "chunkId": 1,
+          "quote": "Performance in different environments",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Artificial Intelligence products aim to perform tasks as intelligently as humans, but may not always function as expected.",
+          "chunkId": 1,
+          "quote": "NONE (Dropped)",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "fail",
+          "dropReason": "Claim is partially aligned, but contains unverified terms: Entity/Product \"Intelligence\". (PARTIAL is not verified)",
+          "dropClassification": "(b)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Artificial Intelligence products include smart phones, cars, social media feeds, video games, banking services, and various aspects of daily life.",
+          "chunkId": 1,
+          "quote": "NONE (Dropped)",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "fail",
+          "dropReason": "Claim is partially aligned, but contains unverified terms: Entity/Product \"Intelligence\". (PARTIAL is not verified)",
+          "dropClassification": "(b)"
+        },
+        {
+          "slide": 1,
+          "bullet": "Potential for performing complex tasks as humans do",
+          "chunkId": 1,
+          "quote": "Potential for performing complex tasks a",
+          "chunkText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिश...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Robots demonstrating problem-solving capabilities by crossing a river they cannot swim through using given input.",
+          "chunkId": 2,
+          "quote": "Robots demonstrating problem-solving cap",
+          "chunkText": " नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Robots demonstrating problem-solving capabilities by crossing a river they cannot swim through using given input.",
+          "chunkId": 2,
+          "quote": "Robots demonstrating problem-solving cap",
+          "chunkText": " नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Robots demonstrating problem-solving capabilities by using given inputs to find solutions.",
+          "chunkId": 2,
+          "quote": "Robots demonstrating problem-solving cap",
+          "chunkText": " नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "Examples of AI include generalized learning, problem-solving, and adaptability in robots.",
+          "chunkId": 2,
+          "quote": "Examples of AI include generalized learn",
+          "chunkText": " नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 2,
+          "bullet": "AI performing tasks in various daily life scenarios",
+          "chunkId": 2,
+          "quote": "AI performing tasks in various daily lif",
+          "chunkText": " नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots struggle with tasks not trained for.",
+          "chunkId": 3,
+          "quote": "Robots struggle with tasks not trained f",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots trained for specific tasks may not perform well in unrelated tasks.",
+          "chunkId": 3,
+          "quote": "Robots trained for specific tasks may no",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots can only perform tasks they have been trained to do.",
+          "chunkId": 3,
+          "quote": "NONE (Dropped)",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "fail",
+          "dropReason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "dropClassification": "(c)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots perform tasks based on trained responses.",
+          "chunkId": 3,
+          "quote": "Robots perform tasks based on trained re",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots can only perform tasks they have been trained for.",
+          "chunkId": 3,
+          "quote": "Robots can only perform tasks they have ",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 3,
+          "bullet": "Robots solve problems through trained responses rather than reasoning.",
+          "chunkId": 3,
+          "quote": "NONE (Dropped)",
+          "chunkText": " टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वी...",
+          "status": "fail",
+          "dropReason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "dropClassification": "(c)"
+        },
+        {
+          "slide": 4,
+          "bullet": "AI with self-awareness and emotion development capability makes its response unpredictable.",
+          "chunkId": 4,
+          "quote": "AI with self-awareness and emotion devel",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "AI like Alexa demonstrates self-awareness and the capability to develop emotions, making its responses unpredictable.",
+          "chunkId": 4,
+          "quote": "NONE (Dropped)",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "fail",
+          "dropReason": "Claim is not stated in source passage (LLM Yes/No check: NO). Flagged terms: none.",
+          "dropClassification": "(c)"
+        },
+        {
+          "slide": 4,
+          "bullet": "AI with specific tasks lacks predictability due to self-awareness and capability to develop emotions.",
+          "chunkId": 4,
+          "quote": "AI with specific tasks lacks predictabil",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Concept of self-awareness and emotional development",
+          "chunkId": 4,
+          "quote": "Concept of self-awareness and emotional ",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "AI with human-like capabilities is unpredictable due to its self-awareness and emotion development potential.",
+          "chunkId": 4,
+          "quote": "AI with human-like capabilities is unpre",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 4,
+          "bullet": "Potential for advanced AI capabilities",
+          "chunkId": 4,
+          "quote": "Potential for advanced AI capabilities",
+          "chunkText": "लिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "Artificial Intelligence projects like emotion-sensing AI robots are not yet available.",
+          "chunkId": 5,
+          "quote": "NONE (Dropped)",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "fail",
+          "dropReason": "Claim is partially aligned, but contains unverified terms: Entity/Product \"Intelligence\". (PARTIAL is not verified)",
+          "dropClassification": "(b)"
+        },
+        {
+          "slide": 5,
+          "bullet": "Artificial Intelligence projects like citizen AI robots, AI robots with muscular skeletal systems, and AI that can understand their owner's emotions are currently non-existent.",
+          "chunkId": 5,
+          "quote": "NONE (Dropped)",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "fail",
+          "dropReason": "Claim is partially aligned, but contains unverified terms: Entity/Product \"Intelligence\". (PARTIAL is not verified)",
+          "dropClassification": "(b)"
+        },
+        {
+          "slide": 5,
+          "bullet": "AI projects that understand their owner's emotions",
+          "chunkId": 5,
+          "quote": "AI projects that understand their owner'",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "AI Projects Not Yet Available",
+          "chunkId": 5,
+          "quote": "NONE (Dropped)",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "fail",
+          "dropReason": "Unsupported entities/numbers absent from source text: Entity/Product \"Projects\", Entity/Product \"Not\", Entity/Product \"Yet\", Entity/Product \"Available\".",
+          "dropClassification": "(a)"
+        },
+        {
+          "slide": 5,
+          "bullet": "AI project for understanding human emotions not yet available",
+          "chunkId": 5,
+          "quote": "AI project for understanding human emoti",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        },
+        {
+          "slide": 5,
+          "bullet": "Potential for advanced AI capabilities",
+          "chunkId": 5,
+          "quote": "Potential for advanced AI capabilities",
+          "chunkText": " लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता ...",
+          "status": "pass",
+          "dropReason": "None (SUPPORTED)"
+        }
+      ]
+    }
+  ],
+  "groundingGate1": {
+    "kcc_verified_rate": "97.0%",
+    "qz_verified_rate": "75.0%",
+    "gate_passed": true
+  }
+}

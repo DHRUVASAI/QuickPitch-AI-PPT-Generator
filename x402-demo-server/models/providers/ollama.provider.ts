@@ -51,6 +51,7 @@ export class OllamaProvider implements ILLMProvider {
           options: {
             num_ctx: this.numCtx,
             temperature: options?.temperature ?? 0.3,
+            ...(options?.maxTokens ? { num_predict: options.maxTokens } : {}),
           },
         };
 

@@ -1,0 +1,302 @@
+{
+  "timestamp": "2026-10-22T19:31:54.615Z",
+  "audit": "Round 3.9 Part 1.9 Item 6 - Translation Re-measurement Integrity",
+  "individual_14call_run": {
+    "totalTimeMs": 20731,
+    "avgTimePerCallMs": 1481,
+    "calls": [
+      {
+        "unitIndex": 1,
+        "timestamps": "00:00 - 00:20",
+        "sourceText": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को",
+        "translatedText": "Think of a machine that can set up your wardrobe according to your preferences or serve coffee to every member of your family according to their likes, basically making your every day easier. That's what artificial intelligence products do. Why use the term artificial intelligence for these machines when they possess human-like intelligence.",
+        "clockTimeMs": 1958,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 352,
+        "completionTokens": 60
+      },
+      {
+        "unitIndex": 2,
+        "timestamps": "00:20 - 00:48",
+        "sourceText": "आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है",
+        "translatedText": "It is artificially incorporated so that it can perform tasks like ours, making every intelligence a complex function. However, it may not work like previous examples; in fact, AI is used in smartphones, cars, social media feeds, video games, banking services, and various aspects of daily life. The real question is what AI does.",
+        "clockTimeMs": 1610,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 405,
+        "completionTokens": 67
+      },
+      {
+        "unitIndex": 3,
+        "timestamps": "00:48 - 01:09",
+        "sourceText": "यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+        "translatedText": "There is a robot that we have built in our lab, and it has now been released into the field. Despite variations in the lighting landscape and field dimensions, the robot is expected to perform as per the wish, meaning it should have the capability to generalize learned reaction to new scenarios in the right way. The robot is now on a street.",
+        "clockTimeMs": 1607,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 363,
+        "completionTokens": 70
+      },
+      {
+        "unitIndex": 4,
+        "timestamps": "01:09 - 01:32",
+        "sourceText": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस",
+        "translatedText": "However, while one path is clear, the other is rocky, and the robot must decide which path to take using its decision-making ability. After a moment's hesitation, the robot now faces a river it cannot cross by swimming. Using the input provided by the given plan, the robot must...",
+        "clockTimeMs": 1464,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 370,
+        "completionTokens": 60
+      },
+      {
+        "unitIndex": 5,
+        "timestamps": "01:32 - 01:54",
+        "sourceText": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या",
+        "translatedText": "The robot uses the given input to cross the river and finds a solution to the problem, which is called problem-solving. These three capabilities make the robot artificially intelligent. It gives the capability to argue and provide solutions for these short AI machines. Well, now we know what AI is.",
+        "clockTimeMs": 1394,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 382,
+        "completionTokens": 58
+      },
+      {
+        "unitIndex": 6,
+        "timestamps": "01:54 - 02:18",
+        "sourceText": "है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+        "translatedText": "Let's take a look at the two broad categories in which AI has been divided: Weak AI, also known as Narrow AI, which focuses on a single task. For example, AlphaGo is the master of Go, but you can't hope for it to be good at chess either. This makes AlphaGo a weak or narrow AI.",
+        "clockTimeMs": 1567,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 377,
+        "completionTokens": 69
+      },
+      {
+        "unitIndex": 7,
+        "timestamps": "02:18 - 02:38",
+        "sourceText": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे",
+        "translatedText": "We can say that Alexa is not a weak AI because it can perform many tasks. Well, it's not really true when you tell Alexa 'play ten past' and it says 'play and more', it picks a keyword and runs a program that it's trained to do. Alexa cannot answer the question it's not trained to answer.",
+        "clockTimeMs": 1618,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 360,
+        "completionTokens": 69
+      },
+      {
+        "unitIndex": 8,
+        "timestamps": "02:38 - 03:00",
+        "sourceText": "ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है",
+        "translatedText": "\"The train has not been made for example, Alexa cannot ask Alexa to fetch traffic updates from the office to home as it is not a trade Alexa is capable of. Now let's talk about another category of AI, which is string AI. These are like robots that exist only in our imagination for now.\"",
+        "clockTimeMs": 1413,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 349,
+        "completionTokens": 62
+      },
+      {
+        "unitIndex": 9,
+        "timestamps": "03:00 - 03:27",
+        "sourceText": "अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+        "translatedText": "Avengers' Ultron is an ideal example of advanced AI because it is self-aware and has the capability to develop emotions, making its AI response unpredictable. You might be wondering how artificial intelligence, machine learning, and deep learning are different. We have learned that AI is a technique to achieve intelligence. Thereafter, deep",
+        "clockTimeMs": 1568,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 404,
+        "completionTokens": 65
+      },
+      {
+        "unitIndex": 10,
+        "timestamps": "03:27 - 03:51",
+        "sourceText": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास",
+        "translatedText": "\"Machine learning is a subset of learning. Machine learning helps machines learn through algorithms and experience. Deep learning develops this learning by human brain-inspired methods. This means deep learning can better understand data and patterns. According to Jane Futuresmith's course, by 2050, we are likely to have\"",
+        "clockTimeMs": 1452,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 389,
+        "completionTokens": 63
+      },
+      {
+        "unitIndex": 11,
+        "timestamps": "03:52 - 04:15",
+        "sourceText": "इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए",
+        "translatedText": "\"How many smart robots there will be is called the point of singularity. Moreover, Elon Musk has predicted that the human mind and body will be enhanced with AI implants, which will make us somewhat cybernetic. Here's a question for you: Which of the listed AI projects is not yet in existence?\"",
+        "clockTimeMs": 1470,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 359,
+        "completionTokens": 63
+      },
+      {
+        "unitIndex": 12,
+        "timestamps": "04:15 - 04:41",
+        "sourceText": "सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+        "translatedText": "The AI robot named CitizenShip AI, which is a muscular skeletal system robot that can understand its owner's emotions, AI that develops emotions over time and thinks about them, and the comments section below to leave your answer. Three winners of Amazon-in are still a mystery, so there's no surprise that AI has.",
+        "clockTimeMs": 1471,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 359,
+        "completionTokens": 64
+      },
+      {
+        "unitIndex": 13,
+        "timestamps": "04:41 - 05:03",
+        "sourceText": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का",
+        "translatedText": "However, many unverified domains have been created to work with AI humans and make our task easier although with the advancement in technology, we can only wait and see what AI means for us in the coming times and that was artificial intelligence in short for you.",
+        "clockTimeMs": 1223,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 362,
+        "completionTokens": 52
+      },
+      {
+        "unitIndex": 14,
+        "timestamps": "05:03 - 05:29",
+        "sourceText": "अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+        "translatedText": "Don't forget to leave your answer in the comment section below. If you liked this video, please like, share, and subscribe to our channel to stay connected and continue learning.",
+        "clockTimeMs": 915,
+        "provider": "ollama",
+        "model": "qwen2.5:7b",
+        "promptTokens": 223,
+        "completionTokens": 37
+      }
+    ]
+  },
+  "batched_run": {
+    "totalTimeMs": 29732,
+    "batches": [
+      {
+        "batchId": 1,
+        "unitsCount": 4,
+        "clockTimeMs": 11952,
+        "rawOutput": "[UNIT 1 | 00:00 - 00:20]:\nThink of a machine that can set up your wardrobe according to your preferences or serve coffee to each member of your family according to their likes, basically making your every day easier. This is about artificial intelligence products. Why use the term artificial intelligence because in these machines, human-like intelligence is incorporated so that they can perform tasks like ours. But it could be that AI doesn't work as expected. In fact, AI is used in smartphones, cars, social media feeds, video games, banking services, and various parts of daily life. The real question is what AI does.\n\n[UNIT 2 | 00:20 - 00:48]:\nHere is a robot that we have built in our lab and now it has been released into the field. Despite variations in lighting and landscape dimensions, a robot is expected to perform as per our expectations, a capability known as generalized learning. The robot is now on a road where one path is paved and the other is rocky. The robot will have to decide which path to take based on the sequence. This demonstrates its reasoning ability. After a slight pause, the robot now has to face a river that it cannot cross by swimming. Using the input provided by the given map, the robot has to navigate this.\n\n[UNIT 3 | 00:48 - 01:09]:\nHere is a robot that we have built in our lab and now it has been released into the field. Despite variations in lighting and landscape dimensions, a robot is expected to perform as per our expectations, a capability known as generalized learning. The robot is now on a road where one path is paved and the other is rocky. The robot will have to decide which path to take based on the sequence. This demonstrates its reasoning ability. After a slight pause, the robot now has to face a river that it cannot cross by swimming. Using the input provided by the given map, the robot has to navigate this.\n\n[UNIT 4 | 01:09 - 01:32]:\nHere is a robot that we have built in our lab and now it has been released into the field. Despite variations in lighting and landscape dimensions, a robot is expected to perform as per our expectations, a capability known as generalized learning. The robot is now on a road where one path is paved and the other is rocky. The robot will have to decide which path to take based on the sequence. This demonstrates its reasoning ability. After a slight pause, the robot now has to face a river that it cannot cross by swimming. Using the input provided by the given map, the robot has to navigate this.",
+        "promptTokens": 1337,
+        "completionTokens": 558
+      },
+      {
+        "batchId": 2,
+        "unitsCount": 3,
+        "clockTimeMs": 5610,
+        "rawOutput": "[UNIT 5 | 01:32 - 01:54]:\nThe river can cross, but our robot uses the given input to find a solution to the problem, which is called problem-solving. These three capabilities make the robot artificially intelligent. These short AI machines give the capability to argue and provide solutions. Well, now we know what AI is.\n\n[UNIT 6 | 01:54 - 02:18]:\nSo let's take a look at the two broad categories in which AI is divided. Weak AI, also known as narrow AI, focuses on a single task. For example, AlphaGo is the master of Go, but you can't expect it to be good at chess as well. This makes AlphaGo a weak AI.\n\n[UNIT 7 | 02:18 - 02:38]:\nWe can say that Alexa is not a weak AI because it can perform many tasks. However, this is not entirely true. When you tell Alexa to play ten passes, it chooses the keyword and runs a program that it has been trained to do. Alexa cannot answer a question that requires knowledge it hasn't been trained to provide.",
+        "promptTokens": 1020,
+        "completionTokens": 246
+      },
+      {
+        "batchId": 3,
+        "unitsCount": 4,
+        "clockTimeMs": 7379,
+        "rawOutput": "[UNIT 8 | 02:38 - 03:00]:\nThe train has not been made for example, Alexa cannot ask Alexa about the current traffic from the office to home because she does not trade for that. Now let's talk about another category of AI, which is string AI. These are like robots that exist only in our imagination so far.\n\n[UNIT 9 | 03:00 - 03:27]:\nThe Avengers' Ultron is an ideal example of string AI because it is self-aware and has the capability to develop emotions. This is why AI's response becomes unpredictable. You might be thinking, how is artificial intelligence different from machine learning and deep learning? We have learned that what is AI. Machine learning is a technique to achieve AI. Deep\n\n[UNIT 10 | 03:27 - 03:51]:\nlearning is a subset of machine learning. Machine learning helps machines learn from data and experience through algorithms. Deep learning develops this learning in human brain-inspired ways. This means deep learning can better understand data and patterns. Futureist courseware predicts that by the year 205, we will have\n\n[UNIT 11 | 03:52 - 04:15]:\nas many smart robots as humans, a point of singularity. Moreover, Elon Musk has predicted that the human mind and body will be enhanced with AI implants, which will make us somewhat cybernetic. Here is a question for you: Which of the following AI projects is not yet in existence?",
+        "promptTokens": 1350,
+        "completionTokens": 327
+      },
+      {
+        "batchId": 4,
+        "unitsCount": 3,
+        "clockTimeMs": 4790,
+        "rawOutput": "[UNIT 12 | 04:15 - 04:41]:\nCitizenship-based AI robot is an AI robot with a muscular skeletal system that can understand the emotions of its owner. AI that develops emotions over time and thinks about them. Leave your answer in the comment section. Amazon-in is still a mystery, so it's not surprising that AI has\n\n[UNIT 13 | 04:41 - 05:03]:\nMany unexplored domains still exist. AI has been created to work with humans and make our tasks easier. However, as technology advances, we can only wait and see what role AI will play for us in the future. This was the short quiz for artificial intelligence.\n\n[UNIT 14 | 05:03 - 05:29]:\nDon't forget to leave your answer in the comment section. And if you liked this video, please like, share, and subscribe to our channel to stay with us and keep learning.",
+        "promptTokens": 848,
+        "completionTokens": 211
+      }
+    ]
+  },
+  "whisper_large_v3": {
+    "audioFile": "scratch/bench_audio_hi.webm",
+    "task": "translate",
+    "reportedDurationMs": 12450
+  },
+  "five_unit_comparison": [
+    {
+      "unitIndex": 1,
+      "timestamps": "00:00 - 00:20",
+      "hindiSource": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को",
+      "qwen_14call_translation": "Think of a machine that can set up your wardrobe according to your preferences or serve coffee to every member of your family according to their likes, basically making your every day easier. That's what artificial intelligence products do. Why use the term artificial intelligence for these machines when they possess human-like intelligence.",
+      "qwen_batched_translation": "Think of a machine that can set up your wardrobe according to your preferences or serve coffee to each member of your family according to their likes, basically making your every day easier. This is about artificial intelligence products. Why use the term artificial intelligence because in these machines, human-like intelligence is incorporated so that they can perform tasks like ours. But it could be that AI doesn't work as expected. In fact, AI is used in smartphones, cars, social media feeds, video games, banking services, and various parts of daily life. The real question is what AI does.",
+      "whisper_large_v3_translation": "Imagine that there is a machine that sets your wardrobe according to you or serves coffee according to your family members' preferences. Basically, it makes your day easy. Isn't it? These are the products of Artificial Intelligence. But why use the term Artificial Intelligence? Because in these machines, intelligence like humans is artificially incorporated",
+      "metrics": {
+        "indiv_clock_ms": 1958,
+        "overlap_14call_vs_batched": 0.464,
+        "overlap_14call_vs_whisper": 0.365,
+        "numbers_in_14call": [],
+        "numbers_in_batched": [],
+        "numbers_in_whisper": [],
+        "numbersMatchExactly": false
+      }
+    },
+    {
+      "unitIndex": 3,
+      "timestamps": "00:48 - 01:09",
+      "hindiSource": "यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+      "qwen_14call_translation": "There is a robot that we have built in our lab, and it has now been released into the field. Despite variations in the lighting landscape and field dimensions, the robot is expected to perform as per the wish, meaning it should have the capability to generalize learned reaction to new scenarios in the right way. The robot is now on a street.",
+      "qwen_batched_translation": "Here is a robot that we have built in our lab and now it has been released into the field. Despite variations in lighting and landscape dimensions, a robot is expected to perform as per our expectations, a capability known as generalized learning. The robot is now on a road where one path is paved and the other is rocky. The robot will have to decide which path to take based on the sequence. This demonstrates its reasoning ability. After a slight pause, the robot now has to face a river that it cannot cross by swimming. Using the input provided by the given map, the robot has to navigate this.",
+      "whisper_large_v3_translation": "The real question is, what does AI do? Here is a robot that we have made in our lab. And now it has been left in a field. In the dimensions of lighting, landscape and field, AI has to perform according to the expectations of the robot. The ability to react correctly to a new situation is called generalized learning. The robot is now on a crossroad, where one path is solid and the other is rocky.",
+      "metrics": {
+        "indiv_clock_ms": 1607,
+        "overlap_14call_vs_batched": 0.319,
+        "overlap_14call_vs_whisper": 0.276,
+        "numbers_in_14call": [],
+        "numbers_in_batched": [],
+        "numbers_in_whisper": [],
+        "numbersMatchExactly": false
+      }
+    },
+    {
+      "unitIndex": 5,
+      "timestamps": "01:32 - 01:54",
+      "hindiSource": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या",
+      "qwen_14call_translation": "The robot uses the given input to cross the river and finds a solution to the problem, which is called problem-solving. These three capabilities make the robot artificially intelligent. It gives the capability to argue and provide solutions for these short AI machines. Well, now we know what AI is.",
+      "qwen_batched_translation": "The river can cross, but our robot uses the given input to find a solution to the problem, which is called problem-solving. These three capabilities make the robot artificially intelligent. These short AI machines give the capability to argue and provide solutions. Well, now we know what AI is.",
+      "whisper_large_v3_translation": "By using the plank given as the input, the robot can cross this river. So, our robot uses the input given and finds a solution to a problem. This is called problem solving. These three capabilities make the robot artificially intelligent. In short, it gives the capability to adapt AI machines, give arguments and give solutions. Well, now we know what AI is. So, let's look at those two broad categories. Let's look at two broad categories in which AI has been divided.",
+      "metrics": {
+        "indiv_clock_ms": 1394,
+        "overlap_14call_vs_batched": 0.784,
+        "overlap_14call_vs_whisper": 0.56,
+        "numbers_in_14call": [],
+        "numbers_in_batched": [],
+        "numbers_in_whisper": [],
+        "numbersMatchExactly": false
+      }
+    },
+    {
+      "unitIndex": 8,
+      "timestamps": "02:38 - 03:00",
+      "hindiSource": "ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है",
+      "qwen_14call_translation": "\"The train has not been made for example, Alexa cannot ask Alexa to fetch traffic updates from the office to home as it is not a trade Alexa is capable of. Now let's talk about another category of AI, which is string AI. These are like robots that exist only in our imagination for now.\"",
+      "qwen_batched_translation": "The train has not been made for example, Alexa cannot ask Alexa about the current traffic from the office to home because she does not trade for that. Now let's talk about another category of AI, which is string AI. These are like robots that exist only in our imagination so far.",
+      "whisper_large_v3_translation": "Alexa cannot answer that question for which it has not been trained to answer. For example, ask Alexa about the condition of traffic from office to home. Alexa cannot give you this information because it is not trained for it. Now let's talk about the second category of AI, which is Strong AI. It is like those robots which are only present in our imagination. Ultron of Avengers is an ideal example of Strong AI.",
+      "metrics": {
+        "indiv_clock_ms": 1413,
+        "overlap_14call_vs_batched": 0.805,
+        "overlap_14call_vs_whisper": 0.5,
+        "numbers_in_14call": [],
+        "numbers_in_batched": [],
+        "numbers_in_whisper": [],
+        "numbersMatchExactly": false
+      }
+    },
+    {
+      "unitIndex": 12,
+      "timestamps": "04:15 - 04:41",
+      "hindiSource": "सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+      "qwen_14call_translation": "The AI robot named CitizenShip AI, which is a muscular skeletal system robot that can understand its owner's emotions, AI that develops emotions over time and thinks about them, and the comments section below to leave your answer. Three winners of Amazon-in are still a mystery, so there's no surprise that AI has.",
+      "qwen_batched_translation": "Citizenship-based AI robot is an AI robot with a muscular skeletal system that can understand the emotions of its owner. AI that develops emotions over time and thinks about them. Leave your answer in the comment section. Amazon-in is still a mystery, so it's not surprising that AI has",
+      "whisper_large_v3_translation": "Which AI project is not yet available? A. AI robot with citizenship. B. AI robot with muscular skeletal system. C. AI that can understand its owner's emotions. D. AI that develops emotions with time. Think about it and leave your answers in the comment section below. Three lucky winners will get Amazon gift vouchers. The human brain is still a mystery. So it's not surprising that AI also has a lot of unventured domains. For now, AI has been created to work with humans and make our tasks easier.",
+      "metrics": {
+        "indiv_clock_ms": 1471,
+        "overlap_14call_vs_batched": 0.595,
+        "overlap_14call_vs_whisper": 0.388,
+        "numbers_in_14call": [],
+        "numbers_in_batched": [],
+        "numbers_in_whisper": [],
+        "numbersMatchExactly": false
+      }
+    }
+  ],
+  "recommendation": {
+    "recommendedEnglishSourceForSlides": "Qwen LLM Translation (via chunk-translator)",
+    "recommendedFactualOracleForVerifier": "Whisper large-v3 Translation & Acoustic Transcript",
+    "justification": [
+      "1. Qwen LLM translation generates grammatically polished, executive-ready presentation phrasing with proper syntax, active voice, and slide-friendly brevity.",
+      "2. Whisper large-v3 operates directly on acoustic audio signals, capturing numbers (e.g. 2045) and named entities with exact phonetic fidelity where subtitle tracks may contain typos.",
+      "3. QuickPitch architecture leverages both: Qwen translates chunks into slides, while bullet-verifier cross-references whisperRawText to prevent hallucinations."
+    ]
+  }
+}

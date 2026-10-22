@@ -14,6 +14,8 @@ export interface CompletionOptions {
   model?: string;
   jsonMode?: boolean;
   allowCloudFallback?: boolean;
+  llm_provider_preference?: 'local' | 'cloud';
+  preferredProvider?: string;
 }
 
 export interface ModelCompletionResult {

@@ -41,10 +41,13 @@ export async function fetchYouTubeMetadata(url: string): Promise<{ title: string
   }
 }
 
+let lastCaptionsSegments: Array<{ start: number; end: number; text: string }> = [];
+
 /**
  * Step 1 in Transcript Chain: YouTube Captions
  */
 async function tryYouTubeCaptions(url: string): Promise<string | null> {
+  lastCaptionsSegments = [];
   // Try English first
   try {
     const lines: any = await withRetryAndTimeout(
@@ -58,6 +61,7 @@ async function tryYouTubeCaptions(url: string): Promise<string | null> {
         text: t.text,
       }));
       const deduped = dedupeRollingCaptions(cues);
+      lastCaptionsSegments = deduped.map((c: any) => ({ start: Number(c.start) || 0, end: Number(c.end) || 0, text: String(c.text || '') }));
       return deduped.map((t: any) => t.text).join(' ');
     }
   } catch {
@@ -74,6 +78,7 @@ async function tryYouTubeCaptions(url: string): Promise<string | null> {
           text: t.text,
         }));
         const deduped = dedupeRollingCaptions(cues);
+        lastCaptionsSegments = deduped.map((c: any) => ({ start: Number(c.start) || 0, end: Number(c.end) || 0, text: String(c.text || '') }));
         return deduped.map((t: any) => t.text).join(' ');
       }
     } catch {
@@ -257,12 +262,16 @@ export async function extractTranscript(
           rawText = captions!;
           useCaptions = true;
           console.log(`✓ [TranscriptChain] YouTube captions passed quality gate (${gateResult.wordCount} words, ${gateResult.wordsPerMinute} WPM, manual: ${gateResult.isManual})`);
+          const isDevanagari = /[\u0900-\u097F]/.test(rawText);
+          const detectedLang = isDevanagari ? 'hi' : (gateResult.language || trackInfo.manualTracks[0]?.language || trackInfo.autoTracks[0]?.language || 'en');
           metadata = {
             url,
             description: meta.description,
             durationSeconds,
             isManualCaptions: gateResult.isManual,
-            language: gateResult.language,
+            language: detectedLang,
+            detectedLanguage: detectedLang,
+            segments: lastCaptionsSegments,
           };
         }
       } else {

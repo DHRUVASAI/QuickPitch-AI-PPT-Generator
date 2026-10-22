@@ -102,6 +102,7 @@ export interface SynthesizeOutlineOptions {
   focusText?: string;
   includeAgenda?: boolean;
   includeSummary?: boolean;
+  llm_provider_preference?: 'local' | 'cloud';
 }
 
 export async function synthesizeOutline(
@@ -156,8 +157,9 @@ Return strictly valid JSON matching:
   "keyTopics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"]
 }`;
 
-  const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
-  const primaryName = client.getPrimaryProviderName();
+  const isCloudPreferred = options?.llm_provider_preference === 'cloud';
+  const allowCloud = isCloudPreferred || (options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true'));
+  const primaryName = isCloudPreferred ? 'groq' : client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
   for (const providerName of providerOrder) {

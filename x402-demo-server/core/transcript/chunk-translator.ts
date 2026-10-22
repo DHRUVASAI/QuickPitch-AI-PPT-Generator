@@ -231,7 +231,7 @@ export async function translateSmallUnits(
   units: SmallTranslationUnit[],
   client: UnifiedModelClient,
   sourceLanguage: string = 'hi',
-  options?: { allowCloudFallback?: boolean }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
 ): Promise<SmallTranslationUnit[]> {
   const normLang = (sourceLanguage || 'auto').toLowerCase().trim();
   if (normLang === 'en' || normLang === 'english') {
@@ -291,6 +291,7 @@ Return ONLY a valid JSON object in this format:
           jsonMode: true,
           maxTokens: 1000,
           allowCloudFallback: options?.allowCloudFallback,
+          llm_provider_preference: options?.llm_provider_preference,
         });
 
         let parsed: any;
@@ -363,7 +364,7 @@ export async function translateChunksToEnglish(
   chunks: ChunkWithTime[],
   client: UnifiedModelClient,
   sourceLanguage: string = 'auto',
-  options?: { allowCloudFallback?: boolean }
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
 ): Promise<TranslatedChunk[]> {
   const normLang = (sourceLanguage || 'auto').toLowerCase().trim();
   if (normLang === 'en' || normLang === 'english') {

@@ -136,6 +136,7 @@ export default function QuickPitchHome() {
   const [loading, setLoading] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [allowCloudFallback, setAllowCloudFallback] = useState(false)
+  const [llmProviderPreference, setLlmProviderPreference] = useState<'local' | 'cloud'>('local')
   const [spokenLanguage, setSpokenLanguage] = useState<string | undefined>(undefined)
   const [partialNotice, setPartialNotice] = useState<string | null>(null)
   const [cloudProviderNotice, setCloudProviderNotice] = useState<string | null>(null)
@@ -255,6 +256,7 @@ export default function QuickPitchHome() {
       end_time: endTime || undefined,
       do_not_cache: doNotCache,
       allow_cloud_fallback: allowCloudFallback,
+      llm_provider_preference: llmProviderPreference,
       output_language: 'en',
       spoken_language: activeSpoken,
       user_confirmed_spoken_language: Boolean(activeSpoken),
@@ -1109,6 +1111,56 @@ export default function QuickPitchHome() {
                 <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
                   Enforced
                 </span>
+              </div>
+
+              {/* LLM Provider Preference & Privacy Control */}
+              <div className="mt-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold font-heading text-white flex items-center space-x-2">
+                    <span>⚡ LLM Provider Preference</span>
+                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${llmProviderPreference === 'cloud' ? 'bg-indigo-900/60 text-indigo-300 border border-indigo-600/50' : 'bg-emerald-900/60 text-emerald-300 border border-emerald-600/50'}`}>
+                      {llmProviderPreference === 'cloud' ? 'Primary: Cloud (Groq)' : 'Primary: Local (Ollama)'}
+                    </span>
+                  </div>
+                  <div className="inline-flex rounded-lg p-0.5 bg-slate-900 border border-white/10 text-xs font-mono">
+                    <button
+                      type="button"
+                      onClick={() => setLlmProviderPreference('local')}
+                      className={`px-3 py-1 rounded-md transition-all ${llmProviderPreference === 'local' ? 'bg-brand-500 text-white font-bold' : 'text-slate-400 hover:text-white'}`}
+                    >
+                      Local (Default)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLlmProviderPreference('cloud')
+                        setAllowCloudFallback(true)
+                      }}
+                      className={`px-3 py-1 rounded-md transition-all ${llmProviderPreference === 'cloud' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'}`}
+                    >
+                      Cloud
+                    </button>
+                  </div>
+                </div>
+
+                {/* Visible Privacy Note */}
+                <div className={`p-2.5 rounded-lg border text-[11px] font-mono leading-relaxed ${llmProviderPreference === 'cloud' ? 'bg-indigo-950/40 border-indigo-500/40 text-indigo-200' : 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200'}`}>
+                  {llmProviderPreference === 'cloud' ? (
+                    <div className="flex items-start space-x-2">
+                      <span className="text-sm">🌐</span>
+                      <div>
+                        <strong>Privacy Notice (Cloud Enabled):</strong> Translation, outline, slide planning, and verification will prioritize Groq cloud API (Llama-3.3-70b-versatile). Transcript text and synthesis prompts are transmitted over TLS to Groq's API servers.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start space-x-2">
+                      <span className="text-sm">🔒</span>
+                      <div>
+                        <strong>Privacy Notice (Strict Local):</strong> 100% on-device GPU inference via Ollama (qwen2.5:7b). No video transcripts, prompts, or presentation content ever leave your machine.
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Cloud Fallback Toggle */}

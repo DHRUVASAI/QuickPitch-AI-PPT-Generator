@@ -56,18 +56,25 @@ export class UnifiedModelClient {
       throw new Error('No LLM providers are registered in UnifiedModelClient.');
     }
 
-    // Determine priority list starting with primary provider
+    // Determine priority list starting with primary provider or preferred provider
     const priorityList: ILLMProvider[] = [];
-    const primary = this.providers.get(this.primaryProviderName);
-    if (primary) priorityList.push(primary);
+    const isCloudPreferred = options?.llm_provider_preference === 'cloud' || options?.preferredProvider === 'groq';
 
-    for (const [name, provider] of this.providers.entries()) {
-      if (name !== this.primaryProviderName) {
-        priorityList.push(provider);
+    if (isCloudPreferred) {
+      const groqProvider = this.providers.get('groq');
+      if (groqProvider) priorityList.push(groqProvider);
+      for (const [name, provider] of this.providers.entries()) {
+        if (name !== 'groq') priorityList.push(provider);
+      }
+    } else {
+      const primary = this.providers.get(this.primaryProviderName);
+      if (primary) priorityList.push(primary);
+      for (const [name, provider] of this.providers.entries()) {
+        if (name !== this.primaryProviderName) priorityList.push(provider);
       }
     }
 
-    const allowCloud = options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true');
+    const allowCloud = isCloudPreferred || (options?.allowCloudFallback ?? (process.env.ALLOW_CLOUD_FALLBACK === 'true'));
     let lastError: Error | null = null;
 
     for (const provider of priorityList) {

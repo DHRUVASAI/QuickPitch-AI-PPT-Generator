@@ -85,6 +85,7 @@ export interface PlanSlideStructureOptions {
   includeAgenda?: boolean;
   includeSummary?: boolean;
   focusText?: string;
+  llm_provider_preference?: 'local' | 'cloud';
 }
 
 interface SlideGenResult {
@@ -234,7 +235,7 @@ export async function planSlideStructure(
   theme: string = 'cyber-blue',
   detailLevel: 'concise' | 'balanced' | 'detailed' = 'balanced',
   options?: PlanSlideStructureOptions
-): Promise<SlideDeck & { providerUsed?: string; adjustmentNotice?: string }> {
+): Promise<SlideDeck & { providerUsed?: string; adjustmentNotice?: string; verificationReport?: any; englishChunks?: any }> {
   const rawTarget = options?.targetSlideCount || options?.slideCount || outline.targetSlideCount || 7;
   const targetSlideCount = Math.min(30, Math.max(3, rawTarget));
   // Total slides = 1 cover slide + contentSlidesCount
@@ -306,7 +307,10 @@ export async function planSlideStructure(
     englishChunks = cachedChunks;
   } else if (detectedLang !== 'en' && detectedLang !== 'english') {
     console.log(`[SlidePlanner: Translation] Source language is "${detectedLang}". Translating ${slideChunks.length} chunks to English...`);
-    const translated = await translateChunksToEnglish(slideChunks, client, detectedLang, { allowCloudFallback: allowCloud });
+    const translated = await translateChunksToEnglish(slideChunks, client, detectedLang, {
+      allowCloudFallback: allowCloud || options?.llm_provider_preference === 'cloud',
+      llm_provider_preference: options?.llm_provider_preference,
+    });
     englishChunks = translated;
     if (transcript.metadata) {
       (transcript.metadata as any).translatedChunks = englishChunks;
@@ -371,14 +375,17 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
   ]
 }`;
 
-  const primaryName = client.getPrimaryProviderName();
+  const pref = options?.llm_provider_preference || 'local';
+  const primaryName = (pref === 'cloud' && client.getRegisteredProviders().includes('groq'))
+    ? 'groq'
+    : client.getPrimaryProviderName();
   const providerOrder = [primaryName, ...client.getRegisteredProviders().filter((p) => p !== primaryName)];
 
   for (const providerName of providerOrder) {
     const provider = client.getProvider(providerName);
     if (!provider) continue;
 
-    if (!allowCloud && provider.isLocal === false) {
+    if (!allowCloud && pref !== 'cloud' && provider.isLocal === false) {
       continue;
     }
 
@@ -417,11 +424,21 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
         }
 
         // Stage 3 Verification Pass: cross-reference numbers, names, product terms against source English chunk
-        await verifyAndAttachSourceReferences(genResult.deck.slides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification, { allowCloudFallback: allowCloud });
+        const report = await verifyAndAttachSourceReferences(
+          genResult.deck.slides,
+          englishChunks,
+          videoDuration,
+          client,
+          transcript.rawText,
+          (options as any)?.skipInternalVerification,
+          { allowCloudFallback: allowCloud || pref === 'cloud', llm_provider_preference: pref }
+        );
 
         console.log(`✓ [SynthesisChain: Slides] Provider "${providerName}" produced ${genResult.deck.slides.length} slides`);
         return {
           ...genResult.deck,
+          verificationReport: report,
+          englishChunks,
           providerUsed: providerName,
           adjustmentNotice: genResult.adjustmentNotice,
         };
@@ -441,7 +458,15 @@ Generate a JSON object with a "slides" array containing EXACTLY ${contentSlidesC
     layout_type: s.layout_type || LAYOUT_CYCLE[idx % LAYOUT_CYCLE.length],
   }));
 
-  await verifyAndAttachSourceReferences(fallbackSlides, englishChunks, videoDuration, client, transcript.rawText, (options as any)?.skipInternalVerification, { allowCloudFallback: allowCloud });
+  await verifyAndAttachSourceReferences(
+    fallbackSlides,
+    englishChunks,
+    videoDuration,
+    client,
+    transcript.rawText,
+    (options as any)?.skipInternalVerification,
+    { allowCloudFallback: allowCloud || pref === 'cloud', llm_provider_preference: pref }
+  );
 
   return {
     ...validateSlideDeck({
@@ -461,8 +486,8 @@ async function verifyAndAttachSourceReferences(
   client?: UnifiedModelClient,
   whisperRawText?: string,
   skipRepair: boolean = false,
-  options?: { allowCloudFallback?: boolean }
-): Promise<void> {
+  options?: { allowCloudFallback?: boolean; llm_provider_preference?: 'local' | 'cloud' }
+): Promise<any> {
   for (let i = 0; i < slides.length; i++) {
     const slide = slides[i];
     const chunk = chunks[i] || chunks[chunks.length - 1];
@@ -475,7 +500,9 @@ async function verifyAndAttachSourceReferences(
   }
 
   if (!skipRepair) {
-    await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText, options);
+    const res = await verifyAndRepairSlideDeck(slides, chunks, client, whisperRawText, options);
+    return res.report;
   }
+  return undefined;
 }
 

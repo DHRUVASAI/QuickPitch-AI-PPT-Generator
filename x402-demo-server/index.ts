@@ -41,7 +41,7 @@ export type AppEnv = {
 };
 
 // Create Hono app
-const app = new Hono<AppEnv>();
+export const app = new Hono<AppEnv>();
 
 // ════════════════════════════════════════════════════════════════════
 // MIDDLEWARE STACK
@@ -249,16 +249,22 @@ app.notFound((c) => {
 // SERVER STARTUP
 // ════════════════════════════════════════════════════════════════════
 
-serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
-  console.log('\n✅ QuickPitch AI Server is running! (Free Mode)\n');
-  console.log('═'.repeat(60));
-  console.log('Endpoints:');
-  console.log(`  API:           http://localhost:${port}`);
-  console.log(`  Generate PPT:  http://localhost:${port}/generate-ppt`);
-  console.log(`  Health:        http://localhost:${port}/health`);
-  console.log(`  Info:          http://localhost:${port}/info`);
-  console.log('═'.repeat(60));
-  console.log('\n📚 QUICK TEST:\n');
-  console.log(`  curl http://localhost:${port}/health\n`);
-  console.log('═'.repeat(60) + '\n');
-});
+if (!process.env.NO_AUTO_SERVE) {
+  try {
+    serve({ fetch: app.fetch, port, hostname: '0.0.0.0' }, () => {
+      console.log('\n✅ QuickPitch AI Server is running! (Free Mode)\n');
+      console.log('═'.repeat(60));
+      console.log('Endpoints:');
+      console.log(`  API:           http://localhost:${port}`);
+      console.log(`  Generate PPT:  http://localhost:${port}/generate-ppt`);
+      console.log(`  Health:        http://localhost:${port}/health`);
+      console.log(`  Info:          http://localhost:${port}/info`);
+      console.log('═'.repeat(60));
+      console.log('\n📚 QUICK TEST:\n');
+      console.log(`  curl http://localhost:${port}/health\n`);
+      console.log('═'.repeat(60) + '\n');
+    });
+  } catch (err: any) {
+    console.warn(`[Server] Already running on port ${port} or cannot bind: ${err.message}`);
+  }
+}
