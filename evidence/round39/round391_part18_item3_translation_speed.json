@@ -1,0 +1,77 @@
+{
+  "evidenceName": "round391_part18_item3_translation_speed.json",
+  "timestamp": "2026-10-22T18:14:09.578Z",
+  "gitCommit": "fb140484af2b22a4a027fadb4df44097f309da63",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "models/providers/groq.provider.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\models\\providers\\groq.provider.ts",
+      "exists": true,
+      "sha256": "993bfe4ce0ed4a6430a994a70332f96be5b8b7cad75077caec361552b1af13dc",
+      "mtime": "2026-10-20T05:11:16.247Z"
+    },
+    {
+      "path": "models/providers/ollama.provider.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\models\\providers\\ollama.provider.ts",
+      "exists": true,
+      "sha256": "5e24b371818ba465be0f15730dfd292fb64980adf1d6a427eed7f473633536e7",
+      "mtime": "2026-10-15T05:23:24.093Z"
+    }
+  ],
+  "data": {
+    "description": "Hand-set evidence replacement: all typed-in model names, providers, and durations replaced with values read from API response fields and real clock timers.",
+    "attributionOfStep3Translation": "unknown",
+    "attributionNote": "qzAHXO_step3_deduped_translated.json has no provider or model fields in its JSON schema; attributed as unknown from metadata.",
+    "measuredRuns": {
+      "sequential_14calls": {
+        "provider": "ollama",
+        "modelFromResponse": "qwen2.5:7b",
+        "callsCount": 14,
+        "totalDurationSeconds": 194.8,
+        "averagePerCallSeconds": 13.91,
+        "jaccardOverlapScoreWithWhisper": 0.641,
+        "mode": "sequential 1-unit per HTTP call (do_not_cache=true)"
+      },
+      "batched_4calls": {
+        "provider": "ollama",
+        "modelFromResponse": "qwen2.5:7b",
+        "callsCount": 4,
+        "batchTimersSeconds": [
+          31.09,
+          6.55,
+          29.45,
+          20.63
+        ],
+        "totalDurationSeconds": 87.73,
+        "jaccardOverlapScoreWithWhisper": 0.545,
+        "mode": "4-batch local execution (do_not_cache=true)"
+      },
+      "cloud_opt_in_benchmark": {
+        "provider": "groq",
+        "modelFromResponseField": "openai/gpt-oss-20b",
+        "batchesCount": 4,
+        "totalDurationSeconds": 8.359,
+        "averageBatchDurationSeconds": 2.09,
+        "tokenUsage": {
+          "promptTokens": 2616,
+          "completionTokens": 5762,
+          "totalTokens": 8378
+        }
+      }
+    }
+  }
+}

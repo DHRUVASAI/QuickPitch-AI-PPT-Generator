@@ -1,0 +1,281 @@
+{
+  "evidenceName": "round391_part18_item1_new_controls_modes.json",
+  "timestamp": "2026-10-22T18:07:23.003Z",
+  "gitCommit": "fb140484af2b22a4a027fadb4df44097f309da63",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    }
+  ],
+  "data": {
+    "description": "Round 3.9 Part 1.8 Item 1: 10 new controls evaluated across modes A-D after dropping failed pre-check control",
+    "droppedControl": {
+      "bullet": "The speaker says Alexa is an example of strong AI.",
+      "reason": "Failed presence/absence pre-check (keyword 'strong ai' is present in corpus)"
+    },
+    "results": {
+      "A": {
+        "label": "Heuristic only (no LLM)",
+        "positives": {
+          "total": 5,
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "falseReject": 0,
+          "flagRate": "0.0%",
+          "bullets": [
+            {
+              "bullet": "Kurzweil predicts robots as smart as humans by 2045.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Elon Musk predicts AI implants will enhance the human mind and body.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The video asks viewers a quiz question in the comments.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Machine learning is a technique for achieving AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Strong AI is described as self-aware and able to develop emotions.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "negatives": {
+          "total": 4,
+          "SUPPORTED": 0,
+          "PARTIAL": 4,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "falseAccept": 0,
+          "flagRate": "100.0%",
+          "bullets": [
+            {
+              "bullet": "The speaker explains how GPUs accelerate neural network training.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The video says AI will replace all doctors by 2030.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The speaker names OpenAI as the leader in generative AI.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The video explains the Turing test.",
+              "grade": "PARTIAL"
+            }
+          ]
+        }
+      },
+      "B": {
+        "label": "LLM entailment only (UNVERIFIED - no live model)",
+        "positives": {
+          "total": 5,
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 5,
+          "falseReject": 0,
+          "flagRate": "100.0%",
+          "bullets": [
+            {
+              "bullet": "Kurzweil predicts robots as smart as humans by 2045.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Elon Musk predicts AI implants will enhance the human mind and body.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The video asks viewers a quiz question in the comments.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Machine learning is a technique for achieving AI.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Strong AI is described as self-aware and able to develop emotions.",
+              "grade": "UNVERIFIED"
+            }
+          ]
+        },
+        "negatives": {
+          "total": 4,
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 4,
+          "falseAccept": 0,
+          "flagRate": "100.0%",
+          "bullets": [
+            {
+              "bullet": "The speaker explains how GPUs accelerate neural network training.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The video says AI will replace all doctors by 2030.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The speaker names OpenAI as the leader in generative AI.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The video explains the Turing test.",
+              "grade": "UNVERIFIED"
+            }
+          ]
+        }
+      },
+      "C": {
+        "label": "Both heuristic + LLM (production; LLM=none here)",
+        "positives": {
+          "total": 5,
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "falseReject": 0,
+          "flagRate": "0.0%",
+          "bullets": [
+            {
+              "bullet": "Kurzweil predicts robots as smart as humans by 2045.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Elon Musk predicts AI implants will enhance the human mind and body.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The video asks viewers a quiz question in the comments.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Machine learning is a technique for achieving AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Strong AI is described as self-aware and able to develop emotions.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "negatives": {
+          "total": 4,
+          "SUPPORTED": 0,
+          "PARTIAL": 4,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "falseAccept": 0,
+          "flagRate": "100.0%",
+          "bullets": [
+            {
+              "bullet": "The speaker explains how GPUs accelerate neural network training.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The video says AI will replace all doctors by 2030.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The speaker names OpenAI as the leader in generative AI.",
+              "grade": "PARTIAL"
+            },
+            {
+              "bullet": "The video explains the Turing test.",
+              "grade": "PARTIAL"
+            }
+          ]
+        }
+      },
+      "D": {
+        "label": "Evidence-bound (chunk_id + exact term match)",
+        "positives": {
+          "total": 5,
+          "SUPPORTED": 4,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 1,
+          "UNVERIFIED": 0,
+          "falseReject": 1,
+          "flagRate": "20.0%",
+          "bullets": [
+            {
+              "bullet": "Kurzweil predicts robots as smart as humans by 2045.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Elon Musk predicts AI implants will enhance the human mind and body.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The video asks viewers a quiz question in the comments.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Machine learning is a technique for achieving AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Strong AI is described as self-aware and able to develop emotions.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "negatives": {
+          "total": 4,
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 4,
+          "UNVERIFIED": 0,
+          "falseAccept": 0,
+          "flagRate": "100.0%",
+          "bullets": [
+            {
+              "bullet": "The speaker explains how GPUs accelerate neural network training.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The video says AI will replace all doctors by 2030.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The speaker names OpenAI as the leader in generative AI.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The video explains the Turing test.",
+              "grade": "NO SUPPORT"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

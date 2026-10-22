@@ -1,0 +1,730 @@
+{
+  "evidenceName": "round391_part18_item1_verifier_modes.json",
+  "timestamp": "2026-10-22T18:04:38.486Z",
+  "gitCommit": "fb140484af2b22a4a027fadb4df44097f309da63",
+  "inputs": [
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    },
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "bbad78581e7e7b7d7ddb3834f0de3d72bedff05035b3cca45fc19991f1bbbbc4",
+      "mtime": "2026-10-20T12:43:25.637Z"
+    }
+  ],
+  "data": {
+    "description": "Round 3.9 Part 1.8 Item 1: 24 Round 3.8 bullets + 10 held-out controls run through modes A/B/C/D",
+    "modeDefinitions": {
+      "A": "Heuristic only: extractVerifiableEntities checks numbers/entities in combined source. No LLM call.",
+      "B": "LLM entailment only: skip entity/number heuristic, rely only on YES/NO LLM claim check. UNVERIFIED — no live model in this run.",
+      "C": "Both (production): heuristic + LLM entailment. Without live LLM client this run produces same as A.",
+      "D": "Evidence-bound: every verifiable term from extractVerifiableEntities must be found as exact substring (or bilingual alias) in the cited chunk text."
+    },
+    "modeResults": {
+      "A": {
+        "label": "Heuristic only (no LLM)",
+        "24b": {
+          "SUPPORTED": 24,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "flagRate": "0.0%",
+          "bullets": [
+            {
+              "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Its impact is visible across multiple facets of modern daily life",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Chooses firm or rocky path based on real‑time situational analysis",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Faced with an uncrossable river, robot uses a provided plank as input",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Applies reasoning to construct a solution and successfully cross",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Limited transferability; cannot perform unrelated tasks such as chess",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Hypothetical self‑aware systems capable of reasoning and emotions",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Often depicted in fiction, e.g., Ultron from the Avengers",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa responds only to intents it has been explicitly trained for",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Fails to answer traffic queries when not pre‑programmed",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Each request triggers a specific programmed response rather than true understanding",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Provides algorithms that learn from data and experience",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Enables systems to improve performance without explicit programming",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Excels at extracting complex patterns from large datasets",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "pos": {
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "flagRate": "0.0%",
+          "falseReject": 0,
+          "bullets": [
+            {
+              "bullet": "Weak AI performs only one kind of task.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AlphaGo is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Ultron from Avengers is an example of strong AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Deep learning is a subset of machine learning.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "neg": {
+          "SUPPORTED": 4,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 1,
+          "UNVERIFIED": 0,
+          "flagRate": "20.0%",
+          "falseAccept": 4,
+          "bullets": [
+            {
+              "bullet": "The speaker explains how transformer models use attention.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The video recommends banning autonomous weapons.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The speaker says strong AI is already sold in commercial products.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The speaker says AI was invented at MIT in 1970.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The speaker explains how blockchain secures AI models.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        }
+      },
+      "B": {
+        "label": "LLM entailment only (UNVERIFIED - no live model)",
+        "24b": {
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 24,
+          "flagRate": "0.0%",
+          "bullets": [
+            {
+              "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Its impact is visible across multiple facets of modern daily life",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Chooses firm or rocky path based on real‑time situational analysis",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Faced with an uncrossable river, robot uses a provided plank as input",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Applies reasoning to construct a solution and successfully cross",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Limited transferability; cannot perform unrelated tasks such as chess",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Hypothetical self‑aware systems capable of reasoning and emotions",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Often depicted in fiction, e.g., Ultron from the Avengers",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Alexa responds only to intents it has been explicitly trained for",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Fails to answer traffic queries when not pre‑programmed",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Each request triggers a specific programmed response rather than true understanding",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Provides algorithms that learn from data and experience",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Enables systems to improve performance without explicit programming",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Excels at extracting complex patterns from large datasets",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+              "grade": "UNVERIFIED"
+            }
+          ]
+        },
+        "pos": {
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 5,
+          "flagRate": "0.0%",
+          "falseReject": 0,
+          "bullets": [
+            {
+              "bullet": "Weak AI performs only one kind of task.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "AlphaGo is an example of narrow AI.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Alexa is an example of narrow AI.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Ultron from Avengers is an example of strong AI.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "Deep learning is a subset of machine learning.",
+              "grade": "UNVERIFIED"
+            }
+          ]
+        },
+        "neg": {
+          "SUPPORTED": 0,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 5,
+          "flagRate": "0.0%",
+          "falseAccept": 0,
+          "bullets": [
+            {
+              "bullet": "The speaker explains how transformer models use attention.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The video recommends banning autonomous weapons.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The speaker says strong AI is already sold in commercial products.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The speaker says AI was invented at MIT in 1970.",
+              "grade": "UNVERIFIED"
+            },
+            {
+              "bullet": "The speaker explains how blockchain secures AI models.",
+              "grade": "UNVERIFIED"
+            }
+          ]
+        }
+      },
+      "C": {
+        "label": "Both heuristic + LLM (production; LLM=none here, same as A)",
+        "24b": {
+          "SUPPORTED": 24,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "flagRate": "0.0%",
+          "bullets": [
+            {
+              "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Its impact is visible across multiple facets of modern daily life",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Chooses firm or rocky path based on real‑time situational analysis",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Faced with an uncrossable river, robot uses a provided plank as input",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Applies reasoning to construct a solution and successfully cross",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Limited transferability; cannot perform unrelated tasks such as chess",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Hypothetical self‑aware systems capable of reasoning and emotions",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Often depicted in fiction, e.g., Ultron from the Avengers",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa responds only to intents it has been explicitly trained for",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Fails to answer traffic queries when not pre‑programmed",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Each request triggers a specific programmed response rather than true understanding",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Provides algorithms that learn from data and experience",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Enables systems to improve performance without explicit programming",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Excels at extracting complex patterns from large datasets",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "pos": {
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "flagRate": "0.0%",
+          "falseReject": 0,
+          "bullets": [
+            {
+              "bullet": "Weak AI performs only one kind of task.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AlphaGo is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Ultron from Avengers is an example of strong AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Deep learning is a subset of machine learning.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "neg": {
+          "SUPPORTED": 4,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 1,
+          "UNVERIFIED": 0,
+          "flagRate": "20.0%",
+          "falseAccept": 4,
+          "bullets": [
+            {
+              "bullet": "The speaker explains how transformer models use attention.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The video recommends banning autonomous weapons.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The speaker says strong AI is already sold in commercial products.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The speaker says AI was invented at MIT in 1970.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The speaker explains how blockchain secures AI models.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        }
+      },
+      "D": {
+        "label": "Evidence-bound (chunk_id + exact term match)",
+        "24b": {
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 19,
+          "UNVERIFIED": 0,
+          "flagRate": "79.2%",
+          "bullets": [
+            {
+              "bullet": "Artificial intelligence embeds human‑like intelligence into machines to perform tasks autonomously",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Functions are compiled from algorithms that enable perception, decision‑making, and action",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "AI powers smartphones, cars, social‑media feeds, video games, and banking services",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Its impact is visible across multiple facets of modern daily life",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Robot evaluates lighting and landscape variations to maintain expected performance",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Chooses firm or rocky path based on real‑time situational analysis",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Faced with an uncrossable river, robot uses a provided plank as input",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Applies reasoning to construct a solution and successfully cross",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Designed for a single specialized task, e.g., AlphaGo mastering the game Go",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Limited transferability; cannot perform unrelated tasks such as chess",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Hypothetical self‑aware systems capable of reasoning and emotions",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Often depicted in fiction, e.g., Ultron from the Avengers",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa responds only to intents it has been explicitly trained for",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Fails to answer traffic queries when not pre‑programmed",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "User perception of multi‑task ability masks underlying narrow functionality",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Each request triggers a specific programmed response rather than true understanding",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Provides algorithms that learn from data and experience",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Enables systems to improve performance without explicit programming",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Subset of machine learning using neural‑network architectures inspired by the brain",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Excels at extracting complex patterns from large datasets",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Robots with legal citizenship, skeletal systems, and evolving emotions are being imagined",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "AI that understands or develops emotions could reshape human‑machine interaction",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Unexplored AI domains present investment opportunities and ethical considerations",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "Future advancements may lead to human augmentation and new market paradigms",
+              "grade": "NO SUPPORT"
+            }
+          ]
+        },
+        "pos": {
+          "SUPPORTED": 5,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 0,
+          "UNVERIFIED": 0,
+          "flagRate": "0.0%",
+          "falseReject": 0,
+          "bullets": [
+            {
+              "bullet": "Weak AI performs only one kind of task.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "AlphaGo is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Alexa is an example of narrow AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Ultron from Avengers is an example of strong AI.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "Deep learning is a subset of machine learning.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        },
+        "neg": {
+          "SUPPORTED": 2,
+          "PARTIAL": 0,
+          "NO_SUPPORT": 3,
+          "UNVERIFIED": 0,
+          "flagRate": "60.0%",
+          "falseAccept": 2,
+          "bullets": [
+            {
+              "bullet": "The speaker explains how transformer models use attention.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The video recommends banning autonomous weapons.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The speaker says strong AI is already sold in commercial products.",
+              "grade": "SUPPORTED"
+            },
+            {
+              "bullet": "The speaker says AI was invented at MIT in 1970.",
+              "grade": "NO SUPPORT"
+            },
+            {
+              "bullet": "The speaker explains how blockchain secures AI models.",
+              "grade": "SUPPORTED"
+            }
+          ]
+        }
+      }
+    },
+    "notes": [
+      "Mode B marked UNVERIFIED because no live LLM client available during this audit run.",
+      "Mode C without client == Mode A; differences only appear when client is passed.",
+      "Mode D is a pure substring check; no LLM involved."
+    ]
+  }
+}

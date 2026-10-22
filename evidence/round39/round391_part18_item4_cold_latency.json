@@ -1,0 +1,104 @@
+{
+  "evidenceName": "round391_part18_item4_cold_latency.json",
+  "timestamp": "2026-10-22T18:19:16.285Z",
+  "gitCommit": "fb140484af2b22a4a027fadb4df44097f309da63",
+  "inputs": [
+    {
+      "path": "handlers/generate-ppt.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\handlers\\generate-ppt.ts",
+      "exists": true,
+      "sha256": "80d4707b6e74f0c4c9af465bb65d2c007bb60b036b4db591a613cc6c78d32c75",
+      "mtime": "2026-10-20T12:45:32.005Z"
+    },
+    {
+      "path": "core/synthesis/slide-planner.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\slide-planner.ts",
+      "exists": true,
+      "sha256": "58e790222ebc74debbb9d2b581a53d0312948256599c0cf31e26fc85f06e0c93",
+      "mtime": "2026-10-20T12:44:31.288Z"
+    },
+    {
+      "path": "core/synthesis/bullet-verifier.ts",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\core\\synthesis\\bullet-verifier.ts",
+      "exists": true,
+      "sha256": "bbad78581e7e7b7d7ddb3834f0de3d72bedff05035b3cca45fc19991f1bbbbc4",
+      "mtime": "2026-10-20T12:43:25.637Z"
+    }
+  ],
+  "data": {
+    "description": "Round 3.9 Part 1.8 Item 4: 3 runs per mode with do_not_cache=true",
+    "verificationUsesCloudInModeB": true,
+    "results": {
+      "localBatched": [
+        {
+          "run": 1,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 20900,
+          "stage2_outline_ms": 15761,
+          "stage3_slides_verify_ms": 51970,
+          "stage4_compile_ms": 49,
+          "stageSum_ms": 88680,
+          "total_ms": 88734
+        },
+        {
+          "run": 2,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 5354,
+          "stage2_outline_ms": 5043,
+          "stage3_slides_verify_ms": 58015,
+          "stage4_compile_ms": 20,
+          "stageSum_ms": 68432,
+          "total_ms": 68437
+        },
+        {
+          "run": 3,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 4494,
+          "stage2_outline_ms": 5973,
+          "stage3_slides_verify_ms": 47929,
+          "stage4_compile_ms": 19,
+          "stageSum_ms": 58415,
+          "total_ms": 58421
+        }
+      ],
+      "cloudPerRequest": [
+        {
+          "run": 1,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 4592,
+          "stage2_outline_ms": 4999,
+          "stage3_slides_verify_ms": 50925,
+          "stage4_compile_ms": 18,
+          "stageSum_ms": 60534,
+          "total_ms": 60540
+        },
+        {
+          "run": 2,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 4456,
+          "stage2_outline_ms": 5391,
+          "stage3_slides_verify_ms": 63113,
+          "stage4_compile_ms": 18,
+          "stageSum_ms": 72978,
+          "total_ms": 72983
+        },
+        {
+          "run": 3,
+          "status": 200,
+          "provider": "ollama",
+          "stage1_ingest_translate_ms": 4833,
+          "stage2_outline_ms": 4858,
+          "stage3_slides_verify_ms": 71681,
+          "stage4_compile_ms": 20,
+          "stageSum_ms": 81392,
+          "total_ms": 81398
+        }
+      ]
+    }
+  }
+}

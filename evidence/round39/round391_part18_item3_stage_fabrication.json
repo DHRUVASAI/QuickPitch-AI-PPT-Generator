@@ -1,0 +1,309 @@
+{
+  "evidenceName": "round391_part18_item3_stage_fabrication.json",
+  "timestamp": "2026-10-22T18:14:09.768Z",
+  "gitCommit": "fb140484af2b22a4a027fadb4df44097f309da63",
+  "inputs": [
+    {
+      "path": "scratch/qzAHXO_parsed_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_parsed_vtt.json",
+      "exists": true,
+      "sha256": "4112bd01be43fbd1ddcef4ea367ec294664146ab2c8c5cb593cd5b284c7cbba4",
+      "mtime": "2026-10-16T01:54:06.186Z"
+    },
+    {
+      "path": "scratch/qzAHXO_deduped_vtt.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_deduped_vtt.json",
+      "exists": true,
+      "sha256": "5d2b7f1a9fa176166bae7d92c2e3492a21337930e001f2359e34ee2290e970db",
+      "mtime": "2026-10-20T04:17:10.581Z"
+    },
+    {
+      "path": "scratch/qzAHXO_step3_deduped_translated.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_step3_deduped_translated.json",
+      "exists": true,
+      "sha256": "df1613348be85a10911091ef1006a5451fff3999b96d45703de3739109e638dd",
+      "mtime": "2026-10-20T04:18:11.568Z"
+    },
+    {
+      "path": "scratch/round38_hindi_deck.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\round38_hindi_deck.json",
+      "exists": true,
+      "sha256": "f606b608f9d090bd003b608178d5460d3c039e8154d9352d792ccac9edecd300",
+      "mtime": "2026-10-20T04:24:55.655Z"
+    },
+    {
+      "path": "scratch/qzAHXO_large_v3_translate.json",
+      "absPath": "C:\\Users\\dhruv\\Downloads\\HackBlock\\x402-Project\\x402-demo-server\\scratch\\qzAHXO_large_v3_translate.json",
+      "exists": true,
+      "sha256": "98d075ce180206d518354e080d3dd7938c4836125ab4eed9cb456b897c2e244d",
+      "mtime": "2026-10-17T04:57:11.212Z"
+    }
+  ],
+  "data": {
+    "description": "Stage fabrication audit with hand-set model names replaced by values verified from response metadata or unknown.",
+    "attributionOfStep3File": "unknown",
+    "termFirstOccurrences": {
+      "1956": {
+        "firstStage": "None (Does NOT exist in any pipeline artifact)",
+        "file": "N/A",
+        "line": "N/A",
+        "snippet": "Term was introduced solely in chat markdown text / test prompts in Round 3.7/3.8, never in pipeline data."
+      },
+      "2029": {
+        "firstStage": "None (Does NOT exist in any pipeline artifact)",
+        "file": "N/A",
+        "line": "N/A",
+        "snippet": "Term was introduced solely in chat markdown text / test prompts in Round 3.7/3.8, never in pipeline data."
+      },
+      "mccarthy": {
+        "firstStage": "Test Scripts",
+        "file": "scripts/verify_bullets_grounding.py",
+        "line": 33,
+        "snippet": "(\"John McCarthy\", [\"मैकार्थी\", \"mccarthy\"]),"
+      },
+      "sedol": {
+        "firstStage": "None (Does NOT exist in any pipeline artifact)",
+        "file": "N/A",
+        "line": "N/A",
+        "snippet": "Term was introduced solely in chat markdown text / test prompts in Round 3.7/3.8, never in pipeline data."
+      },
+      "siri": {
+        "firstStage": "Test Scripts",
+        "file": "scripts/verify_bullets_grounding.py",
+        "line": 26,
+        "snippet": "(\"Smartphones / Siri / Alexa\", [\"स्मार्टफोन\", \"फोन\", \"असिस्टेंट\"]),"
+      },
+      "मैकार्थी": {
+        "firstStage": "Test Scripts",
+        "file": "scripts/verify_bullets_grounding.py",
+        "line": 33,
+        "snippet": "(\"John McCarthy\", [\"मैकार्थी\", \"mccarthy\"]),"
+      },
+      "सेडोल": {
+        "firstStage": "None (Does NOT exist in any pipeline artifact)",
+        "file": "N/A",
+        "line": "N/A",
+        "snippet": "Term was introduced solely in chat markdown text / test prompts in Round 3.7/3.8, never in pipeline data."
+      },
+      "सिरी": {
+        "firstStage": "None (Does NOT exist in any pipeline artifact)",
+        "file": "N/A",
+        "line": "N/A",
+        "snippet": "Term was introduced solely in chat markdown text / test prompts in Round 3.7/3.8, never in pipeline data."
+      }
+    },
+    "unitsCount": 14,
+    "units": [
+      {
+        "unitIndex": 1,
+        "timestamps": "00:00 - 00:20",
+        "startSec": 0.4,
+        "endSec": 20.7,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "सोचिए कि कोई मशीन है जो आपके हिसाब से आपकी अलमारी सेट कर दे या आपके परिवार के हर मेंबर को उनकी पसंद के हिसाब से कॉफी सर्व कर दे बेसिकली आपका हर दिन आसान बना दे है ना यह है आर्टिफिशियल इंटेलिजेंस के प्रोडक्ट्स पर आर्टिफिशियल इंटेलिजेंस टर्म का इस्तेमाल क्यों क्योंकि इन मशीनों में ह्यूमंस जैसी इंटेलिजेंस को",
+        "englishOutput": "Imagine that there is a machine that works according to you sets your wardrobe or your family's serves coffee to every member according to their preference basically makes your every day easy right? This is of artificial intelligence Artificial intelligence on products Why use the term, because these machines contain intelligence like humans",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Imagine that there is a machine that sets your wardrobe according to you or serves coffee according to your family members' preferences. Basically, it makes your day easy. Isn't it? These are the products of Artificial Intelligence. But why use the term Artificial Intelligence? Because in these machines, intelligence like humans is artificially incorporated",
+        "ratio": 0.88,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 2,
+        "timestamps": "00:20 - 00:48",
+        "startSec": 20.7,
+        "endSec": 48.1,
+        "hindiLineRange": "Lines 0 - 10 (11 caption lines)",
+        "hindiSource": "आर्टिफिशली इनकॉरपोरेट किया जाता है ताकि वह हमारे जैसे टास्क्स कर सके हर इंटेलिजेंस को कॉम्प्लेक्टेड फंक्शन से बनाया जाता है लेकिन हो सकता है कि एआई पिछले एग्जांपल्स की तरह काम ना करें इनफैक्ट एआई का इस्तेमाल स्मार्टफोंस कार्स सोशल मीडिया फीड्स वीडियो गेम्स बैंकिंग सर्वेस और डेली लाइफ के अलग-अलग हिस्सों में किया जाता है असल सवाल यह है कि एआई क्या करता है",
+        "englishOutput": "It is artificially incorporated so that it can perform tasks like ours every intelligence to is made with a compiled function But it may be that AI does not work like previous examples, in fact of AI used in smartphones, cars, social media feeds, video games, banking services and done in various parts of daily life goes The real question is what AI does",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Because in these machines, intelligence like humans is artificially incorporated so that they can do tasks like us. Every intelligence is made up of complex algorithms and mathematical functions. But it is possible that AI doesn't work like the previous examples. In fact, AI is used in smartphones, cars, social media feeds, video games, banking, surveillance and in different parts of daily life. The real question is, what does AI do? Here is a robot that we have made in our lab.",
+        "ratio": 0.97,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 3,
+        "timestamps": "00:48 - 01:09",
+        "startSec": 48.1,
+        "endSec": 69.5,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "यहां एक रोबॉट है जिसे हमने अपनी लैब में बनाया है और अब इसे एक फील्ड में छोड़ दिया गया है लाइटिंग लैंडस्केप और फील्ड के डायमेंशन में वेरिएशन के बावजूद ए रोबॉट को उम्मीद के मुताबिक परफॉर्म करना होगा किसी नई सिचुएशन पर सही तरीके से रिएक्ट करने की क्षमता को जनरलाइज्ड लर्निंग कहा जाता है रोबॉट अब एक चौराहे",
+        "englishOutput": "Here is a robot that we built in our lab and now we have released it into a field given the lighting landscape and field despite variations in the dimensions of the robot is expected to perform as expected will correctly handle any new situation the ability to react is generalized learning is called, the robot is now at a crossroads",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Here is a robot that we have made in our lab. And now it has been left in a field. In the dimensions of lighting, landscape and field, AI has to perform according to the expectations of the robot. The ability to react correctly to a new situation is called generalized learning. The robot is now on a crossroad, where one path is solid and the other is rocky.",
+        "ratio": 1,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 4,
+        "timestamps": "01:09 - 01:32",
+        "startSec": 69.6,
+        "endSec": 92,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "पर है जहां एक रास्ता पक्का तो दूसरा पथरीला है रोबोट को सिचुएशन के हिसाब से यह तय करना होगा कि कौन सा रास्ता अपनाना है यह रोबॉट की रीजनिंग एबिलिटी को दिखाता है थोड़ी देर टहलने के बाद रोबॉट को अब एक ऐसी नदी का सामना करना पड़ता है जिसे वह तैर कर पार नहीं कर सकता इनपुट के रूप में दिए गए प्लांक का इस्तेमाल करके रोबॉट इस",
+        "englishOutput": "But there is where one path is firm and the other The path is rocky for the robot according to the situation It will have to decide which path to adopt It shows the robot's reasoning ability After a short walk, the robot now has a has to face a river that it cannot cross by swimming as input Using the given plank, the robot this",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "The robot is now on a crossroad, where one path is solid and the other is rocky. The robot has to decide according to the situation which path to take. This shows the reasoning ability of the robot. After walking for a while, the robot now has to face a river which is called a river. It cannot cross the river by swimming. By using the plank given as the input, the robot can cross this river.",
+        "ratio": 0.94,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 5,
+        "timestamps": "01:32 - 01:54",
+        "startSec": 92,
+        "endSec": 114.3,
+        "hindiLineRange": "Lines 0 - 8 (9 caption lines)",
+        "hindiSource": "नदी को पार कर सकता है तो हमारा रोबॉट दिए गए इनपुट का इस्तेमाल करता है और किसी समस्या का सॉल्यूशन ढूंढता है इसे प्रॉब्लम सॉल्विंग कहा जाता है ये तीन कैपेबिलिटीज रोबोट को आर्टिफिशियल तरीके से इंटेलिजेंट बनाती हैं इन शॉर्ट एआई मशीनों को अडॉप्ट करने तर्क देने और सलूशन देने की कैपेबिलिटी देता है खैर अब हम जानते हैं कि एआई क्या",
+        "englishOutput": "If it can cross the river then our robot gave Uses the given input and any Finds a solution to the problem, it Problem solving is called, these three Capabilities make the robot artificial way to become intelligent These short AI machines are to adopt The capability to give reasoning and give solution gives, well now we know what AI is",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "By using the plank given as the input, the robot can cross this river. So, our robot uses the input given and finds a solution to a problem. This is called problem solving. These three capabilities make the robot artificially intelligent. In short, it gives the capability to adapt AI machines, give arguments and give solutions. Well, now we know what AI is.",
+        "ratio": 0.95,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 6,
+        "timestamps": "01:54 - 02:18",
+        "startSec": 114.4,
+        "endSec": 138.4,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "है तो आइए उन दो ब्रॉड कैटेगरी पर एक नजर डालें जिनमें एआई को बांटा गया है वीक एआई जिसे नैरो एआई भी कहा जाता है सिर्फ एक ही टास्क पर फोकस करता है एग्जांपल के लिए अल्फा गो गेम गो का उस्ताद है लेकिन आप इस बात की रत्ती भर भी उम्मीद नहीं कर सकते कि वह चेस में भी अच्छा हो यह बात अल्फा गो को एक कमजोर यानी वीक एआई बनाता है आप",
+        "englishOutput": "So let's take a look at those two broad categories into which AI is divided, weak AI which is also called narrow AI, focuses on only one task; for example AlphaGo is the master of the game Go, but you cannot even hope for a single night about this that it would be good at chess; this is what makes Alpha Go a weak, i.e., weak AI",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Well, now we know what AI is. So, let's look at those two broad categories. Let's look at two broad categories in which AI has been divided. Weak AI, also known as Narrow AI, focuses on only one task. For example, AlphaGo is the master of GameGo. But you can't expect it to be good at chess. This makes AlphaGo a weak AI. You can say that Alexa is not a weak AI because it can do a lot of tasks.",
+        "ratio": 0.88,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 7,
+        "timestamps": "02:18 - 02:38",
+        "startSec": 138.4,
+        "endSec": 158.3,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "यह कह सकते हैं कि अलेक्सा एक कमजोर एआई नहीं है क्योंकि यह बहुत सारे टास्क कर सकती है खैर यह असल में सच नहीं है जब आप अलेक्सा को प्ले दसपास तो कहते हैं तो वह प्ले औरस पा स तो कीवर्ड चुनती है और एक प्रोग्राम चलाती है जिसके लिए उसे ट्रेन किया जाता है अलेक्सा उस सवाल का जवाब नहीं दे सकती जिसका जवाब देने के लिए उसे",
+        "englishOutput": "One can say that Alexa is a weak AI It is not, because it does many tasks It can, well this is actually not true when you When you say 'play ten pass' to Alexa, it plays and selects the keyword and a runs a program for which it is trained is trained, Alexa cannot answer that question cannot give, for which it needs",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "You can say that Alexa is not a weak AI because it can do a lot of tasks. This is not actually true. When you call Alexa a play despacito, it chooses play and despacito keywords and runs a program for which it is trained. Alexa cannot answer that question for which it has not been trained to answer.",
+        "ratio": 0.9,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 8,
+        "timestamps": "02:38 - 03:00",
+        "startSec": 158.4,
+        "endSec": 180.4,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "ट्रेन नहीं किया गया है फॉर एग्जांपल अलेक्सा से ऑफिस से घर तक ट्रैफिक का हाल पूछे अलेक्सा आपको यह जानकारी नहीं दे सकती क्योंकि वह इसके लिए ट्रेड नहीं है चलिए अब बात करते हैं एआई की दूसरी कैटेगरी की जो कि है स्ट्रंग एआई ये उन रोबोट्स की तरह है जो अब तक सिर्फ हमारी इमेजिनेशन में ही मौजू मजूद है",
+        "englishOutput": "Not trained for Example: Alexa from office to home Ask Alexa about traffic status, it can cannot give information because it is not trained. Let's now talk about AI the second category, which is strong AI These are like those robots that so far only exist in our imagination",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Alexa cannot answer that question for which it has not been trained to answer. For example, ask Alexa about the condition of traffic from office to home. Alexa cannot give you this information because it is not trained for it. Now let's talk about the second category of AI, which is Strong AI. It is like those robots which are only present in our imagination.",
+        "ratio": 0.78,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 9,
+        "timestamps": "03:00 - 03:27",
+        "startSec": 180.4,
+        "endSec": 207,
+        "hindiLineRange": "Lines 0 - 9 (10 caption lines)",
+        "hindiSource": "अवेंजर्स का अल्ट्रॉन स्ट्रंग एआई का आइडियल एग्जांपल है ऐसा इसलिए क्योंकि यह सेल्फ अवेयर है और इसमें इमोशंस के डेवलप करने की भी कैपेबिलिटी है इस वजह से एआई का रिस्पांस अनप्रिडिक्टेबल हो जाता है आप सोच रहे होंगे आर्टिफिशियल इंटेलिजेंस मशीन लर्निंग और डीप लर्निंग से कैसे अलग है हमने जाना कि एआई क्या है मशीन लर्निंग एआई हासिल करने की एक टेक्नीक है वहीं डीप",
+        "englishOutput": "Avengers' Ultron is a strong AI Ideal example It is so because it is self-aware And it also has the capability to develop emotions Because of this, the AI's response becomes unpredictable You might be thinking Artificial Intelligence machines How it differs from learning and deep learning We have learned what AI is, machine learning AI is a technique to achieve machine learning, and deep",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "It is like those robots which are only present in our imagination. Ultron of Avengers is an ideal example of Strong AI. This is because it is self-aware and it also has the capability to develop emotions. This makes AI's response unpredictable. You must be wondering how it is different from artificial intelligence, machine learning and deep learning. We know what AI is. Machine learning is a technique to acquire AI. Deep learning is a subset of machine learning.",
+        "ratio": 0.96,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 10,
+        "timestamps": "03:27 - 03:51",
+        "startSec": 207,
+        "endSec": 232,
+        "hindiLineRange": "Lines 0 - 9 (10 caption lines)",
+        "hindiSource": "लर्निंग मशीन लर्निंग का एक सबसेट है मशीन लर्निंग से मशीन को एल्गोरिदम के जरिए डाटा और एक्सपीरियंस सीखने में मदद मिलती है डीप लर्निंग इस लर्निंग को ह्यूमन ब्रेन से इंस्पायर्ड तरीकों से डिवेलप करता है इसका मतलब है डीप लर्निंग से डाटा और पैटर्न को बेहतर ढंग से समझा जा सकता है जानेमाने फ्यूचरिस्ट कूर्स वेल का अनुमान है कि वर्ष 205 तक हमारे पास",
+        "englishOutput": "Learning is a subset of machine learning. Machine learning provides algorithms to the machine. Through data and experience, it helps in learning. Deep learning receives this learning. Through methods inspired by the human brain. It develops, meaning deep learning. Data and patterns are understood better. can be. is of the famous futurist Kurswell. It is estimated that by the year 205 we will have.",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Deep learning is a subset of machine learning. Machine learning helps the machine to learn data and experience through algorithms. Deep learning develops this learning in a way inspired by the human brain. This means that deep learning can better understand data and patterns. The well-known futurist Kurzweil estimates that by the year 2045, we will have as many smart robots as humans.",
+        "ratio": 0.96,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 11,
+        "timestamps": "03:52 - 04:15",
+        "startSec": 232,
+        "endSec": 255.6,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "इंसानों जितने स्मार्ट रोबॉट होंगे इसे पॉइंट ऑफ सिंगुलेरिटी कहा जाता है खैर इतना ही नहीं असल में इलन मस्क ने भविष्यवाणी की है कि ह्यूमन माइंड और शरीर को एआई इंप्लांट से बढ़ाया जाएगा जो हमें कुछ हद तक साइबर्ग बना देगा तो यहां आपके लिए एक सवाल है नीचे दिया गया कौन सा एआई प्रोजेक्ट अभी तक मौजूद नहीं है ए",
+        "englishOutput": "Robots as smart as humans They will be called the point of singularity Well, that's not all, actually Elon Musk predicted that the human mind and body will be enhanced with AI implants that will make us somewhat cyborgs, so here for you is a question: which AI project listed below does not exist yet?",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "we will have as many smart robots as humans. This is called the point of singularity. Well, that's not all. Elon Musk has actually predicted that the human mind and body will be increased by AI implants, which will make us cyborgs to some extent. So here's a question for you. Which AI project is not yet available? A. AI robot with citizenship.",
+        "ratio": 0.87,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 12,
+        "timestamps": "04:15 - 04:41",
+        "startSec": 255.6,
+        "endSec": 281.9,
+        "hindiLineRange": "Lines 0 - 8 (9 caption lines)",
+        "hindiSource": "सिटीजनशिप वाला एआई रोबॉट बी मस्कुलर स्केलेटल सिस्टम वाला रोबॉट सी एआई जो अपने मालिक के इमोशंस को समझ सकता है डी एआई जो समय के साथ इमोशंस को डिवेलप करता है इसके बारे में सोचे और नीचे कमेंट सेक्शन में अपने आंसर छोड़ें तीन लकी विनर्स को amazon-in अभी भी एक रहस्य है इसलिए इसमें कोई ताज्जुब की बात नहीं है कि एआई के पास",
+        "englishOutput": "AI robot with citizenship is muscular Robot with skeletal system, AI that Can understand its owner's emotions AI that develops emotions over time Think about it and leave a comment below Leave your answer in the section, three lucky winners amazon-in is still a mystery, so in it It's no surprise that AI has",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "A. AI robot with citizenship. B. AI robot with muscular skeletal system. C. AI that can understand its owner's emotions. D. AI that develops emotions with time. Think about it and leave your answers in the comment section below. Three lucky winners will get Amazon gift vouchers. The human brain is still a mystery. So it's not surprising that AI also has a lot of unventured domains.",
+        "ratio": 0.82,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 13,
+        "timestamps": "04:41 - 05:03",
+        "startSec": 281.9,
+        "endSec": 303.2,
+        "hindiLineRange": "Lines 0 - 7 (8 caption lines)",
+        "hindiSource": "भी बहुत सारे अनवेंचर्ड डोमेन हैं अभी के लिए एआई इंसानों के साथ काम करने और हमारे टास्क को आसान बनाने के लिए बनाया गया है हालांकि टेक्नोलॉजी के बढ़ने के साथ हम सिर्फ इंतजार कर सकते हैं और देख सकते हैं कि आने वाले समय में एआई हमारे लिए क्या मायने रखता है और यह था आर्टिफिशियल इंटेलिजेंस आपके लिए शॉर्ट में क्विज का",
+        "englishOutput": "There are also many unventured domains currently for AI to work with humans and our is created to make tasks easier Although with the growth of technology we can only wait and see what AI will mean for us in the future means and this was artificial intelligence, a short quiz for you",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "So it's not surprising that AI also has a lot of unventured domains. For now, AI has been created to work with humans and make our tasks easier. However, with the rise of technology, we can only wait and see what AI means to us in the future. And this was Artificial Intelligence for you in short. Don't forget to give your answer to the quiz in the comment section below.",
+        "ratio": 0.82,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      },
+      {
+        "unitIndex": 14,
+        "timestamps": "05:03 - 05:29",
+        "startSec": 303.2,
+        "endSec": 329.8,
+        "hindiLineRange": "Lines 0 - 5 (6 caption lines)",
+        "hindiSource": "अपना आंसर नीचे कमेंट सेक्शन में देना ना भूलें साथ ही अगर आपको यह वीडियो अच्छा लगा हो तो हमारे चैनल को लाइक शेयर और सब्सक्राइब करें हमारे साथ बने रहे और सीखते रहे",
+        "englishOutput": "Give your answer in the comment section below, okay Also, if you find this video good then like, share, and subscribe, stay with us and learning stay",
+        "model": "unknown",
+        "temperature": 0,
+        "whisperLargeV3Text": "Don't forget to give your answer to the quiz in the comment section below. Also, if you liked this video, then like, share and subscribe to our channel. Stay with us and keep learning.",
+        "ratio": 0.79,
+        "status": "translated",
+        "modelAttributionNote": "qzAHXO_step3_deduped_translated.json file metadata contains no model field; strictly unknown."
+      }
+    ]
+  }
+}
