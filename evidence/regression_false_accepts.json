@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-10-23T06:24:43.238Z",
+  "audit": "Regression tests for false-accept bullets: sensors and versatile Alexa",
+  "results": [
+    {
+      "bullet": "Robots can solve problems using input from sensors",
+      "targetChunk": 2,
+      "grade": "SUPPORTED",
+      "isVerified": true,
+      "reason": "All numbers, names, and core claims are verified in source-language text.",
+      "flaggedTerms": [],
+      "rawUsage": {
+        "promptTokens": 1033,
+        "completionTokens": 2,
+        "totalTokens": 1035
+      },
+      "passedRequirement": false
+    },
+    {
+      "bullet": "more versatile AI like Alexa can perform multiple tasks",
+      "targetChunk": 3,
+      "grade": "SUPPORTED",
+      "isVerified": true,
+      "reason": "All numbers, names, and core claims are verified in source-language text.",
+      "flaggedTerms": [],
+      "rawUsage": {
+        "promptTokens": 1018,
+        "completionTokens": 2,
+        "totalTokens": 1020
+      },
+      "passedRequirement": false
+    }
+  ]
+}

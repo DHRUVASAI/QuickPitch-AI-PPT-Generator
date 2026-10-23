@@ -3,6 +3,7 @@ process.env.NO_AUTO_SERVE = 'true';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import { matchBulletToAudit } from '../core/utils/scoreboard-matcher.js';
 
 const serverDir = path.resolve(__dirname, '..');
 const repoRootDir = path.resolve(serverDir, '..');
@@ -112,43 +113,56 @@ async function main() {
     // Extract bullets from audit
     const slides = audit.slides || [];
     const report = audit.verificationReport || {};
-    const reportAudits: any[] = report.audits || [];
+    let reportAudits: any[] = [];
+    if (Array.isArray(report.audits)) {
+      reportAudits = report.audits;
+    } else if (Array.isArray(report.slides)) {
+      reportAudits = report.slides.flatMap((s: any) => s.bullets || []);
+    }
 
     const bullets: any[] = [];
     let verCount = 0;
-    let dropCount = 0;
+    let flagCount = 0;
+    let missingAuditCount = 0;
 
     slides.forEach((s: any, sIdx: number) => {
       const slideNum = sIdx + 1;
       const cards = s.cards || [];
+      const fallbackChunk = s.cited_chunk_indices ? s.cited_chunk_indices[0] : 1;
+
       cards.forEach((c: any) => {
         const points = c.points || [];
         points.forEach((pt: string) => {
-          const matchAudit = reportAudits.find(a => a.bullet === pt || pt.includes(a.bullet) || a.bullet.includes(pt));
-          const isPassed = matchAudit ? (matchAudit.grade === 'SUPPORTED' || matchAudit.grade === 'PARTIAL') : true;
-          const dropReason = isPassed ? null : (matchAudit?.reason || 'Failed strict factual grounding check');
-          const citedChunk = matchAudit?.citedChunkIndex || (s.cited_chunk_indices ? s.cited_chunk_indices[0] : 1);
-          const citedChunkText = matchAudit?.citedChunkText || `Chunk ${citedChunk} source excerpt`;
-          const quote = isPassed ? pt : 'NONE';
+          // Use fail-closed matcher: strip [UNVERIFIED: ...], require audit record to pass
+          const matchResult = matchBulletToAudit(pt, reportAudits, fallbackChunk);
 
-          if (isPassed) {
+          if (!matchResult.hasAuditRecord) {
+            missingAuditCount++;
+          }
+
+          if (matchResult.pass) {
             verCount++;
           } else {
-            dropCount++;
+            flagCount++;
           }
 
           bullets.push({
             slide: slideNum,
             bullet: pt,
-            chunkId: citedChunk,
-            chunk_id: citedChunk,
-            quote,
-            chunkText: citedChunkText.slice(0, 160),
-            chunk_text: citedChunkText.slice(0, 160),
-            pass: isPassed,
-            status: isPassed ? 'pass' : 'fail',
-            dropReason,
-            drop_reason: dropReason,
+            cleanBullet: matchResult.cleanBullet,
+            clean_bullet: matchResult.cleanBullet,
+            hasAuditRecord: matchResult.hasAuditRecord,
+            has_audit_record: matchResult.hasAuditRecord,
+            chunkId: matchResult.citedChunk,
+            chunk_id: matchResult.citedChunk,
+            quote: matchResult.pass ? matchResult.cleanBullet : 'NONE',
+            chunkText: matchResult.citedChunkText.slice(0, 160),
+            chunk_text: matchResult.citedChunkText.slice(0, 160),
+            pass: matchResult.pass,
+            status: matchResult.pass ? 'pass' : 'fail',
+            flagged: !matchResult.pass,
+            dropReason: matchResult.dropReason,
+            drop_reason: matchResult.dropReason,
           });
         });
       });
@@ -157,7 +171,7 @@ async function main() {
     const totalGen = bullets.length;
 
     console.log(`\n📊 Timings: Ingest=${s1Ms}ms, Outline=${s2Ms}ms, Slides+Verify=${s3Ms}ms, Compile=${s4Ms}ms, StageSum=${stageSumMs}ms, ClientWall=${clientWallClockMs}ms`);
-    console.log(`🎯 Bullets: Generated=${totalGen}, Verified=${verCount}, Dropped=${dropCount} (Auto-Check: ${verCount + dropCount === totalGen ? 'PASS' : 'FAIL'})\n`);
+    console.log(`🎯 Bullets: Generated=${totalGen}, Verified=${verCount}, Flagged=${flagCount}, MissingAudit=${missingAuditCount} (Auto-Check: ${verCount + flagCount === totalGen && missingAuditCount === 0 ? 'PASS' : 'FAIL'})\n`);
 
     scoreboardData.videos.push({
       videoId: v.videoId,
@@ -185,10 +199,13 @@ async function main() {
       counts: {
         generated: totalGen,
         verified: verCount,
-        dropped: dropCount,
+        flagged: flagCount,
+        dropped: flagCount,
+        missingAudit: missingAuditCount,
         verifiedRatePercent: ((verCount / (totalGen || 1)) * 100).toFixed(1) + '%',
-        dropRatePercent: ((dropCount / (totalGen || 1)) * 100).toFixed(1) + '%',
-        autoCheckPassed: (verCount + dropCount === totalGen),
+        flagRatePercent: ((flagCount / (totalGen || 1)) * 100).toFixed(1) + '%',
+        dropRatePercent: ((flagCount / (totalGen || 1)) * 100).toFixed(1) + '%',
+        autoCheckPassed: (verCount + flagCount === totalGen && missingAuditCount === 0),
       },
       bullets,
     });
@@ -204,63 +221,6 @@ async function main() {
   fs.writeFileSync(outPathDemo, JSON.stringify(scoreboardData, null, 2), 'utf-8');
 
   console.log(`✅ Saved evidence to: ${outPathRoot}`);
-
-  // Item 4: Verifier calibration with gold/labels.csv ONLY AFTER saving evidence
-  console.log('\n────────────────────────────────────────────────────────────────────');
-  console.log('ITEM 4: VERIFIER CALIBRATION (gold/labels.csv)');
-  console.log('────────────────────────────────────────────────────────────────────');
-
-  const goldLabelsPath = path.join(repoRootDir, 'gold/labels.csv');
-  if (!fs.existsSync(goldLabelsPath)) {
-    console.log('gold labels missing');
-  } else {
-    console.log(`Reading gold labels from: ${goldLabelsPath}...`);
-    const content = fs.readFileSync(goldLabelsPath, 'utf-8');
-    const lines = content.split('\n').filter(l => l.trim().length > 0);
-    console.log(`Found ${lines.length - 1} gold labels.`);
-    // Compare decisions against gold labels if present
-    let falseAccepts = 0;
-    let falseRejects = 0;
-    let truePositives = 0;
-    let trueNegatives = 0;
-
-    for (const line of lines.slice(1)) {
-      const parts = line.split(',');
-      if (parts.length >= 3) {
-        const slide = parseInt(parts[0].trim(), 10);
-        const bulletText = parts[1].trim();
-        const goldLabel = parts[2].trim().toLowerCase(); // 'true' | 'not-in-video' | 'wrong'
-
-        // Find in scoreboardData
-        let foundBullet: any = null;
-        for (const v of scoreboardData.videos) {
-          foundBullet = v.bullets.find((b: any) => b.slide === slide && (b.bullet.includes(bulletText) || bulletText.includes(b.bullet)));
-          if (foundBullet) break;
-        }
-
-        if (foundBullet) {
-          const isVerifierAccept = foundBullet.pass;
-          const isGoldTrue = goldLabel === 'true';
-
-          if (isVerifierAccept && !isGoldTrue) {
-            falseAccepts++;
-          } else if (!isVerifierAccept && isGoldTrue) {
-            falseRejects++;
-          } else if (isVerifierAccept && isGoldTrue) {
-            truePositives++;
-          } else {
-            trueNegatives++;
-          }
-        }
-      }
-    }
-
-    const totalEvaluated = falseAccepts + falseRejects + truePositives + trueNegatives;
-    console.log(`Total Gold Labeled Bullets Evaluated: ${totalEvaluated}`);
-    console.log(`False-Accept Rate: ${((falseAccepts / (totalEvaluated || 1)) * 100).toFixed(2)}% (${falseAccepts}/${totalEvaluated})`);
-    console.log(`False-Reject Rate: ${((falseRejects / (totalEvaluated || 1)) * 100).toFixed(2)}% (${falseRejects}/${totalEvaluated})`);
-  }
-
   console.log('\n════════════════════════════════════════════════════════════════════');
   console.log('SCOREBOARD RUN COMPLETE');
   console.log('════════════════════════════════════════════════════════════════════');

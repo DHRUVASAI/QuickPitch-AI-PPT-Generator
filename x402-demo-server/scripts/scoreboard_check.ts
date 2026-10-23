@@ -65,20 +65,38 @@ function main() {
       }
     }
 
-    // 3. Recompute bullet totals
+    // 3. Audit Record Integrity: Every bullet must have an audit record
     const bullets: any[] = v.bullets || [];
+    let missingAuditCount = 0;
+
+    bullets.forEach((b: any, bIdx: number) => {
+      const hasAudit = b.hasAuditRecord === true || b.has_audit_record === true;
+      if (!hasAudit || b.dropReason === 'No verification audit record found for bullet') {
+        console.error(`❌ BULLET MISSING AUDIT RECORD [Slide ${b.slide}, Bullet ${bIdx + 1}]: "${b.bullet}"`);
+        missingAuditCount++;
+        allChecksPassed = false;
+      }
+    });
+
+    if (missingAuditCount > 0) {
+      console.error(`💥 FAIL: Video ${v.videoId} has ${missingAuditCount} bullet(s) without audit records!`);
+    } else {
+      console.log(`✓ Audit record integrity verified: All ${bullets.length} bullets have verification audit records.`);
+    }
+
+    // 4. Recompute bullet totals
     const recomputedGenerated = bullets.length;
     const recomputedVerified = bullets.filter((b: any) => b.pass === true).length;
-    const recomputedDropped = bullets.filter((b: any) => b.pass === false).length;
+    const recomputedFlagged = bullets.filter((b: any) => b.pass === false).length;
 
     const recordedGenerated = v.counts?.generated;
     const recordedVerified = v.counts?.verified;
-    const recordedDropped = v.counts?.dropped;
+    const recordedFlagged = v.counts?.flagged ?? v.counts?.dropped;
 
     console.log(`   Bullets Count Recompute:`);
     console.log(`     Generated: recomputed=${recomputedGenerated}, recorded=${recordedGenerated}`);
     console.log(`     Verified:  recomputed=${recomputedVerified}, recorded=${recordedVerified}`);
-    console.log(`     Dropped:   recomputed=${recomputedDropped}, recorded=${recordedDropped}`);
+    console.log(`     Flagged:   recomputed=${recomputedFlagged}, recorded=${recordedFlagged}`);
 
     if (recomputedGenerated !== recordedGenerated) {
       console.error(`❌ GENERATED COUNT DISAGREEMENT: ${recomputedGenerated} != ${recordedGenerated}`);
@@ -90,21 +108,21 @@ function main() {
       allChecksPassed = false;
     }
 
-    if (recomputedDropped !== recordedDropped) {
-      console.error(`❌ DROPPED COUNT DISAGREEMENT: ${recomputedDropped} != ${recordedDropped}`);
+    if (recomputedFlagged !== recordedFlagged) {
+      console.error(`❌ FLAGGED COUNT DISAGREEMENT: ${recomputedFlagged} != ${recordedFlagged}`);
       allChecksPassed = false;
     }
 
-    if (recomputedVerified + recomputedDropped !== recomputedGenerated) {
-      console.error(`❌ AUTO-CHECK DISAGREEMENT: ${recomputedVerified} + ${recomputedDropped} != ${recomputedGenerated}`);
+    if (recomputedVerified + recomputedFlagged !== recomputedGenerated) {
+      console.error(`❌ AUTO-CHECK DISAGREEMENT: ${recomputedVerified} + ${recomputedFlagged} != ${recomputedGenerated}`);
       allChecksPassed = false;
     } else {
-      console.log(`✓ Auto-check verified: ${recomputedVerified} + ${recomputedDropped} == ${recomputedGenerated} (PASS)\n`);
+      console.log(`✓ Auto-check verified: ${recomputedVerified} + ${recomputedFlagged} == ${recomputedGenerated} (PASS)\n`);
     }
   });
 
   if (!allChecksPassed) {
-    console.error('💥 SCOREBOARD CHECK FAILED: Discrepancy found in recorded totals, sums or counts.');
+    console.error('💥 SCOREBOARD CHECK FAILED: Discrepancy found in recorded totals, sums or counts, or bullets missing audit records.');
     process.exit(1);
   }
 
