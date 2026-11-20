@@ -25,7 +25,7 @@ QuickPitch is a high-accuracy, production-grade web application built for the **
                                    HTTP Request + Payment-Signature
                                                     │
                                ┌────────────────────▼─────────────────────┐
-                               │       SentinelAI / x402 Gateway          │
+                               │       QuickPitch / x402 Gateway          │
                                │       Hono Server (Port 4021)            │
                                └────────────────────┬─────────────────────┘
                                                     │

@@ -29,3 +29,4 @@ sidecar/models/
 *.safetensors
 .cache/
 scratch/
+*.pem
